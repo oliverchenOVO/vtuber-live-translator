@@ -1,4 +1,4 @@
-"""Platform independent audio capture contract; implementations arrive in Phase 2."""
+"""Platform independent audio capture contract."""
 
 from dataclasses import dataclass
 from typing import AsyncIterator, Protocol
@@ -9,6 +9,9 @@ class AudioSource:
     id: str
     label: str
     kind: str
+    pid: int
+    is_outputting: bool
+    peak: float
 
 
 @dataclass(frozen=True)
@@ -25,4 +28,3 @@ class AudioCaptureBackend(Protocol):
     async def start(self) -> None: ...
     async def stop(self) -> None: ...
     def audio_stream(self) -> AsyncIterator[AudioChunk]: ...
-

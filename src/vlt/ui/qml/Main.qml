@@ -120,12 +120,12 @@ ApplicationWindow {
                     color: "#202a32"; border.color: "#34474b"
                     Column {
                         anchors.fill: parent; anchors.margins: 13; spacing: 7
-                        Text { text: "●  PHASE 1"; color: window.accent; font.pixelSize: 11; font.bold: true; font.letterSpacing: 1 }
+                        Text { text: "●  PHASE 2"; color: window.accent; font.pixelSize: 11; font.bold: true; font.letterSpacing: 1 }
                         Text { text: "Studio 基礎版本"; color: window.ink; font.pixelSize: 13; font.bold: true }
-                        Text { text: "音訊與翻譯功能開發中"; color: window.muted; font.pixelSize: 11; width: 150; wrapMode: Text.WordWrap }
+                        Text { text: "音訊監聽可用 · 翻譯開發中"; color: window.muted; font.pixelSize: 11; width: 150; wrapMode: Text.WordWrap }
                     }
                 }
-                Text { text: "v0.1.0  ·  Windows preview"; color: "#647185"; font.pixelSize: 10; Layout.topMargin: 9 }
+                Text { text: "v0.2.0  ·  Windows preview"; color: "#647185"; font.pixelSize: 10; Layout.topMargin: 9 }
             }
         }
 
@@ -141,8 +141,8 @@ ApplicationWindow {
                 Layout.rightMargin: 30
                 Text { text: "TRANSCRIPT STUDIO"; color: window.muted; font.pixelSize: 11; font.bold: true; font.letterSpacing: 2.1 }
                 Item { Layout.fillWidth: true }
-                Rectangle { width: 7; height: 7; radius: 4; color: "#e6b865" }
-                Text { text: "功能建置中"; color: "#d7c298"; font.pixelSize: 12 }
+                Rectangle { width: 7; height: 7; radius: 4; color: studio.audioState === "capturing" ? window.accent : "#e6b865" }
+                Text { text: studio.audioState === "capturing" ? "音訊監聽中" : "翻譯功能建置中"; color: studio.audioState === "capturing" ? window.accent : "#d7c298"; font.pixelSize: 12 }
             }
             Rectangle { Layout.fillWidth: true; height: 1; color: window.line }
 
@@ -174,8 +174,8 @@ ApplicationWindow {
                             Item { Layout.fillWidth: true }
                             Text {
                                 visible: window.page === "LIVE"
-                                text: "●  OFFLINE"
-                                color: "#dfbd82"; font.pixelSize: 11; font.bold: true; font.letterSpacing: 1
+                                text: studio.audioState === "capturing" ? "●  AUDIO LIVE" : "●  OFFLINE"
+                                color: studio.audioState === "capturing" ? window.accent : "#dfbd82"; font.pixelSize: 11; font.bold: true; font.letterSpacing: 1
                             }
                         }
                         Text {
@@ -202,8 +202,69 @@ ApplicationWindow {
                                 ColumnLayout {
                                     Layout.fillWidth: true; spacing: 7
                                     Text { text: "準備好你的直播工作區"; color: window.ink; font.pixelSize: 18; font.bold: true }
-                                    Text { text: "目前可建立與管理空白 Session，預覽字幕 Overlay。"; color: "#a5b8ba"; font.pixelSize: 12; wrapMode: Text.WordWrap; Layout.fillWidth: true }
-                                    Text { text: "指定程式音訊、辨識與翻譯將於後續階段提供。"; color: "#82a19f"; font.pixelSize: 11; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                                    Text { text: "選擇正在播放的程式，開始監聽並檢查即時音量。"; color: "#a5b8ba"; font.pixelSize: 12; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                                    Text { text: "目前只檢查音訊。語音辨識與翻譯將於後續階段提供。"; color: "#82a19f"; font.pixelSize: 11; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                                }
+                            }
+                        }
+
+                        InfoCard {
+                            visible: window.page === "LIVE"
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 211
+                            ColumnLayout {
+                                anchors.fill: parent; anchors.margins: 20; spacing: 10
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    Text { text: "APPLICATION AUDIO"; color: window.ink; font.pixelSize: 13; font.bold: true; font.letterSpacing: 1.1 }
+                                    Item { Layout.fillWidth: true }
+                                    AppButton { text: "↻  重新偵測"; onClicked: studio.refreshAudioSources() }
+                                }
+                                RowLayout {
+                                    Layout.fillWidth: true; spacing: 11
+                                    ComboBox {
+                                        id: sourcePicker
+                                        Layout.fillWidth: true
+                                        Layout.minimumWidth: 0
+                                        model: studio.audioSources
+                                        textRole: "display"
+                                        valueRole: "id"
+                                        enabled: studio.audioSources.length > 0 && !studio.audioBusy && studio.audioState !== "capturing"
+                                        onActivated: studio.selectAudioSource(String(currentValue))
+                                    }
+                                    AppButton {
+                                        text: studio.audioState === "capturing" ? "停止監聽" : "開始監聽"
+                                        primary: studio.audioState !== "capturing"
+                                        enabled: !studio.audioBusy && (studio.audioState === "capturing" || studio.audioSources.length > 0)
+                                        onClicked: {
+                                            if (studio.audioState === "capturing") studio.stopAudioCapture()
+                                            else {
+                                                studio.selectAudioSource(String(sourcePicker.currentValue))
+                                                studio.startAudioCapture()
+                                            }
+                                        }
+                                    }
+                                }
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: studio.audioSources.length === 0 && studio.audioState !== "error" && studio.audioStatus === "請選擇音訊來源" ?
+                                          "尚未發現具有 Windows 音訊 Session 的程式。請播放聲音後重新偵測。" : studio.audioStatus
+                                    color: studio.audioState === "error" ? "#ffb9bc" : window.muted
+                                    font.pixelSize: 11; wrapMode: Text.WordWrap
+                                }
+                                RowLayout {
+                                    Layout.fillWidth: true; spacing: 12
+                                    Text { text: "INPUT LEVEL"; color: "#7e91a1"; font.pixelSize: 10; font.bold: true; font.letterSpacing: 1 }
+                                    Rectangle {
+                                        Layout.fillWidth: true; height: 9; radius: 5; color: "#2d3743"
+                                        Rectangle {
+                                            height: parent.height; radius: 5
+                                            width: parent.width * Math.sqrt(Math.min(1, studio.audioPeak))
+                                            color: studio.audioPeak > 0.7 ? "#f0b86b" : window.accent
+                                            Behavior on width { NumberAnimation { duration: 90 } }
+                                        }
+                                    }
+                                    Text { text: Math.round(studio.audioPeak * 100) + "%"; color: window.ink; font.pixelSize: 11; font.bold: true; width: 32; horizontalAlignment: Text.AlignRight }
                                 }
                             }
                         }
@@ -339,7 +400,7 @@ ApplicationWindow {
                                 Text { text: "來源語言     " + (studio.preferences.source_language === "ja" ? "日文" : studio.preferences.source_language === "en" ? "英文" : "自動偵測"); color: window.ink; font.pixelSize: 12 }
                                 Text { text: "目標語言     " + (studio.preferences.target_language === "zh-TW" ? "繁體中文" : "简体中文"); color: window.ink; font.pixelSize: 12 }
                                 Text { text: "翻譯模式     " + studio.preferences.translation_style; color: window.ink; font.pixelSize: 12 }
-                                Text { text: "音訊來源     尚未接入"; color: window.muted; font.pixelSize: 12 }
+                                Text { text: "音訊來源     " + (studio.audioState === "capturing" ? "監聽中" : "未監聽"); color: window.muted; font.pixelSize: 12 }
                             }
                         }
                         Text { text: "OVERLAY"; color: window.muted; font.pixelSize: 11; font.bold: true; font.letterSpacing: 1.8 }
@@ -368,7 +429,7 @@ ApplicationWindow {
                 RowLayout {
                     anchors.fill: parent; anchors.leftMargin: 29; anchors.rightMargin: 23; spacing: 13
                     Rectangle { width: 7; height: 7; radius: 4; color: "#e6b865" }
-                    Text { text: studio.message; color: "#a7b4c3"; font.pixelSize: 11; elide: Text.ElideRight; Layout.fillWidth: true }
+                    Text { text: studio.audioState === "capturing" ? "指定程式音訊監聽中 · PCM 16 kHz mono · 尚未連接辨識" : studio.message; color: "#a7b4c3"; font.pixelSize: 11; elide: Text.ElideRight; Layout.fillWidth: true }
                     AppButton { text: "結束 Session"; danger: true; enabled: studio.selectedSession.status === "active"; onClicked: studio.finishSession() }
                 }
             }

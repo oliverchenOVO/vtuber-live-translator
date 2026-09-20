@@ -39,6 +39,7 @@ def main() -> int:
             break
     settings = SettingsManager(root)
     controller = StudioController(sessions, settings)
+    app.aboutToQuit.connect(controller.shutdown)
     engine = QQmlApplicationEngine()
     engine.rootContext().setContextProperty("studio", controller)
     qml_dir = Path(__file__).parent / "ui" / "qml"
@@ -50,6 +51,21 @@ def main() -> int:
     if len(engine.rootObjects()) != 2:
         database.close()
         return 1
+    if "--audio-smoke-test" in sys.argv:
+        def start_test_audio() -> None:
+            chrome = next((source for source in controller.audioSources if source["label"].casefold() == "chrome.exe"), None)
+            if chrome:
+                controller.selectAudioSource(chrome["id"])
+                controller.startAudioCapture()
+
+        QTimer.singleShot(1200, start_test_audio)
+        screenshot = os.environ.get("VLT_SCREENSHOT_PATH")
+        if screenshot:
+            from shiboken6 import getCppPointer, wrapInstance
+            from PySide6.QtQuick import QQuickWindow
+            quick_window = wrapInstance(getCppPointer(engine.rootObjects()[0])[0], QQuickWindow)
+            QTimer.singleShot(4500, lambda: quick_window.grabWindow().save(screenshot))
+        QTimer.singleShot(5000, app.quit)
     if "--smoke-test" in sys.argv:
         screenshot = os.environ.get("VLT_SCREENSHOT_PATH")
         if screenshot:
