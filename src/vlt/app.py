@@ -51,6 +51,12 @@ def main() -> int:
         database.close()
         return 1
     if "--smoke-test" in sys.argv:
+        screenshot = os.environ.get("VLT_SCREENSHOT_PATH")
+        if screenshot:
+            from shiboken6 import getCppPointer, wrapInstance
+            from PySide6.QtQuick import QQuickWindow
+            quick_window = wrapInstance(getCppPointer(engine.rootObjects()[0])[0], QQuickWindow)
+            QTimer.singleShot(200, lambda: quick_window.grabWindow().save(screenshot))
         QTimer.singleShot(350, app.quit)
     try:
         return app.exec()
