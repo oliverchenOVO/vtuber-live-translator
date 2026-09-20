@@ -21,6 +21,16 @@ ApplicationWindow {
     property color ink: "#eef2f6"
     property color accent: "#6ce2c5"
 
+    function formatTime(ms) {
+        const seconds = Math.floor(ms / 1000)
+        return String(Math.floor(seconds / 3600)).padStart(2, "0") + ":" +
+               String(Math.floor(seconds / 60) % 60).padStart(2, "0") + ":" +
+               String(seconds % 60).padStart(2, "0")
+    }
+    function languageName(code) {
+        return code === "ja" ? "Japanese" : code === "en" ? "English" : code.toUpperCase()
+    }
+
     component AppButton: Button {
         id: control
         property bool primary: false
@@ -120,12 +130,12 @@ ApplicationWindow {
                     color: "#202a32"; border.color: "#34474b"
                     Column {
                         anchors.fill: parent; anchors.margins: 13; spacing: 7
-                        Text { text: "●  PHASE 2"; color: window.accent; font.pixelSize: 11; font.bold: true; font.letterSpacing: 1 }
-                        Text { text: "Studio 基礎版本"; color: window.ink; font.pixelSize: 13; font.bold: true }
-                        Text { text: "音訊監聽可用 · 翻譯開發中"; color: window.muted; font.pixelSize: 11; width: 150; wrapMode: Text.WordWrap }
+                        Text { text: "●  PHASE 3"; color: window.accent; font.pixelSize: 11; font.bold: true; font.letterSpacing: 1 }
+                        Text { text: "Streaming ASR"; color: window.ink; font.pixelSize: 13; font.bold: true }
+                        Text { text: "本機日英語逐字稿 · 即時保存"; color: window.muted; font.pixelSize: 11; width: 150; wrapMode: Text.WordWrap }
                     }
                 }
-                Text { text: "v0.2.0  ·  Windows preview"; color: "#647185"; font.pixelSize: 10; Layout.topMargin: 9 }
+                Text { text: "v0.3.0  ·  Windows preview"; color: "#647185"; font.pixelSize: 10; Layout.topMargin: 9 }
             }
         }
 
@@ -142,7 +152,7 @@ ApplicationWindow {
                 Text { text: "TRANSCRIPT STUDIO"; color: window.muted; font.pixelSize: 11; font.bold: true; font.letterSpacing: 2.1 }
                 Item { Layout.fillWidth: true }
                 Rectangle { width: 7; height: 7; radius: 4; color: studio.audioState === "capturing" ? window.accent : "#e6b865" }
-                Text { text: studio.audioState === "capturing" ? "音訊監聽中" : "翻譯功能建置中"; color: studio.audioState === "capturing" ? window.accent : "#d7c298"; font.pixelSize: 12 }
+                Text { text: studio.audioState === "capturing" ? "音訊監聽中 · ASR " + studio.asrState.toUpperCase() : "等待音訊來源"; color: studio.audioState === "capturing" ? window.accent : "#d7c298"; font.pixelSize: 12 }
             }
             Rectangle { Layout.fillWidth: true; height: 1; color: window.line }
 
@@ -188,7 +198,7 @@ ApplicationWindow {
                         }
 
                         InfoCard {
-                            visible: window.page === "LIVE"
+                            visible: window.page === "LIVE" && studio.audioState !== "capturing" && studio.transcriptSegments.length === 0 && !studio.liveSegment.id
                             Layout.fillWidth: true
                             Layout.preferredHeight: 156
                             color: "#1c292d"
@@ -202,8 +212,8 @@ ApplicationWindow {
                                 ColumnLayout {
                                     Layout.fillWidth: true; spacing: 7
                                     Text { text: "準備好你的直播工作區"; color: window.ink; font.pixelSize: 18; font.bold: true }
-                                    Text { text: "選擇正在播放的程式，開始監聽並檢查即時音量。"; color: "#a5b8ba"; font.pixelSize: 12; wrapMode: Text.WordWrap; Layout.fillWidth: true }
-                                    Text { text: "目前只檢查音訊。語音辨識與翻譯將於後續階段提供。"; color: "#82a19f"; font.pixelSize: 11; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                                    Text { text: "選擇正在播放的程式，開始監聽並辨識即時語音。"; color: "#a5b8ba"; font.pixelSize: 12; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                                    Text { text: "使用本機 Faster Whisper；逐字稿會立即寫入 Session。"; color: "#82a19f"; font.pixelSize: 11; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                                 }
                             }
                         }
@@ -272,15 +282,16 @@ ApplicationWindow {
                         RowLayout {
                             visible: window.page === "LIVE"
                             spacing: 10
-                            AppButton { text: "＋  建立空白 Session"; primary: true; onClicked: studio.createSession() }
+                            AppButton { text: "＋  建立空白 Session"; primary: true; enabled: studio.audioState !== "capturing" && !studio.audioBusy; onClicked: studio.createSession() }
                             AppButton { text: studio.overlayVisible ? "隱藏 Overlay" : "預覽 Overlay"; onClicked: studio.toggleOverlay() }
                         }
 
                         InfoCard {
                             visible: window.page === "LIVE"
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 290
+                            Layout.preferredHeight: Math.max(290, transcriptColumn.implicitHeight + 48)
                             ColumnLayout {
+                                id: transcriptColumn
                                 anchors.fill: parent; anchors.margins: 24; spacing: 13
                                 RowLayout {
                                     Layout.fillWidth: true
@@ -289,15 +300,43 @@ ApplicationWindow {
                                     Text { text: "SESSION VIEW"; color: "#607287"; font.pixelSize: 10; font.bold: true; font.letterSpacing: 1.4 }
                                 }
                                 Rectangle { Layout.fillWidth: true; height: 1; color: window.line }
-                                Item { Layout.fillHeight: true }
-                                Rectangle {
+                                Item { Layout.fillHeight: true; visible: studio.transcriptSegments.length === 0 && !studio.liveSegment.id }
+                                Text {
+                                    visible: studio.transcriptSegments.length === 0 && !studio.liveSegment.id
                                     Layout.alignment: Qt.AlignHCenter
-                                    width: 58; height: 58; radius: 18; color: "#26313e"
-                                    Text { anchors.centerIn: parent; text: "≋"; color: "#728b9a"; font.pixelSize: 33 }
+                                    text: studio.asrState === "connecting" || studio.asrState === "reconnecting" ? "音訊已接收，正在連接語音辨識…" : studio.asrState === "error" ? studio.asrStatus : "正在等待語音…"
+                                    color: studio.asrState === "error" ? "#ffb9bc" : window.muted; font.pixelSize: 13
                                 }
-                                Text { Layout.alignment: Qt.AlignHCenter; text: "尚無對話內容"; color: window.ink; font.pixelSize: 15; font.bold: true }
-                                Text { Layout.alignment: Qt.AlignHCenter; text: "即時辨識功能完成後，內容將依時間出現在這裡。"; color: window.muted; font.pixelSize: 12 }
-                                Item { Layout.fillHeight: true }
+                                Repeater {
+                                    model: studio.transcriptSegments
+                                    delegate: Rectangle {
+                                        required property var modelData
+                                        Layout.fillWidth: true
+                                        implicitHeight: finalColumn.implicitHeight + 25
+                                        radius: 10; color: window.raised; border.color: window.line
+                                        ColumnLayout {
+                                            id: finalColumn
+                                            anchors.left: parent.left; anchors.right: parent.right; anchors.top: parent.top
+                                            anchors.margins: 13; spacing: 7
+                                            Text { text: window.formatTime(modelData.start_ms) + "  ·  " + window.languageName(modelData.language); color: window.accent; font.pixelSize: 11; font.bold: true }
+                                            Text { Layout.fillWidth: true; text: modelData.original; wrapMode: Text.WordWrap; color: window.ink; font.pixelSize: 15 }
+                                        }
+                                    }
+                                }
+                                Rectangle {
+                                    visible: !!studio.liveSegment.id
+                                    Layout.fillWidth: true
+                                    implicitHeight: liveColumn.implicitHeight + 25
+                                    radius: 10; color: "#203932"; border.color: "#3d6961"
+                                    ColumnLayout {
+                                        id: liveColumn
+                                        anchors.left: parent.left; anchors.right: parent.right; anchors.top: parent.top
+                                        anchors.margins: 13; spacing: 7
+                                        Text { text: window.formatTime(studio.liveSegment.start_ms || 0) + "  ·  LIVE  ·  " + window.languageName(studio.liveSegment.language || ""); color: window.accent; font.pixelSize: 11; font.bold: true }
+                                        Text { Layout.fillWidth: true; text: studio.liveSegment.original || ""; wrapMode: Text.WordWrap; color: window.ink; font.pixelSize: 15 }
+                                    }
+                                }
+                                Item { Layout.fillHeight: true; visible: studio.transcriptSegments.length === 0 && !studio.liveSegment.id }
                             }
                         }
 
@@ -355,7 +394,7 @@ ApplicationWindow {
                                     ComboBox { model: ["自然", "忠實", "精簡字幕"]; currentIndex: ["natural", "faithful", "minimal"].indexOf(studio.preferences.translation_style); onActivated: studio.setPreference("translation_style", ["natural", "faithful", "minimal"][currentIndex]) }
                                 }
                                 Rectangle { Layout.fillWidth: true; height: 1; color: window.line }
-                                Text { text: "原始音訊預設不保存。音訊設定將於擷取功能完成後開放。"; color: window.muted; font.pixelSize: 11; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                                Text { text: "原始音訊不保存；每條 Final 逐字稿會即時寫入 Session。"; color: window.muted; font.pixelSize: 11; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                                 Item { Layout.fillHeight: true }
                             }
                         }
@@ -396,8 +435,19 @@ ApplicationWindow {
                             Layout.fillWidth: true; Layout.preferredHeight: 183
                             ColumnLayout {
                                 anchors.fill: parent; anchors.margins: 15; spacing: 10
-                                Text { text: "TRANSLATION SETUP"; color: "#78919d"; font.pixelSize: 10; font.bold: true; font.letterSpacing: 1 }
-                                Text { text: "來源語言     " + (studio.preferences.source_language === "ja" ? "日文" : studio.preferences.source_language === "en" ? "英文" : "自動偵測"); color: window.ink; font.pixelSize: 12 }
+                                Text { text: "SESSION SETUP"; color: "#78919d"; font.pixelSize: 10; font.bold: true; font.letterSpacing: 1 }
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    Text { text: "來源語言"; color: window.ink; font.pixelSize: 12; Layout.fillWidth: true }
+                                    ComboBox {
+                                        id: liveLanguagePicker
+                                        Layout.preferredWidth: 130
+                                        model: ["自動偵測", "日文", "英文"]
+                                        currentIndex: ["auto", "ja", "en"].indexOf(studio.preferences.source_language)
+                                        onActivated: studio.setPreference("source_language", ["auto", "ja", "en"][currentIndex])
+                                    }
+                                }
+                                Text { visible: studio.preferences.source_language === "auto" && !!studio.detectedLanguage; text: "偵測結果     " + window.languageName(studio.detectedLanguage); color: window.accent; font.pixelSize: 11 }
                                 Text { text: "目標語言     " + (studio.preferences.target_language === "zh-TW" ? "繁體中文" : "简体中文"); color: window.ink; font.pixelSize: 12 }
                                 Text { text: "翻譯模式     " + studio.preferences.translation_style; color: window.ink; font.pixelSize: 12 }
                                 Text { text: "音訊來源     " + (studio.audioState === "capturing" ? "監聽中" : "未監聽"); color: window.muted; font.pixelSize: 12 }
@@ -428,8 +478,8 @@ ApplicationWindow {
                 color: "#171d25"; border.color: window.line
                 RowLayout {
                     anchors.fill: parent; anchors.leftMargin: 29; anchors.rightMargin: 23; spacing: 13
-                    Rectangle { width: 7; height: 7; radius: 4; color: "#e6b865" }
-                    Text { text: studio.audioState === "capturing" ? "指定程式音訊監聽中 · PCM 16 kHz mono · 尚未連接辨識" : studio.message; color: "#a7b4c3"; font.pixelSize: 11; elide: Text.ElideRight; Layout.fillWidth: true }
+                    Rectangle { width: 7; height: 7; radius: 4; color: studio.asrState === "live" ? window.accent : "#e6b865" }
+                    Text { text: studio.audioState === "capturing" ? "AUDIO LIVE  ·  ASR " + studio.asrState.toUpperCase() + "  ·  " + studio.asrStatus + (studio.asrLatency ? "  ·  " + studio.asrLatency : "") : studio.message; color: "#a7b4c3"; font.pixelSize: 11; elide: Text.ElideRight; Layout.fillWidth: true }
                     AppButton { text: "結束 Session"; danger: true; enabled: studio.selectedSession.status === "active"; onClicked: studio.finishSession() }
                 }
             }

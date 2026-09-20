@@ -10,6 +10,7 @@ from PySide6.QtGui import QFont, QFontDatabase, QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine
 
 from vlt.database.database import Database
+from vlt.asr.faster_whisper_backend import FasterWhisperBackend
 from vlt.sessions.manager import SessionManager
 from vlt.settings.manager import SettingsManager, data_directory
 from vlt.ui.controller import StudioController
@@ -38,7 +39,9 @@ def main() -> int:
             app.setFont(QFont(family, 10))
             break
     settings = SettingsManager(root)
-    controller = StudioController(sessions, settings)
+    controller = StudioController(
+        sessions, settings,
+        asr_backend_factory=lambda: FasterWhisperBackend(model_dir=root / "models"))
     app.aboutToQuit.connect(controller.shutdown)
     engine = QQmlApplicationEngine()
     engine.rootContext().setContextProperty("studio", controller)
@@ -51,7 +54,7 @@ def main() -> int:
     if len(engine.rootObjects()) != 2:
         database.close()
         return 1
-    if "--audio-smoke-test" in sys.argv:
+    if "--audio-smoke-test" in sys.argv or "--asr-smoke-test" in sys.argv:
         def start_test_audio() -> None:
             chrome = next((source for source in controller.audioSources if source["label"].casefold() == "chrome.exe"), None)
             if chrome:
@@ -60,12 +63,14 @@ def main() -> int:
 
         QTimer.singleShot(1200, start_test_audio)
         screenshot = os.environ.get("VLT_SCREENSHOT_PATH")
+        extended = "--asr-smoke-test" in sys.argv
         if screenshot:
             from shiboken6 import getCppPointer, wrapInstance
             from PySide6.QtQuick import QQuickWindow
             quick_window = wrapInstance(getCppPointer(engine.rootObjects()[0])[0], QQuickWindow)
-            QTimer.singleShot(4500, lambda: quick_window.grabWindow().save(screenshot))
-        QTimer.singleShot(5000, app.quit)
+            QTimer.singleShot(25000 if extended else 4500,
+                              lambda: quick_window.grabWindow().save(screenshot))
+        QTimer.singleShot(30000 if extended else 5000, app.quit)
     if "--smoke-test" in sys.argv:
         screenshot = os.environ.get("VLT_SCREENSHOT_PATH")
         if screenshot:
