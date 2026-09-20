@@ -54,6 +54,13 @@ def main() -> int:
     if len(engine.rootObjects()) != 2:
         database.close()
         return 1
+    overlay_screenshot = os.environ.get("VLT_OVERLAY_SCREENSHOT_PATH")
+    if overlay_screenshot:
+        controller.toggleOverlay()
+        from shiboken6 import getCppPointer, wrapInstance
+        from PySide6.QtQuick import QQuickWindow
+        overlay_window = wrapInstance(getCppPointer(engine.rootObjects()[1])[0], QQuickWindow)
+        QTimer.singleShot(25000, lambda: overlay_window.grabWindow().save(overlay_screenshot))
     if "--audio-smoke-test" in sys.argv or "--asr-smoke-test" in sys.argv:
         def start_test_audio() -> None:
             chrome = next((source for source in controller.audioSources if source["label"].casefold() == "chrome.exe"), None)
@@ -72,6 +79,8 @@ def main() -> int:
                               lambda: quick_window.grabWindow().save(screenshot))
         QTimer.singleShot(30000 if extended else 5000, app.quit)
     if "--smoke-test" in sys.argv:
+        if os.environ.get("VLT_SCREENSHOT_PAGE"):
+            engine.rootObjects()[0].setProperty("page", os.environ["VLT_SCREENSHOT_PAGE"])
         screenshot = os.environ.get("VLT_SCREENSHOT_PATH")
         if screenshot:
             from shiboken6 import getCppPointer, wrapInstance

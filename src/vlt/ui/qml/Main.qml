@@ -64,6 +64,13 @@ ApplicationWindow {
         border.width: 1
     }
 
+    component DarkField: TextField {
+        color: window.ink
+        placeholderTextColor: window.muted
+        font.pixelSize: 12
+        background: Rectangle { radius: 8; color: window.raised; border.color: window.line }
+    }
+
     RowLayout {
         anchors.fill: parent
         spacing: 0
@@ -130,12 +137,12 @@ ApplicationWindow {
                     color: "#202a32"; border.color: "#34474b"
                     Column {
                         anchors.fill: parent; anchors.margins: 13; spacing: 7
-                        Text { text: "●  PHASE 3"; color: window.accent; font.pixelSize: 11; font.bold: true; font.letterSpacing: 1 }
-                        Text { text: "Streaming ASR"; color: window.ink; font.pixelSize: 13; font.bold: true }
-                        Text { text: "本機日英語逐字稿 · 即時保存"; color: window.muted; font.pixelSize: 11; width: 150; wrapMode: Text.WordWrap }
+                        Text { text: "●  PHASE 4"; color: window.accent; font.pixelSize: 11; font.bold: true; font.letterSpacing: 1 }
+                        Text { text: "Live Translation"; color: window.ink; font.pixelSize: 13; font.bold: true }
+                        Text { text: "日英語逐字稿 · 即時中譯"; color: window.muted; font.pixelSize: 11; width: 150; wrapMode: Text.WordWrap }
                     }
                 }
-                Text { text: "v0.3.0  ·  Windows preview"; color: "#647185"; font.pixelSize: 10; Layout.topMargin: 9 }
+                Text { text: "v0.4.0  ·  Windows preview"; color: "#647185"; font.pixelSize: 10; Layout.topMargin: 9 }
             }
         }
 
@@ -192,7 +199,8 @@ ApplicationWindow {
                             Layout.fillWidth: true
                             text: window.page === "LIVE" ? "一切對話，清楚留下。" :
                                   window.page === "History" ? "查看已建立的直播記錄。" :
-                                  window.page === "Settings" ? "設定字幕顯示與未來的翻譯偏好。" :
+                                  window.page === "Settings" ? "設定來源語言、即時翻譯與字幕顯示。" :
+                                  window.page === "Dictionary" ? "管理專有名詞與譯名。" :
                                   "此區域將隨後續階段開放。"
                             color: window.muted; font.pixelSize: 13
                         }
@@ -319,7 +327,9 @@ ApplicationWindow {
                                             anchors.left: parent.left; anchors.right: parent.right; anchors.top: parent.top
                                             anchors.margins: 13; spacing: 7
                                             Text { text: window.formatTime(modelData.start_ms) + "  ·  " + window.languageName(modelData.language); color: window.accent; font.pixelSize: 11; font.bold: true }
-                                            Text { Layout.fillWidth: true; text: modelData.original; wrapMode: Text.WordWrap; color: window.ink; font.pixelSize: 15 }
+                                            Text { visible: !!modelData.translation; Layout.fillWidth: true; text: modelData.translation ? modelData.translation.text : ""; wrapMode: Text.WordWrap; color: window.ink; font.pixelSize: 17; font.bold: true }
+                                            Text { visible: !modelData.translation; text: "翻譯等待中…"; color: window.muted; font.pixelSize: 11 }
+                                            Text { Layout.fillWidth: true; text: modelData.original; wrapMode: Text.WordWrap; color: "#b0bdca"; font.pixelSize: 14 }
                                         }
                                     }
                                 }
@@ -333,7 +343,8 @@ ApplicationWindow {
                                         anchors.left: parent.left; anchors.right: parent.right; anchors.top: parent.top
                                         anchors.margins: 13; spacing: 7
                                         Text { text: window.formatTime(studio.liveSegment.start_ms || 0) + "  ·  LIVE  ·  " + window.languageName(studio.liveSegment.language || ""); color: window.accent; font.pixelSize: 11; font.bold: true }
-                                        Text { Layout.fillWidth: true; text: studio.liveSegment.original || ""; wrapMode: Text.WordWrap; color: window.ink; font.pixelSize: 15 }
+                                        Text { visible: !!studio.liveSegment.translation; Layout.fillWidth: true; text: studio.liveSegment.translation ? studio.liveSegment.translation.text : ""; wrapMode: Text.WordWrap; color: window.ink; font.pixelSize: 17; font.bold: true }
+                                        Text { Layout.fillWidth: true; text: studio.liveSegment.original || ""; wrapMode: Text.WordWrap; color: "#b0bdca"; font.pixelSize: 14 }
                                     }
                                 }
                                 Item { Layout.fillHeight: true; visible: studio.transcriptSegments.length === 0 && !studio.liveSegment.id }
@@ -400,7 +411,38 @@ ApplicationWindow {
                         }
 
                         InfoCard {
-                            visible: window.page === "Speakers" || window.page === "Dictionary" || window.page === "Exports"
+                            visible: window.page === "Dictionary"
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: Math.max(360, dictionaryColumn.implicitHeight + 45)
+                            ColumnLayout {
+                                id: dictionaryColumn
+                                anchors.fill: parent; anchors.margins: 20; spacing: 10
+                                Text { text: "專有名詞詞庫"; color: window.ink; font.pixelSize: 17; font.bold: true }
+                                Text { text: "原文 / 別名 → 繁體及簡體譯名；相同原文可直接覆寫。"; color: window.muted; font.pixelSize: 11 }
+                                DarkField { id: glossarySource; Layout.fillWidth: true; placeholderText: "原文（例：兎田ぺこら）" }
+                                DarkField { id: glossaryTw; Layout.fillWidth: true; placeholderText: "繁體譯名" }
+                                DarkField { id: glossaryCn; Layout.fillWidth: true; placeholderText: "简体译名" }
+                                DarkField { id: glossaryAliases; Layout.fillWidth: true; placeholderText: "別名，以逗號分隔（Pekora,ぺこら）" }
+                                AppButton { text: "保存譯名"; primary: true; onClicked: studio.saveGlossaryEntry(glossarySource.text, glossaryTw.text, glossaryCn.text, glossaryAliases.text) }
+                                Repeater {
+                                    model: studio.glossaryEntries
+                                    delegate: RowLayout {
+                                        required property var modelData
+                                        Layout.fillWidth: true
+                                        Text { text: modelData.source + "  →  " + modelData.preferred_zh_tw + " / " + modelData.preferred_zh_cn; Layout.fillWidth: true; elide: Text.ElideRight; color: window.ink; font.pixelSize: 12 }
+                                        AppButton { text: "編輯"; onClicked: { glossarySource.text = modelData.source; glossaryTw.text = modelData.preferred_zh_tw; glossaryCn.text = modelData.preferred_zh_cn; glossaryAliases.text = modelData.aliases.join(",") } }
+                                        AppButton { text: "刪除"; danger: true; onClicked: studio.deleteGlossaryEntry(modelData.source) }
+                                    }
+                                }
+                                DarkField { id: glossaryPath; Layout.fillWidth: true; text: studio.glossaryDefaultExportPath; placeholderText: "匯入／匯出 JSON 檔案完整路徑" }
+                                RowLayout {
+                                    AppButton { text: "匯入 JSON"; onClicked: studio.importGlossary(glossaryPath.text) }
+                                    AppButton { text: "匯出 JSON"; onClicked: studio.exportGlossary(glossaryPath.text) }
+                                }
+                            }
+                        }
+                        InfoCard {
+                            visible: window.page === "Speakers" || window.page === "Exports"
                             Layout.fillWidth: true
                             Layout.preferredHeight: 220
                             Column {
@@ -432,7 +474,7 @@ ApplicationWindow {
                             }
                         }
                         InfoCard {
-                            Layout.fillWidth: true; Layout.preferredHeight: 183
+                            Layout.fillWidth: true; Layout.preferredHeight: 260
                             ColumnLayout {
                                 anchors.fill: parent; anchors.margins: 15; spacing: 10
                                 Text { text: "SESSION SETUP"; color: "#78919d"; font.pixelSize: 10; font.bold: true; font.letterSpacing: 1 }
@@ -448,12 +490,26 @@ ApplicationWindow {
                                     }
                                 }
                                 Text { visible: studio.preferences.source_language === "auto" && !!studio.detectedLanguage; text: "偵測結果     " + window.languageName(studio.detectedLanguage); color: window.accent; font.pixelSize: 11 }
-                                Text { text: "目標語言     " + (studio.preferences.target_language === "zh-TW" ? "繁體中文" : "简体中文"); color: window.ink; font.pixelSize: 12 }
-                                Text { text: "翻譯模式     " + studio.preferences.translation_style; color: window.ink; font.pixelSize: 12 }
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    Text { text: "目標語言"; color: window.ink; font.pixelSize: 12; Layout.fillWidth: true }
+                                    ComboBox { Layout.preferredWidth: 130; model: ["繁體中文", "简体中文"]; currentIndex: ["zh-TW", "zh-CN"].indexOf(studio.preferences.target_language); onActivated: studio.setPreference("target_language", ["zh-TW", "zh-CN"][currentIndex]) }
+                                }
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    Text { text: "翻譯風格"; color: window.ink; font.pixelSize: 12; Layout.fillWidth: true }
+                                    ComboBox { Layout.preferredWidth: 130; model: ["自然", "忠實", "精簡字幕"]; currentIndex: ["natural", "faithful", "minimal"].indexOf(studio.preferences.translation_style); onActivated: studio.setPreference("translation_style", ["natural", "faithful", "minimal"][currentIndex]) }
+                                }
                                 Text { text: "音訊來源     " + (studio.audioState === "capturing" ? "監聽中" : "未監聽"); color: window.muted; font.pixelSize: 12 }
                             }
                         }
                         Text { text: "OVERLAY"; color: window.muted; font.pixelSize: 11; font.bold: true; font.letterSpacing: 1.8 }
+                        ComboBox {
+                            Layout.fillWidth: true
+                            model: ["Gaming · 翻譯與 Speaker", "Watching · 翻譯與原文", "Minimal · 只顯示翻譯"]
+                            currentIndex: ["gaming", "watching", "minimal"].indexOf(studio.preferences.overlay_mode)
+                            onActivated: studio.setPreference("overlay_mode", ["gaming", "watching", "minimal"][currentIndex])
+                        }
                         InfoCard {
                             Layout.fillWidth: true; Layout.preferredHeight: 90
                             RowLayout {
@@ -479,7 +535,7 @@ ApplicationWindow {
                 RowLayout {
                     anchors.fill: parent; anchors.leftMargin: 29; anchors.rightMargin: 23; spacing: 13
                     Rectangle { width: 7; height: 7; radius: 4; color: studio.asrState === "live" ? window.accent : "#e6b865" }
-                    Text { text: studio.audioState === "capturing" ? "AUDIO LIVE  ·  ASR " + studio.asrState.toUpperCase() + "  ·  " + studio.asrStatus + (studio.asrLatency ? "  ·  " + studio.asrLatency : "") : studio.message; color: "#a7b4c3"; font.pixelSize: 11; elide: Text.ElideRight; Layout.fillWidth: true }
+                    Text { text: studio.audioState === "capturing" ? "AUDIO LIVE  ·  ASR " + studio.asrState.toUpperCase() + "  ·  " + studio.asrStatus + "  ·  " + studio.translationStatus + (studio.asrLatency ? "  ·  " + studio.asrLatency : "") + (studio.translationLatency ? "  ·  " + studio.translationLatency : "") : studio.message; color: "#a7b4c3"; font.pixelSize: 11; elide: Text.ElideRight; Layout.fillWidth: true }
                     AppButton { text: "結束 Session"; danger: true; enabled: studio.selectedSession.status === "active"; onClicked: studio.finishSession() }
                 }
             }

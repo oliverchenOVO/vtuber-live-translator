@@ -127,6 +127,31 @@ class SessionManager:
         self.reconcile_transcript(session_id)
         return bool(cursor.rowcount)
 
+    def update_final_translation(self, session_id: str, segment_id: str, translation: dict) -> bool:
+        """Commit translation and JSON payload together; reconcile the readable copy."""
+        row = self.db.connection.execute(
+            "SELECT payload_json FROM segments WHERE session_id=? AND segment_id=?",
+            (session_id, segment_id)).fetchone()
+        if row is None:
+            return False
+        payload = json.loads(row["payload_json"])
+        if payload.get("translation_state") == "final":
+            return False
+        payload["translation"] = translation
+        payload["translation_state"] = "final"
+        with self.db.connection:
+            self.db.connection.execute(
+                "UPDATE segments SET translation=?, payload_json=? WHERE session_id=? AND segment_id=?",
+                (translation["text"], json.dumps(payload, ensure_ascii=False), session_id, segment_id))
+        self.reconcile_transcript(session_id)
+        return True
+
+    def pending_translations(self, session_id: str) -> list[dict]:
+        rows = self.db.connection.execute(
+            "SELECT payload_json FROM segments WHERE session_id=? AND translation IS NULL "
+            "ORDER BY start_ms LIMIT 64", (session_id,)).fetchall()
+        return [json.loads(row["payload_json"]) for row in rows]
+
     def set_source_language(self, session_id: str, language: str) -> None:
         if language not in ("auto", "ja", "en"):
             raise ValueError(language)
@@ -137,6 +162,20 @@ class SessionManager:
         with self.db.connection:
             self.db.connection.execute(
                 "UPDATE sessions SET source_language=? WHERE session_id=?", (language, session_id))
+        _atomic_json(Path(session["folder_path"]) / "session.json", session)
+
+    def set_translation_preferences(self, session_id: str, key: str, value: str) -> None:
+        choices = {"target_language": ("zh-TW", "zh-CN"),
+                   "translation_style": ("natural", "faithful", "minimal")}
+        if key not in choices or value not in choices[key]:
+            raise ValueError((key, value))
+        session = self.get(session_id)
+        if not session or session["status"] != "active":
+            return
+        session[key] = value
+        with self.db.connection:
+            self.db.connection.execute(f"UPDATE sessions SET {key}=? WHERE session_id=?",
+                                       (value, session_id))
         _atomic_json(Path(session["folder_path"]) / "session.json", session)
 
     def finish(self, session_id: str) -> dict:

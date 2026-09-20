@@ -17,6 +17,10 @@ from vlt.asr.pipeline import ASRPipeline
 from vlt.sessions.manager import SessionManager
 from vlt.settings.manager import SettingsManager
 from vlt.subtitles.live import TranscriptCoordinator
+from vlt.translation.base import TranslationBackend, TranslationRequest
+from vlt.translation.glossary import Glossary
+from vlt.translation.ollama_backend import OllamaTranslationBackend
+from vlt.translation.pipeline import TranslationPipeline
 
 
 class StudioController(QObject):
@@ -29,10 +33,12 @@ class StudioController(QObject):
     asrDone = Signal()
     asrAudioAnchor = Signal(object)
     transcriptChanged = Signal()
+    translationReady = Signal(object, object, float, str)
 
     def __init__(self, sessions: SessionManager, settings: SettingsManager,
                  asr_backend_factory: Callable[[], ASRBackend],
-                 audio: WindowsProcessLoopback | None = None):
+                 audio: WindowsProcessLoopback | None = None,
+                 translation_backend_factory: Callable[[], TranslationBackend] | None = None):
         super().__init__()
         self.sessions = sessions
         self.settings = settings
@@ -53,6 +59,15 @@ class StudioController(QObject):
         self._asr_thread: threading.Thread | None = None
         self._transcript: TranscriptCoordinator | None = None
         self._finish_requested = False
+        self.glossary = Glossary(settings.path.parent / "glossary.json")
+        self._translation_status = "正在等待語音…"
+        self._translation_latency_ms: float | None = None
+        self._translation_retry_after: dict[str, float] = {}
+        self._translation_pipeline = TranslationPipeline(
+            translation_backend_factory or OllamaTranslationBackend,
+            lambda request, result, latency, error: self.translationReady.emit(request, result, latency, error))
+        self._translation_pipeline.start()
+        self.translationReady.connect(self._on_translation_ready)
         self.sourcesReady.connect(self._on_sources_ready)
         self.audioOperationDone.connect(self._on_audio_operation_done)
         self.asrRecognition.connect(self._on_asr_recognition)
@@ -67,6 +82,10 @@ class StudioController(QObject):
         self._source_timer.setInterval(2500)
         self._source_timer.timeout.connect(self.refreshAudioSources)
         self._source_timer.start()
+        self._pending_timer = QTimer(self)
+        self._pending_timer.setInterval(3000)
+        self._pending_timer.timeout.connect(self._enqueue_pending_translations)
+        self._pending_timer.start()
         self.refreshAudioSources()
 
     @Property("QVariantList", notify=changed)
@@ -145,6 +164,65 @@ class StudioController(QObject):
             return self._transcript.live.get("language", "")
         return self._transcript.finals[-1].get("language", "") if self._transcript.finals else ""
 
+    @Property(str, notify=transcriptChanged)
+    def translationStatus(self) -> str:
+        return self._translation_status
+
+    @Property(str, notify=transcriptChanged)
+    def translationLatency(self) -> str:
+        value = self._translation_latency_ms
+        return f"Translation {value / 1000:.1f} s" if value is not None else ""
+
+    @Property("QVariantMap", notify=transcriptChanged)
+    def overlaySegment(self) -> dict:
+        if self._transcript:
+            if self._transcript.live and self._transcript.live.get("translation"):
+                return self._transcript.live
+            for segment in reversed(self._transcript.finals):
+                if segment.get("translation"):
+                    return segment
+        return {}
+
+    @Property("QVariantList", notify=changed)
+    def glossaryEntries(self) -> list[dict]:
+        return self.glossary.list()
+
+    @Property(str, notify=changed)
+    def glossaryDefaultExportPath(self) -> str:
+        return str(self.settings.path.parent / "glossary-export.json")
+
+    @Slot(str, str, str, str)
+    def saveGlossaryEntry(self, source: str, zh_tw: str, zh_cn: str, aliases: str) -> None:
+        try:
+            self.glossary.upsert(source, zh_tw, zh_cn, aliases.split(","))
+            self._message = "譯名已保存。"
+        except ValueError as exc:
+            self._message = str(exc)
+        self.changed.emit()
+
+    @Slot(str)
+    def deleteGlossaryEntry(self, source: str) -> None:
+        self.glossary.delete(source)
+        self.changed.emit()
+
+    @Slot(str)
+    def importGlossary(self, file_path: str) -> None:
+        try:
+            self.glossary.import_file(Path(file_path))
+            self._message = "詞庫已匯入。"
+        except (OSError, ValueError, KeyError, TypeError):
+            self._message = "詞庫匯入失敗，請確認路徑與 JSON 格式。"
+        self.changed.emit()
+
+    @Slot(str)
+    def exportGlossary(self, file_path: str) -> None:
+        try:
+            self.glossary.export_file(Path(file_path))
+            self._message = "詞庫已匯出。"
+        except OSError:
+            self._message = "詞庫無法匯出至指定路徑。"
+        self.changed.emit()
+
     @Slot()
     def refreshAudioSources(self) -> None:
         if self._refresh_inflight:
@@ -198,6 +276,7 @@ class StudioController(QObject):
             prior = self.sessions.list_segments(session["session_id"])
             offset = max(0, elapsed, max((item["end_ms"] for item in prior), default=0))
             self._transcript = TranscriptCoordinator(self.sessions, session["session_id"], offset)
+            self._enqueue_pending_translations()
             self.transcriptChanged.emit()
             self.changed.emit()
         except Exception:
@@ -285,13 +364,76 @@ class StudioController(QObject):
             return
         try:
             if result.is_final:
-                self._transcript.apply_final(result)
+                if self._transcript.apply_final(result):
+                    segment = next(item for item in self._transcript.finals
+                                   if item["id"] == f"segment_{result.utterance_id}")
+                    self._submit_translation(segment, True)
             else:
-                self._transcript.apply_partial(result)
+                if self._transcript.apply_partial(result):
+                    self._submit_translation(self._transcript.live, False)
             self.transcriptChanged.emit()
         except Exception:
             logging.exception("Could not persist transcript")
             self._on_asr_status("error", "逐字稿無法保存，請檢查資料儲存位置。")
+
+    def _submit_translation(self, segment: dict, final: bool) -> bool:
+        if not segment or not self._transcript:
+            return False
+        recent = [item["original"] for item in self._transcript.finals
+                  if item["id"] != segment["id"] and
+                  0 <= segment["start_ms"] - item["end_ms"] <= 30000][-5:]
+        session = self.sessions.get(self._transcript.session_id) or {}
+        request = TranslationRequest(
+            segment["id"], segment["original"], segment["language"],
+            str(session.get("target_language", self.settings.values["target_language"])),
+            str(session.get("translation_style", self.settings.values["translation_style"])),
+            tuple(recent), tuple(self.glossary.list()), final, self._transcript.session_id)
+        submitted = self._translation_pipeline.submit(request)
+        if submitted:
+            self._translation_status = "翻譯中…"
+            self.transcriptChanged.emit()
+        return submitted
+
+    @Slot(object, object, float, str)
+    def _on_translation_ready(self, request: TranslationRequest, result: str | None,
+                              latency: float, error: str) -> None:
+        if error:
+            self._translation_status = "原文辨識正常 · 翻譯暫時不可用：" + error
+            if request.final:
+                self._translation_retry_after[request.segment_id] = time.monotonic() + 30
+                if len(self._translation_retry_after) > 256:
+                    self._translation_retry_after.pop(next(iter(self._translation_retry_after)))
+        elif result:
+            translation = {"target": request.target_language, "style": request.style, "text": result}
+            try:
+                if request.final:
+                    changed = self.sessions.update_final_translation(request.session_id, request.segment_id, translation)
+                    self._translation_retry_after.pop(request.segment_id, None)
+                    if changed and self._transcript and self._transcript.session_id == request.session_id:
+                        for item in self._transcript.finals:
+                            if item["id"] == request.segment_id:
+                                item["translation"] = translation
+                                item["translation_state"] = "final"
+                                break
+                elif self._transcript and self._transcript.session_id == request.session_id:
+                    self._transcript.apply_partial_translation(request.segment_id, request.original, translation)
+                self._translation_status = "翻譯正常"
+                self._translation_latency_ms = latency if self._translation_latency_ms is None else (0.7 * self._translation_latency_ms + 0.3 * latency)
+            except Exception:
+                logging.exception("Translation persistence failed")
+                self._translation_status = "翻譯無法保存，原文仍保留。"
+        self.transcriptChanged.emit()
+
+    @Slot()
+    def _enqueue_pending_translations(self) -> None:
+        if not self._transcript:
+            return
+        try:
+            for segment in self.sessions.pending_translations(self._transcript.session_id):
+                if time.monotonic() >= self._translation_retry_after.get(segment["id"], 0):
+                    self._submit_translation(segment, True)
+        except Exception:
+            logging.exception("Pending translation scan failed")
 
     @Slot(str, str)
     def _on_asr_status(self, state: str, message: str) -> None:
@@ -333,6 +475,8 @@ class StudioController(QObject):
     def shutdown(self) -> None:
         self._audio_timer.stop()
         self._source_timer.stop()
+        self._pending_timer.stop()
+        self._translation_pipeline.stop()
         if self._asr_pipeline:
             self._asr_pipeline.stop()
         if self.audio.state in ("capturing", "connecting", "error"):
@@ -353,6 +497,7 @@ class StudioController(QObject):
                                        translation_style=values["translation_style"])
         self._selected_id = session["session_id"]
         self._transcript = TranscriptCoordinator(self.sessions, self._selected_id)
+        self._enqueue_pending_translations()
         self._message = "Session 已建立。開始監聽後，辨識結果會即時保存。"
         self.transcriptChanged.emit()
         self.changed.emit()
@@ -364,6 +509,7 @@ class StudioController(QObject):
         if self.sessions.get(session_id):
             self._selected_id = session_id
             self._transcript = TranscriptCoordinator(self.sessions, session_id)
+            self._enqueue_pending_translations()
             self.transcriptChanged.emit()
             self.changed.emit()
 
@@ -392,6 +538,10 @@ class StudioController(QObject):
             self._asr_pipeline.set_language(str(value))
         if key == "source_language" and self._selected_id:
             self.sessions.set_source_language(self._selected_id, str(value))
+        if key in ("target_language", "translation_style") and self._selected_id:
+            self.sessions.set_translation_preferences(self._selected_id, key, str(value))
+        if key in ("target_language", "translation_style"):
+            self._enqueue_pending_translations()
         self.changed.emit()
 
     @Slot()

@@ -23,7 +23,7 @@ class TranscriptCoordinator:
     def _segment(self, result: Recognition) -> dict:
         start = max(0, self.offset_ms + result.start_ms)
         end = max(start + 1, self.offset_ms + result.end_ms)
-        return {
+        segment = {
             "id": f"segment_{result.utterance_id}",
             "type": "speech",
             "start_ms": start,
@@ -33,6 +33,25 @@ class TranscriptCoordinator:
             "original": result.text,
             "asr_state": "final" if result.is_final else "partial",
         }
+        if result.is_final:
+            segment["translation_state"] = "pending"
+        return segment
+
+    def apply_partial_translation(self, segment_id: str, original: str, translation: dict) -> bool:
+        if not self.live or self.live["id"] != segment_id or self.live["original"] != original:
+            return False
+        self.live["translation"] = translation
+        return True
+
+    def apply_final_translation(self, segment_id: str, translation: dict) -> bool:
+        changed = self.sessions.update_final_translation(self.session_id, segment_id, translation)
+        if changed:
+            for item in self.finals:
+                if item["id"] == segment_id:
+                    item["translation"] = translation
+                    item["translation_state"] = "final"
+                    break
+        return changed
 
     def apply_partial(self, result: Recognition) -> bool:
         if result.is_final:
@@ -40,6 +59,8 @@ class TranscriptCoordinator:
         segment = self._segment(result)
         if segment["id"] in self._seen:
             return False
+        if self.live and self.live["id"] == segment["id"] and self.live["original"] == segment["original"]:
+            segment["translation"] = self.live.get("translation")
         self.live = segment  # Replace the same LIVE entry, never append partials.
         if result.first_audio_at is not None and result.utterance_id not in self._partial_measured:
             self._partial_measured.add(result.utterance_id)

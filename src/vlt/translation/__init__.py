@@ -1,1 +1,1 @@
-
+"""Replaceable realtime translation pipeline."""
