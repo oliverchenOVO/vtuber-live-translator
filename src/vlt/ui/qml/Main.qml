@@ -60,9 +60,12 @@ ApplicationWindow {
 
         Rectangle {
             Layout.preferredWidth: 218
+            Layout.minimumWidth: 218
+            Layout.maximumWidth: 218
             Layout.fillHeight: true
             color: "#151a22"
             border.color: window.line
+            clip: true
             ColumnLayout {
                 anchors.fill: parent
                 anchors.margins: 20
@@ -92,6 +95,8 @@ ApplicationWindow {
                     delegate: Rectangle {
                         required property var modelData
                         Layout.fillWidth: true
+                        Layout.minimumWidth: 0
+                        Layout.maximumWidth: 178
                         height: 43
                         radius: 10
                         color: window.page === modelData.name ? "#263d3c" : navMouse.containsMouse ? "#222b37" : "transparent"
@@ -110,13 +115,14 @@ ApplicationWindow {
                 }
                 Item { Layout.fillHeight: true }
                 Rectangle {
-                    Layout.fillWidth: true; height: 96; radius: 13
+                    Layout.fillWidth: true; Layout.minimumWidth: 0; Layout.maximumWidth: 178
+                    height: 96; radius: 13
                     color: "#202a32"; border.color: "#34474b"
                     Column {
                         anchors.fill: parent; anchors.margins: 13; spacing: 7
                         Text { text: "●  PHASE 1"; color: window.accent; font.pixelSize: 11; font.bold: true; font.letterSpacing: 1 }
                         Text { text: "Studio 基礎版本"; color: window.ink; font.pixelSize: 13; font.bold: true }
-                        Text { text: "音訊與翻譯功能開發中"; color: window.muted; font.pixelSize: 11 }
+                        Text { text: "音訊與翻譯功能開發中"; color: window.muted; font.pixelSize: 11; width: 150; wrapMode: Text.WordWrap }
                     }
                 }
                 Text { text: "v0.1.0  ·  Windows preview"; color: "#647185"; font.pixelSize: 10; Layout.topMargin: 9 }
@@ -369,4 +375,3 @@ ApplicationWindow {
         }
     }
 }
-
