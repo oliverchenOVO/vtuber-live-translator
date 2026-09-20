@@ -1,0 +1,2 @@
+"""Vtuber Live Translator."""
+
