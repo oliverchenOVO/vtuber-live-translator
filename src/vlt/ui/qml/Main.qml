@@ -137,12 +137,12 @@ ApplicationWindow {
                     color: "#202a32"; border.color: "#34474b"
                     Column {
                         anchors.fill: parent; anchors.margins: 13; spacing: 7
-                        Text { text: "●  PHASE 4"; color: window.accent; font.pixelSize: 11; font.bold: true; font.letterSpacing: 1 }
+                        Text { text: "●  PHASE 5"; color: window.accent; font.pixelSize: 11; font.bold: true; font.letterSpacing: 1 }
                         Text { text: "Live Translation"; color: window.ink; font.pixelSize: 13; font.bold: true }
-                        Text { text: "日英語逐字稿 · 即時中譯"; color: window.muted; font.pixelSize: 11; width: 150; wrapMode: Text.WordWrap }
+                        Text { text: "即時中譯 · Speaker 分離"; color: window.muted; font.pixelSize: 11; width: 150; wrapMode: Text.WordWrap }
                     }
                 }
-                Text { text: "v0.4.0  ·  Windows preview"; color: "#647185"; font.pixelSize: 10; Layout.topMargin: 9 }
+                Text { text: "v0.5.0  ·  Windows preview"; color: "#647185"; font.pixelSize: 10; Layout.topMargin: 9 }
             }
         }
 
@@ -201,6 +201,8 @@ ApplicationWindow {
                                   window.page === "History" ? "查看已建立的直播記錄。" :
                                   window.page === "Settings" ? "設定來源語言、即時翻譯與字幕顯示。" :
                                   window.page === "Dictionary" ? "管理專有名詞與譯名。" :
+                                  window.page === "Speakers" ? "管理直播中偵測到的聲音與名稱。" :
+                                  window.page === "Exports" ? "查看隨 Session 更新的字幕輸出。" :
                                   "此區域將隨後續階段開放。"
                             color: window.muted; font.pixelSize: 13
                         }
@@ -315,6 +317,12 @@ ApplicationWindow {
                                     text: studio.asrState === "connecting" || studio.asrState === "reconnecting" ? "音訊已接收，正在連接語音辨識…" : studio.asrState === "error" ? studio.asrStatus : "正在等待語音…"
                                     color: studio.asrState === "error" ? "#ffb9bc" : window.muted; font.pixelSize: 13
                                 }
+                                AppButton {
+                                    visible: studio.earlierSegmentCount > 0
+                                    text: "載入更早逐字稿（尚有 " + studio.earlierSegmentCount + " 筆）"
+                                    Layout.alignment: Qt.AlignHCenter
+                                    onClicked: studio.loadEarlierSegments()
+                                }
                                 Repeater {
                                     model: studio.transcriptSegments
                                     delegate: Rectangle {
@@ -326,10 +334,27 @@ ApplicationWindow {
                                             id: finalColumn
                                             anchors.left: parent.left; anchors.right: parent.right; anchors.top: parent.top
                                             anchors.margins: 13; spacing: 7
-                                            Text { text: window.formatTime(modelData.start_ms) + "  ·  " + window.languageName(modelData.language); color: window.accent; font.pixelSize: 11; font.bold: true }
-                                            Text { visible: !!modelData.translation; Layout.fillWidth: true; text: modelData.translation ? modelData.translation.text : ""; wrapMode: Text.WordWrap; color: window.ink; font.pixelSize: 17; font.bold: true }
-                                            Text { visible: !modelData.translation; text: "翻譯等待中…"; color: window.muted; font.pixelSize: 11 }
-                                            Text { Layout.fillWidth: true; text: modelData.original; wrapMode: Text.WordWrap; color: "#b0bdca"; font.pixelSize: 14 }
+                                            Text { text: window.formatTime(modelData.start_ms) + "  ·  " + (modelData.type === "multi_speaker_event" ? "MULTI" : window.languageName(modelData.language || "")); color: window.accent; font.pixelSize: 11; font.bold: true }
+                                            RowLayout {
+                                                visible: modelData.show_speaker && modelData.type !== "multi_speaker_event"
+                                                Rectangle { width: 6; height: 17; radius: 3; color: modelData.speaker_color }
+                                                Text { text: modelData.speaker_display_name + (modelData.speaker_new ? "  ·  NEW" : ""); color: modelData.speaker_color; font.pixelSize: 12; font.bold: true }
+                                            }
+                                            Text { visible: modelData.type === "multi_speaker_event"; text: (modelData.event_type === "unknown_overlap" ? "【重疊】" : "【多人】") + (modelData.description ? modelData.description.zh_tw : "偵測到重疊聲音，無法可靠區分。"); color: window.ink; font.pixelSize: 14; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                                            Text { visible: modelData.type !== "multi_speaker_event" && !!modelData.translation; Layout.fillWidth: true; text: modelData.translation ? modelData.translation.text : ""; wrapMode: Text.WordWrap; color: window.ink; font.pixelSize: 17; font.bold: true }
+                                            Text { visible: modelData.type !== "multi_speaker_event" && !modelData.translation; text: "翻譯等待中…"; color: window.muted; font.pixelSize: 11 }
+                                            Text { visible: modelData.type !== "multi_speaker_event"; Layout.fillWidth: true; text: modelData.original || ""; wrapMode: Text.WordWrap; color: "#b0bdca"; font.pixelSize: 14 }
+                                            RowLayout {
+                                                visible: modelData.type === "speech" && studio.speakers.length > 1
+                                                Text { text: "Speaker"; color: window.muted; font.pixelSize: 10 }
+                                                ComboBox {
+                                                    id: segmentSpeakerPicker
+                                                    Layout.preferredWidth: 145
+                                                    model: studio.speakers.map(s => s.speaker_id)
+                                                    currentIndex: Math.max(0, model.indexOf(modelData.speaker_id))
+                                                }
+                                                AppButton { text: "手動指定"; onClicked: studio.assignSegmentSpeaker(modelData.id, segmentSpeakerPicker.currentText) }
+                                            }
                                         }
                                     }
                                 }
@@ -343,6 +368,7 @@ ApplicationWindow {
                                         anchors.left: parent.left; anchors.right: parent.right; anchors.top: parent.top
                                         anchors.margins: 13; spacing: 7
                                         Text { text: window.formatTime(studio.liveSegment.start_ms || 0) + "  ·  LIVE  ·  " + window.languageName(studio.liveSegment.language || ""); color: window.accent; font.pixelSize: 11; font.bold: true }
+                                        Text { visible: !!studio.liveSegment.show_speaker; text: studio.liveSegment.speaker_display_name + (studio.liveSegment.speaker_new ? "  ·  NEW" : ""); color: studio.liveSegment.speaker_color || window.accent; font.pixelSize: 12; font.bold: true }
                                         Text { visible: !!studio.liveSegment.translation; Layout.fillWidth: true; text: studio.liveSegment.translation ? studio.liveSegment.translation.text : ""; wrapMode: Text.WordWrap; color: window.ink; font.pixelSize: 17; font.bold: true }
                                         Text { Layout.fillWidth: true; text: studio.liveSegment.original || ""; wrapMode: Text.WordWrap; color: "#b0bdca"; font.pixelSize: 14 }
                                     }
@@ -442,14 +468,67 @@ ApplicationWindow {
                             }
                         }
                         InfoCard {
-                            visible: window.page === "Speakers" || window.page === "Exports"
+                            visible: window.page === "Speakers"
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 220
-                            Column {
-                                anchors.centerIn: parent; spacing: 12
-                                Text { text: "◌"; anchors.horizontalCenter: parent.horizontalCenter; color: window.accent; font.pixelSize: 35 }
-                                Text { text: "此功能尚未開放"; anchors.horizontalCenter: parent.horizontalCenter; color: window.ink; font.pixelSize: 17; font.bold: true }
-                                Text { text: "完成核心資料與音訊管線後會在這裡提供。"; color: window.muted; font.pixelSize: 12 }
+                            Layout.preferredHeight: Math.max(250, speakerColumn.implicitHeight + 42)
+                            ColumnLayout {
+                                id: speakerColumn
+                                anchors.fill: parent; anchors.margins: 20; spacing: 12
+                                Text { text: "Speakers"; color: window.ink; font.pixelSize: 17; font.bold: true }
+                                Text { text: "Session 內的 speaker ID 保持不變；改名、合併與 person_id 會立即儲存。"; color: window.muted; font.pixelSize: 11 }
+                                Text { visible: studio.speakers.length === 0; text: "尚未偵測到說話者。"; color: window.muted; font.pixelSize: 13 }
+                                Repeater {
+                                    model: studio.speakers
+                                    delegate: Rectangle {
+                                        required property var modelData
+                                        Layout.fillWidth: true; implicitHeight: speakerFields.implicitHeight + 24
+                                        radius: 10; color: window.raised; border.color: window.line
+                                        ColumnLayout {
+                                            id: speakerFields
+                                            anchors.fill: parent; anchors.margins: 12; spacing: 7
+                                            RowLayout {
+                                                Layout.fillWidth: true
+                                                Text { text: modelData.speaker_id; color: window.accent; font.pixelSize: 12; font.bold: true }
+                                                Item { Layout.fillWidth: true }
+                                                Text { text: modelData.segment_count + " segments"; color: window.muted; font.pixelSize: 11 }
+                                            }
+                                            RowLayout {
+                                                Layout.fillWidth: true
+                                                DarkField { id: speakerName; Layout.fillWidth: true; text: modelData.display_name; placeholderText: "顯示名稱" }
+                                                AppButton { text: "改名"; onClicked: studio.renameSpeaker(modelData.speaker_id, speakerName.text) }
+                                            }
+                                            RowLayout {
+                                                Layout.fillWidth: true
+                                                DarkField { id: personId; Layout.fillWidth: true; text: modelData.person_id || ""; placeholderText: "person_id（選填）" }
+                                                AppButton { text: "保存 mapping"; onClicked: studio.mapSpeakerPerson(modelData.speaker_id, personId.text) }
+                                            }
+                                        }
+                                    }
+                                }
+                                RowLayout {
+                                    visible: studio.speakers.length > 1
+                                    Text { text: "合併"; color: window.muted; font.pixelSize: 12 }
+                                    ComboBox { id: mergeFrom; Layout.preferredWidth: 180; model: studio.speakers.map(s => s.speaker_id) }
+                                    Text { text: "→"; color: window.muted }
+                                    ComboBox {
+                                        id: mergeTo
+                                        Layout.preferredWidth: 180
+                                        model: ["選擇目標"].concat(studio.speakers.map(s => s.speaker_id))
+                                    }
+                                    AppButton {
+                                        text: "合併 Speaker"
+                                        enabled: mergeTo.currentIndex > 0 && mergeFrom.currentText !== mergeTo.currentText
+                                        onClicked: studio.mergeSpeakers(mergeFrom.currentText, mergeTo.currentText)
+                                    }
+                                }
+                            }
+                        }
+                        InfoCard {
+                            visible: window.page === "Exports"
+                            Layout.fillWidth: true; Layout.preferredHeight: 170
+                            Column { anchors.centerIn: parent; spacing: 10
+                                Text { text: "Exports"; anchors.horizontalCenter: parent.horizontalCenter; color: window.ink; font.pixelSize: 17; font.bold: true }
+                                Text { text: "完成中的字幕與 transcript.json 可從 Session 資料夾查看。"; color: window.muted; font.pixelSize: 12 }
                             }
                         }
                     }
@@ -535,7 +614,7 @@ ApplicationWindow {
                 RowLayout {
                     anchors.fill: parent; anchors.leftMargin: 29; anchors.rightMargin: 23; spacing: 13
                     Rectangle { width: 7; height: 7; radius: 4; color: studio.asrState === "live" ? window.accent : "#e6b865" }
-                    Text { text: studio.audioState === "capturing" ? "AUDIO LIVE  ·  ASR " + studio.asrState.toUpperCase() + "  ·  " + studio.asrStatus + "  ·  " + studio.translationStatus + (studio.asrLatency ? "  ·  " + studio.asrLatency : "") + (studio.translationLatency ? "  ·  " + studio.translationLatency : "") : studio.message; color: "#a7b4c3"; font.pixelSize: 11; elide: Text.ElideRight; Layout.fillWidth: true }
+                    Text { text: studio.audioState === "capturing" ? "AUDIO LIVE  ·  ASR " + studio.asrState.toUpperCase() + "  ·  " + studio.asrStatus + "  ·  " + studio.translationStatus + "  ·  " + studio.diarizationStatus + (studio.asrLatency ? "  ·  " + studio.asrLatency : "") + (studio.translationLatency ? "  ·  " + studio.translationLatency : "") : studio.message; color: "#a7b4c3"; font.pixelSize: 11; elide: Text.ElideRight; Layout.fillWidth: true }
                     AppButton { text: "結束 Session"; danger: true; enabled: studio.selectedSession.status === "active"; onClicked: studio.finishSession() }
                 }
             }

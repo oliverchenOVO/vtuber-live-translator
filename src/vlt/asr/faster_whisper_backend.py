@@ -72,6 +72,7 @@ class FasterWhisperBackend:
         self._first_chunk_timestamp: int | None = None
         self._last_chunk_timestamp = 0
         self._last_dropped_bytes = 0
+        self.gap_finalizations = 0
 
     def set_callbacks(self, on_partial: RecognitionCallback,
                       on_final: RecognitionCallback, on_status: StatusCallback) -> None:
@@ -162,7 +163,11 @@ class FasterWhisperBackend:
                     self._frame_bytes.clear()
                     self._set_status("live", "辨識暫時落後，已略過較舊音訊。")
                 if self._last_chunk_timestamp and chunk.timestamp_ms - self._last_chunk_timestamp > 500:
-                    self._reset_utterance()
+                    # Process loopback may omit silent packets. Finish a speech turn before
+                    # clearing the framing state instead of silently discarding its Final.
+                    if self._utterance:
+                        await self._finish_utterance()
+                        self.gap_finalizations += 1
                     self._frame_bytes.clear()
                 if self._first_chunk_timestamp is None:
                     self._first_chunk_timestamp = chunk.timestamp_ms

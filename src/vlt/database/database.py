@@ -47,9 +47,27 @@ class Database:
                 payload_json TEXT NOT NULL,
                 PRIMARY KEY(session_id, segment_id)
             );
+            CREATE TABLE IF NOT EXISTS speaker_embeddings (
+                session_id TEXT NOT NULL,
+                speaker_id TEXT NOT NULL,
+                sample_index INTEGER NOT NULL,
+                vector_json TEXT NOT NULL,
+                PRIMARY KEY(session_id, speaker_id, sample_index),
+                FOREIGN KEY(session_id, speaker_id) REFERENCES speakers(session_id, speaker_id) ON DELETE CASCADE
+            );
+            CREATE TABLE IF NOT EXISTS speaker_audit (
+                audit_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                session_id TEXT NOT NULL REFERENCES sessions(session_id) ON DELETE CASCADE,
+                operation TEXT NOT NULL,
+                details_json TEXT NOT NULL,
+                at TEXT NOT NULL
+            );
+            CREATE TABLE IF NOT EXISTS speaker_sequence (
+                session_id TEXT PRIMARY KEY REFERENCES sessions(session_id) ON DELETE CASCADE,
+                next_number INTEGER NOT NULL
+            );
         """)
         self.connection.commit()
 
     def close(self) -> None:
         self.connection.close()
-

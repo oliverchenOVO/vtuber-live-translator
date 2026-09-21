@@ -9,13 +9,15 @@ from collections.abc import Callable
 
 from vlt.asr.base import ASRBackend, Recognition, StatusCallback
 from vlt.audio.base import AudioCaptureBackend
+from vlt.audio.base import AudioChunk
 
 
 class ASRPipeline:
     def __init__(self, audio: AudioCaptureBackend, backend_factory: Callable[[], ASRBackend],
                  language: str, on_partial: Callable[[Recognition], None],
                  on_final: Callable[[Recognition], None], on_status: StatusCallback,
-                 on_audio_anchor: Callable[[int], None] | None = None):
+                 on_audio_anchor: Callable[[int], None] | None = None,
+                 on_audio_chunk: Callable[[AudioChunk], None] | None = None):
         self.audio = audio
         self.backend_factory = backend_factory
         self.language = language
@@ -23,6 +25,7 @@ class ASRPipeline:
         self.on_final = on_final
         self.on_status = on_status
         self.on_audio_anchor = on_audio_anchor or (lambda _timestamp: None)
+        self.on_audio_chunk = on_audio_chunk or (lambda _chunk: None)
         self._stop = threading.Event()
         self._backend: ASRBackend | None = None
         self.reconnects = 0
@@ -58,6 +61,10 @@ class ASRPipeline:
                     if not anchored:
                         self.on_audio_anchor(chunk.timestamp_ms)
                         anchored = True
+                    try:
+                        self.on_audio_chunk(chunk)
+                    except Exception:
+                        logging.exception("Optional audio observer failed; ASR continues")
                     await asyncio.wait_for(backend.push_audio(chunk), timeout=5)
                 if not self._stop.is_set() and getattr(self.audio, "state", "capturing") == "capturing":
                     raise RuntimeError("Audio stream unexpectedly ended")

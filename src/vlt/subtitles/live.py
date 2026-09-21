@@ -3,13 +3,16 @@
 from __future__ import annotations
 
 import time
+from collections.abc import Callable
 
 from vlt.asr.base import Recognition
+from vlt.diarization.base import SpeakerDecision
 from vlt.sessions.manager import SessionManager
 
 
 class TranscriptCoordinator:
-    def __init__(self, sessions: SessionManager, session_id: str, offset_ms: int = 0):
+    def __init__(self, sessions: SessionManager, session_id: str, offset_ms: int = 0,
+                 speaker_for_interval: Callable[[int, int], SpeakerDecision] | None = None):
         self.sessions = sessions
         self.session_id = session_id
         self.offset_ms = max(0, offset_ms)
@@ -19,6 +22,7 @@ class TranscriptCoordinator:
         self.partial_latency_ms: float | None = None
         self.final_latency_ms: float | None = None
         self._partial_measured: set[str] = set()
+        self.speaker_for_interval = speaker_for_interval
 
     def _segment(self, result: Recognition) -> dict:
         start = max(0, self.offset_ms + result.start_ms)
@@ -29,10 +33,21 @@ class TranscriptCoordinator:
             "start_ms": start,
             "end_ms": end,
             "language": result.language,
-            "speaker_id": "speaker_001",
+            "speaker_id": "unknown",
             "original": result.text,
             "asr_state": "final" if result.is_final else "partial",
         }
+        if self.speaker_for_interval:
+            try:
+                decision = self.speaker_for_interval(result.start_ms, result.end_ms)
+                segment.update(speaker_id=decision.speaker_id or "unknown",
+                               speaker_confidence=round(decision.confidence, 3),
+                               speaker_assignment="automatic",
+                               speaker_overlap=decision.overlapping)
+            except Exception:
+                segment.update(speaker_confidence=0.0, speaker_assignment="automatic")
+        else:
+            segment["speaker_id"] = "speaker_001"
         if result.is_final:
             segment["translation_state"] = "pending"
         return segment

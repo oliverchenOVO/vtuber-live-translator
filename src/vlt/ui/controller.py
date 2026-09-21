@@ -14,6 +14,7 @@ from PySide6.QtGui import QDesktopServices
 from vlt.audio.windows_process_loopback import WindowsProcessLoopback
 from vlt.asr.base import ASRBackend, Recognition
 from vlt.asr.pipeline import ASRPipeline
+from vlt.diarization.base import DiarizationBackend, SpeakerObservation
 from vlt.sessions.manager import SessionManager
 from vlt.settings.manager import SettingsManager
 from vlt.subtitles.live import TranscriptCoordinator
@@ -34,11 +35,15 @@ class StudioController(QObject):
     asrAudioAnchor = Signal(object)
     transcriptChanged = Signal()
     translationReady = Signal(object, object, float, str)
+    diarizationNew = Signal(str)
+    diarizationUpdated = Signal()
+    diarizationOverlap = Signal(object)
 
     def __init__(self, sessions: SessionManager, settings: SettingsManager,
                  asr_backend_factory: Callable[[], ASRBackend],
                  audio: WindowsProcessLoopback | None = None,
-                 translation_backend_factory: Callable[[], TranslationBackend] | None = None):
+                 translation_backend_factory: Callable[[], TranslationBackend] | None = None,
+                 diarization_backend_factory: Callable[[], DiarizationBackend] | None = None):
         super().__init__()
         self.sessions = sessions
         self.settings = settings
@@ -57,7 +62,15 @@ class StudioController(QObject):
         self._asr_status = "正在等待語音…"
         self._asr_pipeline: ASRPipeline | None = None
         self._asr_thread: threading.Thread | None = None
+        self._asr_partial_count = 0
+        self._asr_final_count = 0
+        self._last_pipeline_log = 0.0
         self._transcript: TranscriptCoordinator | None = None
+        self._visible_segment_limit = 120
+        self._diarization_factory = diarization_backend_factory
+        self._diarization: DiarizationBackend | None = None
+        self._speaker_rows: list[dict] = []
+        self._speaker_new_until: dict[str, float] = {}
         self._finish_requested = False
         self.glossary = Glossary(settings.path.parent / "glossary.json")
         self._translation_status = "正在等待語音…"
@@ -68,6 +81,9 @@ class StudioController(QObject):
             lambda request, result, latency, error: self.translationReady.emit(request, result, latency, error))
         self._translation_pipeline.start()
         self.translationReady.connect(self._on_translation_ready)
+        self.diarizationNew.connect(self._on_diarization_new)
+        self.diarizationUpdated.connect(self._on_diarization_updated)
+        self.diarizationOverlap.connect(self._on_diarization_overlap)
         self.sourcesReady.connect(self._on_sources_ready)
         self.audioOperationDone.connect(self._on_audio_operation_done)
         self.asrRecognition.connect(self._on_asr_recognition)
@@ -135,11 +151,22 @@ class StudioController(QObject):
 
     @Property("QVariantList", notify=transcriptChanged)
     def transcriptSegments(self) -> list[dict]:
-        return list(self._transcript.finals) if self._transcript else []
+        return ([self._decorate_segment(item) for item in self._transcript.finals[-self._visible_segment_limit:]]
+                if self._transcript else [])
+
+    @Property(int, notify=transcriptChanged)
+    def earlierSegmentCount(self) -> int:
+        return max(0, len(self._transcript.finals) - self._visible_segment_limit) if self._transcript else 0
+
+    @Slot()
+    def loadEarlierSegments(self) -> None:
+        if self._transcript and self.earlierSegmentCount:
+            self._visible_segment_limit += 120
+            self.transcriptChanged.emit()
 
     @Property("QVariantMap", notify=transcriptChanged)
     def liveSegment(self) -> dict:
-        return self._transcript.live or {} if self._transcript else {}
+        return self._decorate_segment(self._transcript.live) if self._transcript and self._transcript.live else {}
 
     @Property(str, notify=transcriptChanged)
     def asrState(self) -> str:
@@ -177,11 +204,80 @@ class StudioController(QObject):
     def overlaySegment(self) -> dict:
         if self._transcript:
             if self._transcript.live and self._transcript.live.get("translation"):
-                return self._transcript.live
+                return self._decorate_segment(self._transcript.live)
             for segment in reversed(self._transcript.finals):
                 if segment.get("translation"):
-                    return segment
+                    return self._decorate_segment(segment)
         return {}
+
+    @Property("QVariantList", notify=transcriptChanged)
+    def speakers(self) -> list[dict]:
+        return list(self._speaker_rows)
+
+    @Property(str, notify=transcriptChanged)
+    def diarizationStatus(self) -> str:
+        if not self._diarization:
+            return "Speaker 待機"
+        state = getattr(self._diarization, "status", "live")
+        if state == "error":
+            return "Speaker 辨識暫不可用，逐字稿仍正常"
+        if state == "limited":
+            return "Speaker 已達 4 人 · 其他聲音暫標 unknown"
+        latency = getattr(self._diarization, "latency_ms", None)
+        return f"Speaker {latency / 1000:.1f}s" if latency is not None else "Speaker 載入中…"
+
+    def _refresh_speakers(self) -> None:
+        self._speaker_rows = self.sessions.list_speakers(self._selected_id) if self._selected_id else []
+        self.transcriptChanged.emit()
+
+    def _decorate_segment(self, segment: dict) -> dict:
+        speaker_id = segment.get("speaker_id")
+        row = next((item for item in self._speaker_rows if item["speaker_id"] == speaker_id), None)
+        palette = ("#62dfc2", "#e6bc79", "#8ca9ff", "#ef94b5", "#b6cf78", "#a899e8")
+        number = int(speaker_id.split("_")[-1]) if speaker_id and speaker_id.startswith("speaker_") else 0
+        return {**segment,
+                "speaker_display_name": row["display_name"] if row else "",
+                "speaker_color": palette[(number - 1) % len(palette)] if number else "#78919d",
+                "speaker_new": time.monotonic() < self._speaker_new_until.get(speaker_id, 0),
+                "show_speaker": bool(row and (len(self._speaker_rows) > 1 or
+                                                row["display_name"] != "Speaker 1"))}
+
+    @Slot(str, str)
+    def renameSpeaker(self, speaker_id: str, name: str) -> None:
+        try:
+            if self._selected_id:
+                self.sessions.update_speaker(self._selected_id, speaker_id, display_name=name)
+                self._refresh_speakers()
+        except ValueError as exc:
+            self._message = str(exc)
+            self.changed.emit()
+
+    @Slot(str, str)
+    def mapSpeakerPerson(self, speaker_id: str, person_id: str) -> None:
+        if self._selected_id:
+            self.sessions.update_speaker(self._selected_id, speaker_id, person_id=person_id)
+            self._refresh_speakers()
+
+    @Slot(str, str)
+    def mergeSpeakers(self, source_id: str, target_id: str) -> None:
+        try:
+            if self._selected_id:
+                self.sessions.merge_speakers(self._selected_id, source_id, target_id)
+                if self._diarization and hasattr(self._diarization, "remap_speaker"):
+                    self._diarization.remap_speaker(source_id, target_id)
+                if self._transcript:
+                    self._transcript.finals = self.sessions.list_segments(self._selected_id)
+                self._refresh_speakers()
+        except ValueError as exc:
+            self._message = str(exc)
+            self.changed.emit()
+
+    @Slot(str, str)
+    def assignSegmentSpeaker(self, segment_id: str, speaker_id: str) -> None:
+        if self._selected_id and self.sessions.assign_segment_speaker(self._selected_id, segment_id, speaker_id):
+            if self._transcript:
+                self._transcript.finals = self.sessions.list_segments(self._selected_id)
+            self._refresh_speakers()
 
     @Property("QVariantList", notify=changed)
     def glossaryEntries(self) -> list[dict]:
@@ -276,6 +372,8 @@ class StudioController(QObject):
             prior = self.sessions.list_segments(session["session_id"])
             offset = max(0, elapsed, max((item["end_ms"] for item in prior), default=0))
             self._transcript = TranscriptCoordinator(self.sessions, session["session_id"], offset)
+            self._visible_segment_limit = 120
+            self._refresh_speakers()
             self._enqueue_pending_translations()
             self.transcriptChanged.emit()
             self.changed.emit()
@@ -335,6 +433,23 @@ class StudioController(QObject):
     def _start_asr(self) -> None:
         if self._asr_thread and self._asr_thread.is_alive():
             return
+        if self._transcript and self._diarization_factory:
+            try:
+                diarization = self._diarization_factory()
+                diarization.reset_session(self.sessions.list_speakers(self._transcript.session_id),
+                                           self.sessions.list_embeddings(self._transcript.session_id))
+                if hasattr(diarization, "set_next_number"):
+                    diarization.set_next_number(self.sessions.next_speaker_number(self._transcript.session_id))
+                diarization.on_speaker_detected(lambda speaker: self.diarizationNew.emit(speaker))
+                diarization.on_overlap_detected(lambda event: self.diarizationOverlap.emit(event))
+                if hasattr(diarization, "on_updated"):
+                    diarization.on_updated(lambda: self.diarizationUpdated.emit())
+                diarization.start()
+                self._diarization = diarization
+                self._transcript.speaker_for_interval = diarization.get_speaker_for_interval
+            except Exception:
+                logging.exception("Diarization could not start; ASR continues")
+                self._diarization = None
         pipeline = ASRPipeline(
             self.audio,
             self._asr_backend_factory,
@@ -343,6 +458,7 @@ class StudioController(QObject):
             lambda result: self.asrRecognition.emit(result),
             lambda state, message: self.asrStatusEvent.emit(state, message),
             lambda timestamp: self.asrAudioAnchor.emit(timestamp),
+            lambda chunk: self._diarization.push_audio(chunk) if self._diarization else None,
         )
         self._asr_pipeline = pipeline
 
@@ -362,6 +478,10 @@ class StudioController(QObject):
     def _on_asr_recognition(self, result: Recognition) -> None:
         if not self._transcript:
             return
+        if result.is_final:
+            self._asr_final_count += 1
+        else:
+            self._asr_partial_count += 1
         try:
             if result.is_final:
                 if self._transcript.apply_final(result):
@@ -376,11 +496,84 @@ class StudioController(QObject):
             logging.exception("Could not persist transcript")
             self._on_asr_status("error", "逐字稿無法保存，請檢查資料儲存位置。")
 
+    @Slot(str)
+    def _on_diarization_new(self, speaker_id: str) -> None:
+        if not self._transcript or not self._diarization:
+            return
+        try:
+            first_ms = self._transcript.offset_ms + getattr(
+                self._diarization, "joined_ms", lambda _speaker: 0)(speaker_id)
+            created = self.sessions.register_speaker(
+                self._transcript.session_id, speaker_id, first_ms,
+                getattr(self._diarization, "get_representation", lambda _speaker: None)(speaker_id))
+            if not created and speaker_id not in self.sessions.list_embeddings(self._transcript.session_id):
+                embedding = getattr(self._diarization, "get_representation", lambda _speaker: None)(speaker_id)
+                if embedding:
+                    self.sessions.add_embedding(self._transcript.session_id, speaker_id, embedding)
+            if created:
+                self._speaker_new_until[speaker_id] = time.monotonic() + 6
+                self._message = f"偵測到新聲音 · {speaker_id}"
+                self.changed.emit()
+            self._refresh_speakers()
+        except Exception:
+            logging.exception("Speaker registration failed")
+
+    @Slot()
+    def _on_diarization_updated(self) -> None:
+        if not self._transcript or not self._diarization:
+            return
+        try:
+            session_id = self._transcript.session_id
+            representations = getattr(self._diarization, "get_representations", None)
+            if representations:
+                stored = self.sessions.list_embeddings(session_id)
+                for speaker in self.sessions.list_speakers(session_id):
+                    speaker_id = speaker["speaker_id"]
+                    for vector in representations(speaker_id)[len(stored.get(speaker_id, [])):]:
+                        self.sessions.add_embedding(session_id, speaker_id, vector)
+            changed = False
+            for item in self._transcript.finals[-32:]:
+                if item.get("type") != "speech" or item.get("speaker_id") not in (None, "unknown"):
+                    continue
+                start = item["start_ms"] - self._transcript.offset_ms
+                end = item["end_ms"] - self._transcript.offset_ms
+                decision = self._diarization.get_speaker_for_interval(start, end)
+                if decision.speaker_id and self.sessions.update_automatic_assignment(
+                        session_id, item["id"], decision.speaker_id, decision.confidence):
+                    item.update(speaker_id=decision.speaker_id,
+                                speaker_confidence=round(decision.confidence, 3),
+                                speaker_assignment="automatic")
+                    changed = True
+            if changed:
+                self._refresh_speakers()
+            else:
+                self.transcriptChanged.emit()
+        except Exception:
+            logging.exception("Diarization update failed; ASR continues")
+
+    @Slot(object)
+    def _on_diarization_overlap(self, observation: SpeakerObservation) -> None:
+        if not self._transcript:
+            return
+        try:
+            session_id = self._transcript.session_id
+            start = self._transcript.offset_ms + observation.start_ms
+            end = self._transcript.offset_ms + observation.end_ms
+            if self.sessions.append_overlap_event(session_id, start, end,
+                                                  list(observation.speaker_ids),
+                                                  "overlapping_speech" if len(observation.speaker_ids) > 1
+                                                  else "unknown_overlap", observation.confidence):
+                self._transcript.finals = self.sessions.list_segments(session_id)
+                self.transcriptChanged.emit()
+        except Exception:
+            logging.exception("Overlap event could not be saved")
+
     def _submit_translation(self, segment: dict, final: bool) -> bool:
         if not segment or not self._transcript:
             return False
         recent = [item["original"] for item in self._transcript.finals
-                  if item["id"] != segment["id"] and
+                  if item.get("type") == "speech" and item.get("original") and
+                  item["id"] != segment["id"] and
                   0 <= segment["start_ms"] - item["end_ms"] <= 30000][-5:]
         session = self.sessions.get(self._transcript.session_id) or {}
         request = TranslationRequest(
@@ -457,6 +650,9 @@ class StudioController(QObject):
 
     @Slot()
     def _on_asr_done(self) -> None:
+        if self._diarization:
+            self._diarization.stop()
+            self._diarization = None
         self._asr_pipeline = None
         self._asr_thread = None
         self.audioChanged.emit()
@@ -467,6 +663,28 @@ class StudioController(QObject):
     @Slot()
     def _poll_audio(self) -> None:
         self._display_peak = max(float(self.audio.peak), self._display_peak * 0.72)
+        now = time.monotonic()
+        expired = [speaker for speaker, until in self._speaker_new_until.items() if now >= until]
+        if expired:
+            for speaker in expired:
+                self._speaker_new_until.pop(speaker, None)
+            self.transcriptChanged.emit()
+        if self.audio.state == "capturing" and now - self._last_pipeline_log >= 10:
+            self._last_pipeline_log = now
+            backend = self._asr_pipeline._backend if self._asr_pipeline else None
+            logging.info("Pipeline metrics: asr=%s partials=%d finals=%d audio_peak=%.3f "
+                         "asr_queue_bytes=%s asr_dropped=%s gap_finals=%s infer_pending=%s infer_busy=%s "
+                         "diarization=%s windows=%s dropped=%s",
+                         self._asr_state, self._asr_partial_count, self._asr_final_count,
+                         self.audio.peak,
+                         getattr(getattr(backend, "queue", None), "size_bytes", None),
+                         getattr(getattr(backend, "queue", None), "dropped_bytes", None),
+                         getattr(backend, "gap_finalizations", None),
+                         getattr(getattr(backend, "_requests", None), "qsize", lambda: None)(),
+                         getattr(backend, "_inference_busy", None),
+                         getattr(self._diarization, "status", None),
+                         getattr(self._diarization, "processed_windows", None),
+                         getattr(self._diarization, "dropped_chunks", None))
         if self.audio.state == "error" and self._audio_status != self.audio.error:
             self._audio_status = self.audio.error
             self.refreshAudioSources()
@@ -477,6 +695,8 @@ class StudioController(QObject):
         self._source_timer.stop()
         self._pending_timer.stop()
         self._translation_pipeline.stop()
+        if self._diarization:
+            self._diarization.stop()
         if self._asr_pipeline:
             self._asr_pipeline.stop()
         if self.audio.state in ("capturing", "connecting", "error"):
@@ -496,7 +716,10 @@ class StudioController(QObject):
                                        target_language=values["target_language"],
                                        translation_style=values["translation_style"])
         self._selected_id = session["session_id"]
+        self._speaker_new_until.clear()
         self._transcript = TranscriptCoordinator(self.sessions, self._selected_id)
+        self._visible_segment_limit = 120
+        self._refresh_speakers()
         self._enqueue_pending_translations()
         self._message = "Session 已建立。開始監聽後，辨識結果會即時保存。"
         self.transcriptChanged.emit()
@@ -508,7 +731,10 @@ class StudioController(QObject):
             return
         if self.sessions.get(session_id):
             self._selected_id = session_id
+            self._speaker_new_until.clear()
             self._transcript = TranscriptCoordinator(self.sessions, session_id)
+            self._visible_segment_limit = 120
+            self._refresh_speakers()
             self._enqueue_pending_translations()
             self.transcriptChanged.emit()
             self.changed.emit()

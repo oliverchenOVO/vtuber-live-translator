@@ -24,9 +24,9 @@ Window {
             width: parent.width - 56
             spacing: 7
             Text {
-                visible: studio.preferences.overlay_mode === "gaming"
-                text: "speaker_001"
-                color: "#62dfc2"
+                visible: studio.preferences.overlay_mode !== "minimal" && !!studio.overlaySegment.show_speaker
+                text: studio.overlaySegment.speaker_display_name + (studio.overlaySegment.speaker_new ? "  ·  NEW" : "")
+                color: studio.overlaySegment.speaker_color || "#62dfc2"
                 font.pixelSize: 11
                 font.bold: true
                 anchors.horizontalCenter: parent.horizontalCenter

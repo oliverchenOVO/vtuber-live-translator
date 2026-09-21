@@ -199,3 +199,30 @@ def test_local_streaming_backend_emits_partial_and_final_with_detected_language(
     assert finals[0].language == "ja"
     assert finals[0].text == "こんにちは"
     assert finals[0].start_ms < finals[0].end_ms
+
+
+def test_silent_process_loopback_gap_finalizes_existing_speech():
+    class Model:
+        def __init__(self, *_args, **_kwargs): pass
+        def transcribe(self, _samples, **_kwargs):
+            return [type("Segment", (), {"text": "こんにちは"})()], type("Info", (), {"language": "ja"})()
+
+    class Vad:
+        def is_speech(self, *_args): return True
+
+    async def exercise():
+        backend = FasterWhisperBackend(model_factory=Model)
+        backend._vad = Vad()
+        finals = []
+        backend.set_callbacks(lambda _result: None, finals.append, lambda *_: None)
+        await backend.start()
+        await backend.push_audio(AudioChunk(bytes(640 * 45), 16000, 1, 1000))
+        await asyncio.sleep(0.05)
+        await backend.push_audio(AudioChunk(bytes(640), 16000, 1, 2800))
+        await asyncio.sleep(0.1)
+        await backend.stop()
+        return finals, backend.gap_finalizations
+
+    finals, gaps = asyncio.run(exercise())
+    assert gaps == 1
+    assert len(finals) >= 1 and finals[0].text == "こんにちは"

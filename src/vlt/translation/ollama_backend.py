@@ -38,7 +38,7 @@ class OllamaTranslationBackend:
         self.glossary = glossary
 
     def translate_partial(self, request: TranslationRequest) -> str:
-        return self._translate(request)
+        return self._translate(request, allow_fallback=False)
 
     def translate_final(self, request: TranslationRequest) -> str:
         if len(request.original) > 130:
@@ -48,7 +48,7 @@ class OllamaTranslationBackend:
                 return " ".join(self._translate(replace(request, original=part)) for part in chunks)
         return self._translate(request)
 
-    def _translate(self, request: TranslationRequest) -> str:
+    def _translate(self, request: TranslationRequest, *, allow_fallback: bool = True) -> str:
         self.set_target_language(request.target_language)
         self.set_style(request.style)
         self.update_context(request.context)
@@ -73,7 +73,7 @@ class OllamaTranslationBackend:
             + ("Earlier utterances (context only):\n" + "\n".join(self.context) + "\n" if self.context else "")
             + "CURRENT utterance:\n" + request.original + "\nTranslation:"
         )
-        for attempt in range(2):
+        for attempt in range(2 if allow_fallback else 1):
             result = self._generate(prompt, self.model if attempt == 0 else self.fallback_model)
             result = re.sub(r"^(?:Translation|翻譯|译文)\s*[:：]\s*", "", result).strip(' \n"')
             if not result:
@@ -102,7 +102,7 @@ class OllamaTranslationBackend:
                             raise RuntimeError("翻譯未保留共同遊戲的關係，已等待重試。")
                 return result
             except RuntimeError as exc:
-                if attempt:
+                if attempt or not allow_fallback:
                     raise
                 prompt = prompt.replace("Output Chinese translation ONLY, no labels.",
                                         "Output Chinese translation ONLY, no labels. "
