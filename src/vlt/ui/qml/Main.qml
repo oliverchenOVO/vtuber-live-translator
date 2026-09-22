@@ -7,10 +7,11 @@ ApplicationWindow {
     visible: true
     width: 1380
     height: 830
-    minimumWidth: 1050
-    minimumHeight: 680
+    minimumWidth: 900
+    minimumHeight: 520
     title: "Vtuber Live Translator — Transcript Studio"
     color: "#101319"
+    font.family: "Microsoft JhengHei UI"
 
     property string page: "LIVE"
     property color bg: "#101319"
@@ -20,6 +21,20 @@ ApplicationWindow {
     property color muted: "#8e9bab"
     property color ink: "#eef2f6"
     property color accent: "#6ce2c5"
+    property int firstRunPage: 0
+    property bool trayPromptVisible: false
+    property string modelRemovalTarget: ""
+
+    onClosing: function(close) {
+        if (!!studio.preferences.minimize_to_tray) {
+            close.accepted = false
+            if (!studio.preferences.tray_prompt_seen) {
+                window.trayPromptVisible = true
+            } else {
+                window.hide()
+            }
+        }
+    }
 
     function formatTime(ms) {
         const seconds = Math.floor(ms / 1000)
@@ -137,12 +152,12 @@ ApplicationWindow {
                     color: "#202a32"; border.color: "#34474b"
                     Column {
                         anchors.fill: parent; anchors.margins: 13; spacing: 7
-                        Text { text: "●  PHASE 6"; color: window.accent; font.pixelSize: 11; font.bold: true; font.letterSpacing: 1 }
-                        Text { text: "Session Archive"; color: window.ink; font.pixelSize: 13; font.bold: true }
-                        Text { text: "History · 搜尋 · 最終輸出"; color: window.muted; font.pixelSize: 11; width: 150; wrapMode: Text.WordWrap }
+                        Text { text: "●  READY"; color: window.accent; font.pixelSize: 11; font.bold: true; font.letterSpacing: 1 }
+                        Text { text: "Live Workspace"; color: window.ink; font.pixelSize: 13; font.bold: true }
+                        Text { text: "即時字幕 · 歷史 · 輸出"; color: window.muted; font.pixelSize: 11; width: 150; wrapMode: Text.WordWrap }
                     }
                 }
-                Text { text: "v0.6.0  ·  Windows preview"; color: "#647185"; font.pixelSize: 10; Layout.topMargin: 9 }
+                Text { text: "v" + studio.appVersion + "  ·  Windows"; color: "#647185"; font.pixelSize: 10; Layout.topMargin: 9 }
             }
         }
 
@@ -482,11 +497,17 @@ ApplicationWindow {
                         InfoCard {
                             visible: window.page === "Settings"
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 520
+                            Layout.preferredHeight: Math.max(690, settingsColumn.implicitHeight + 48)
                             ColumnLayout {
+                                id: settingsColumn
                                 anchors.fill: parent; anchors.margins: 24; spacing: 17
                                 Text { text: "偏好設定"; color: window.ink; font.pixelSize: 17; font.bold: true }
                                 Text { text: "設定會立即保存在本機。"; color: window.muted; font.pixelSize: 12 }
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    Text { text: "效能模式"; color: window.ink; font.pixelSize: 13; Layout.fillWidth: true }
+                                    ComboBox { model: ["Gaming", "Balanced", "High Quality"]; currentIndex: ["gaming", "balanced", "quality"].indexOf(studio.preferences.performance_preset); onActivated: studio.selectPerformancePreset(["gaming", "balanced", "quality"][currentIndex]) }
+                                }
                                 RowLayout {
                                     Layout.fillWidth: true
                                     Text { text: "來源語言"; color: window.ink; font.pixelSize: 13; Layout.fillWidth: true }
@@ -522,8 +543,68 @@ ApplicationWindow {
                                     Text { text: "Session 完成後自動關閉應用程式"; color: window.ink; font.pixelSize: 13; Layout.fillWidth: true }
                                     Switch { checked: !!studio.preferences.auto_close_after_finalize; onToggled: studio.setPreference("auto_close_after_finalize", checked) }
                                 }
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    Text { text: "登入 Windows 後啟動"; color: window.ink; font.pixelSize: 13; Layout.fillWidth: true }
+                                    Switch { checked: !!studio.preferences.start_with_windows; onToggled: studio.setPreference("start_with_windows", checked) }
+                                }
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    Text { text: "啟動後最小化"; color: window.ink; font.pixelSize: 13; Layout.fillWidth: true }
+                                    Switch { checked: !!studio.preferences.start_minimized; onToggled: studio.setPreference("start_minimized", checked) }
+                                }
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    Text { text: "記住上次音訊來源"; color: window.ink; font.pixelSize: 13; Layout.fillWidth: true }
+                                    Switch { checked: !!studio.preferences.remember_audio_source; onToggled: studio.setPreference("remember_audio_source", checked) }
+                                }
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    Text { text: "啟動後顯示 Overlay"; color: window.ink; font.pixelSize: 13; Layout.fillWidth: true }
+                                    Switch { checked: !!studio.preferences.show_overlay_on_start; onToggled: studio.setPreference("show_overlay_on_start", checked) }
+                                }
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    Text { text: "啟動時檢查更新"; color: window.ink; font.pixelSize: 13; Layout.fillWidth: true }
+                                    Switch { checked: !!studio.preferences.update_checks; onToggled: studio.setPreference("update_checks", checked) }
+                                    AppButton { text: "檢查更新"; onClicked: studio.checkForUpdates() }
+                                }
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    Text { text: "關閉視窗時縮到系統匣"; color: window.ink; font.pixelSize: 13; Layout.fillWidth: true }
+                                    Switch { checked: !!studio.preferences.minimize_to_tray; onToggled: studio.setPreference("minimize_to_tray", checked) }
+                                }
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    AppButton { text: "資料資料夾"; onClicked: studio.openDataFolder() }
+                                    AppButton { text: "診斷記錄"; onClicked: studio.openLogFolder() }
+                                    AppButton { text: "清除快取 " + studio.cacheSize; enabled: !studio.componentState.busy; onClicked: studio.clearCache() }
+                                }
+                                Text { text: "AI 元件"; color: window.ink; font.pixelSize: 13; font.bold: true }
+                                Repeater {
+                                    model: [{id:"asr", title:"語音辨識", ready:studio.componentState.asr}, {id:"translation", title:"本機中文翻譯", ready:studio.componentState.translation}, {id:"diarization", title:"Speaker 分析", ready:studio.componentState.diarization}]
+                                    delegate: RowLayout {
+                                        required property var modelData; Layout.fillWidth: true
+                                        Text { text: modelData.title + "  ·  " + (modelData.ready ? "已安裝" : "尚未安裝"); color: modelData.ready ? window.accent : window.muted; font.pixelSize: 12; Layout.fillWidth: true }
+                                        AppButton { text: modelData.ready ? "修復" : "下載"; enabled: !studio.componentState.busy; onClicked: studio.installComponent(modelData.id) }
+                                        AppButton { text: "移除"; danger: true; visible: modelData.ready; enabled: !studio.componentState.busy; onClicked: window.modelRemovalTarget = modelData.id }
+                                    }
+                                }
+                                ProgressBar { Layout.fillWidth: true; visible: studio.componentState.busy; value: studio.componentState.percent / 100 }
+                                Text { visible: !!studio.componentState.message; text: studio.componentState.message; color: window.muted; font.pixelSize: 11; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    DarkField { id: sessionRootField; Layout.fillWidth: true; text: studio.sessionFolder; placeholderText: "Session 儲存資料夾" }
+                                    AppButton { text: "套用位置"; onClicked: studio.setSessionRoot(sessionRootField.text) }
+                                }
                                 Rectangle { Layout.fillWidth: true; height: 1; color: window.line }
-                                Text { text: "原始音訊不保存；每條 Final 逐字稿會即時寫入 Session。"; color: window.muted; font.pixelSize: 11; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                                Text { text: "Vtuber Live Translator " + studio.appVersion + "  ·  Build " + studio.appBuild; color: window.ink; font.pixelSize: 13; font.bold: true }
+                                Text { text: "原始音訊不保存；每條 Final 逐字稿會即時寫入 Session。第三方授權與 notices 隨安裝目錄提供。"; color: window.muted; font.pixelSize: 11; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                                Text { text: "Data  " + studio.dataFolder + "\nLogs  " + studio.logFolder; color: window.muted; font.pixelSize: 10; wrapMode: Text.WrapAnywhere; Layout.fillWidth: true }
+                                RowLayout {
+                                    AppButton { text: "檢視授權"; onClicked: studio.openLicense() }
+                                    AppButton { text: "開放原始碼聲明"; onClicked: studio.openOpenSourceNotices() }
+                                }
                                 Item { Layout.fillHeight: true }
                             }
                         }
@@ -734,6 +815,143 @@ ApplicationWindow {
                     Rectangle { width: 7; height: 7; radius: 4; color: studio.asrState === "live" ? window.accent : "#e6b865" }
                     Text { text: studio.audioState === "capturing" ? "AUDIO LIVE  ·  ASR " + studio.asrState.toUpperCase() + "  ·  " + studio.asrStatus + "  ·  " + studio.translationStatus + "  ·  " + studio.diarizationStatus + (studio.asrLatency ? "  ·  " + studio.asrLatency : "") + (studio.translationLatency ? "  ·  " + studio.translationLatency : "") : studio.message; color: "#a7b4c3"; font.pixelSize: 11; elide: Text.ElideRight; Layout.fillWidth: true }
                     AppButton { text: studio.finalizing ? "正在完成…" : "結束 Session"; danger: true; enabled: studio.selectedSession.status === "active" && !studio.finalizing; onClicked: studio.finishSession() }
+                }
+            }
+        }
+    }
+
+    Rectangle {
+        anchors.fill: parent
+        visible: !studio.firstRunComplete
+        z: 1000
+        color: window.bg
+        Rectangle {
+            width: Math.min(parent.width - 80, 860)
+            height: Math.min(parent.height - (parent.height < 650 ? 20 : 70), 680)
+            anchors.centerIn: parent
+            radius: 22
+            color: window.panel
+            border.color: window.line
+            ColumnLayout {
+                anchors.fill: parent; anchors.margins: parent.height < 600 ? 20 : 34; spacing: parent.height < 600 ? 10 : 18
+                RowLayout {
+                    Layout.fillWidth: true
+                    Text { text: "VTUBER LIVE TRANSLATOR"; color: window.accent; font.bold: true; font.pixelSize: 12; font.letterSpacing: 2 }
+                    Item { Layout.fillWidth: true }
+                    Text { text: (window.firstRunPage + 1) + " / 5"; color: window.muted; font.pixelSize: 12 }
+                }
+                Rectangle { Layout.fillWidth: true; height: 1; color: window.line }
+                ColumnLayout {
+                    visible: window.firstRunPage === 0; Layout.fillWidth: true; Layout.fillHeight: true; spacing: 14
+                    Item { Layout.fillHeight: true }
+                    Text { text: "歡迎使用"; color: window.ink; font.pixelSize: 38; font.bold: true }
+                    Text { text: "把指定 Windows 程式的聲音，轉成即時原文與中文字幕。\n音訊只在記憶體中處理，不會保存原始錄音。"; color: window.muted; font.pixelSize: 16; lineHeight: 1.5 }
+                    Text { text: "翻譯成"; color: window.ink; font.pixelSize: 14; font.bold: true }
+                    RowLayout {
+                        AppButton { text: "繁體中文"; primary: studio.preferences.target_language === "zh-TW"; onClicked: studio.setPreference("target_language", "zh-TW") }
+                        AppButton { text: "简体中文"; primary: studio.preferences.target_language === "zh-CN"; onClicked: studio.setPreference("target_language", "zh-CN") }
+                    }
+                    Item { Layout.fillHeight: true }
+                }
+                ColumnLayout {
+                    visible: window.firstRunPage === 1; Layout.fillWidth: true; Layout.fillHeight: true; spacing: 14
+                    Text { text: "選擇效能模式"; color: window.ink; font.pixelSize: 28; font.bold: true }
+                    Text { text: "已偵測 " + studio.hardwareProfile.logical_cores + " 執行緒 · " + studio.hardwareProfile.ram_gb + " GB RAM\n" + studio.hardwareProfile.gpu; color: window.muted; font.pixelSize: 14; lineHeight: 1.45 }
+                    Repeater {
+                        model: [{id:"gaming", title:"Gaming", body:"優先保留遊戲效能；2 CPU threads、base ASR、1.5B 翻譯。"}, {id:"balanced", title:"Balanced", body:"日常直播建議；4 CPU threads、自動選擇裝置、1.5B 翻譯。"}, {id:"quality", title:"High Quality", body:"較高辨識品質；small ASR，並允許 7B 翻譯 fallback。"}]
+                        delegate: Rectangle {
+                            required property var modelData; Layout.fillWidth: true; height: 78; radius: 12
+                            color: studio.preferences.performance_preset === modelData.id ? "#263d3c" : window.raised
+                            border.color: studio.preferences.performance_preset === modelData.id ? window.accent : window.line
+                            Column { anchors.fill: parent; anchors.margins: 14; spacing: 5
+                                Text { text: modelData.title + (studio.hardwareProfile.recommended === modelData.id ? "  ·  建議" : ""); color: window.ink; font.pixelSize: 15; font.bold: true }
+                                Text { text: modelData.body; color: window.muted; font.pixelSize: 12 }
+                            }
+                            MouseArea { anchors.fill: parent; onClicked: studio.selectPerformancePreset(modelData.id) }
+                        }
+                    }
+                    Item { Layout.fillHeight: true }
+                }
+                ColumnLayout {
+                    visible: window.firstRunPage === 2; Layout.fillWidth: true; Layout.fillHeight: true; spacing: 13
+                    Text { text: "準備 AI 元件"; color: window.ink; font.pixelSize: 28; font.bold: true }
+                    Text { text: "模型只需下載一次，可中斷後續傳。開始前會檢查磁碟空間與檔案雜湊。"; color: window.muted; font.pixelSize: 13 }
+                    Repeater {
+                        model: [{id:"asr", title:"語音辨識", ready:studio.componentState.asr}, {id:"translation", title:"本機中文翻譯", ready:studio.componentState.translation}, {id:"diarization", title:"Speaker 分析", ready:studio.componentState.diarization}]
+                        delegate: Rectangle {
+                            required property var modelData; Layout.fillWidth: true; height: 68; radius: 11; color: window.raised; border.color: window.line
+                            RowLayout { anchors.fill: parent; anchors.margins: 13
+                                Text { text: modelData.title; color: window.ink; font.pixelSize: 14; font.bold: true; Layout.fillWidth: true }
+                                Text { text: modelData.ready ? "已就緒" : "尚未安裝"; color: modelData.ready ? window.accent : "#dfbd82"; font.pixelSize: 12 }
+                                AppButton { text: modelData.ready ? "重新檢查" : "下載"; enabled: !studio.componentState.busy; onClicked: studio.installComponent(modelData.id) }
+                            }
+                        }
+                    }
+                    ProgressBar { Layout.fillWidth: true; visible: studio.componentState.busy; value: studio.componentState.percent / 100 }
+                    Text { text: studio.componentState.message || "ASR 與翻譯為主要元件；Speaker 分析可稍後安裝。"; color: window.muted; font.pixelSize: 12; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                    Item { Layout.fillHeight: true }
+                }
+                ColumnLayout {
+                    visible: window.firstRunPage === 3; Layout.fillWidth: true; Layout.fillHeight: true; spacing: 14
+                    Text { text: "測試程式音訊"; color: window.ink; font.pixelSize: 28; font.bold: true }
+                    Text { text: "請先讓瀏覽器或直播程式播放聲音，再選擇來源。"; color: window.muted; font.pixelSize: 13 }
+                    ComboBox { Layout.fillWidth: true; model: studio.audioSources; textRole: "display"; onActivated: studio.selectAudioSource(studio.audioSources[currentIndex].id) }
+                    RowLayout {
+                        AppButton { text: "重新偵測"; onClicked: studio.refreshAudioSources() }
+                        AppButton { text: studio.audioState === "capturing" ? "停止測試" : "開始測試"; primary: true; onClicked: studio.audioState === "capturing" ? studio.stopAudioCapture() : studio.startAudioTest() }
+                    }
+                    Rectangle { Layout.fillWidth: true; height: 18; radius: 9; color: window.raised; Rectangle { height: parent.height; width: parent.width * Math.min(1, studio.audioPeak * 5); radius: 9; color: window.accent } }
+                    Text { text: studio.audioStatus; color: window.muted; font.pixelSize: 12 }
+                    Item { Layout.fillHeight: true }
+                }
+                ColumnLayout {
+                    visible: window.firstRunPage === 4; Layout.fillWidth: true; Layout.fillHeight: true; spacing: 16
+                    Item { Layout.fillHeight: true }
+                    Text { text: "準備完成"; color: window.ink; font.pixelSize: 36; font.bold: true }
+                    Text { text: "之後可以在設定中切換效能模式、管理快取與開啟診斷記錄。\n建立 Session、選擇音訊來源，便可開始。"; color: window.muted; font.pixelSize: 15; lineHeight: 1.5 }
+                    Text { text: "資料位置  " + studio.dataFolder; color: window.accent; font.pixelSize: 12; wrapMode: Text.WrapAnywhere; Layout.fillWidth: true }
+                    Item { Layout.fillHeight: true }
+                }
+                RowLayout {
+                    Layout.fillWidth: true
+                    AppButton { text: "上一步"; visible: window.firstRunPage > 0; onClicked: window.firstRunPage-- }
+                    Item { Layout.fillWidth: true }
+                    AppButton { text: window.firstRunPage === 4 ? "開始使用" : "下一步"; primary: true; enabled: !studio.componentState.busy && (window.firstRunPage !== 2 || (studio.componentState.asr && studio.componentState.translation)); onClicked: { if (window.firstRunPage === 4) studio.completeFirstRun(); else window.firstRunPage++ } }
+                }
+            }
+        }
+    }
+    Rectangle {
+        anchors.fill: parent; visible: window.modelRemovalTarget !== ""; z: 1200; color: "#aa080b10"
+        Rectangle {
+            width: 470; height: 220; anchors.centerIn: parent; radius: 18; color: window.panel; border.color: window.line
+            ColumnLayout {
+                anchors.fill: parent; anchors.margins: 24; spacing: 13
+                Text { text: "移除 AI 元件？"; color: window.ink; font.pixelSize: 18; font.bold: true }
+                Text { text: "移除後對應功能會停止，已保存的 Session 與逐字稿不受影響。之後可以重新下載。"; color: window.muted; font.pixelSize: 13; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                Item { Layout.fillHeight: true }
+                RowLayout {
+                    Layout.fillWidth: true; Item { Layout.fillWidth: true }
+                    AppButton { text: "取消"; onClicked: window.modelRemovalTarget = "" }
+                    AppButton { text: "移除"; danger: true; onClicked: { var target = window.modelRemovalTarget; window.modelRemovalTarget = ""; studio.removeComponent(target) } }
+                }
+            }
+        }
+    }
+    Rectangle {
+        anchors.fill: parent; visible: window.trayPromptVisible; z: 1100; color: "#aa080b10"
+        Rectangle {
+            width: 470; height: 210; anchors.centerIn: parent; radius: 18; color: window.panel; border.color: window.line
+            ColumnLayout {
+                anchors.fill: parent; anchors.margins: 24; spacing: 13
+                Text { text: "應用程式仍會在系統匣執行"; color: window.ink; font.pixelSize: 18; font.bold: true }
+                Text { text: "音訊與字幕處理會繼續。可從系統匣圖示重新開啟或完整結束。"; color: window.muted; font.pixelSize: 12; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                Item { Layout.fillHeight: true }
+                RowLayout {
+                    Layout.fillWidth: true
+                    AppButton { text: "完整結束"; onClicked: { studio.setPreference("minimize_to_tray", false); studio.quitApplication() } }
+                    Item { Layout.fillWidth: true }
+                    AppButton { text: "縮小到系統匣"; primary: true; onClicked: { studio.setPreference("tray_prompt_seen", true); window.trayPromptVisible = false; window.hide() } }
                 }
             }
         }

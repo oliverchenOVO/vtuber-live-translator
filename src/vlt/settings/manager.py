@@ -16,6 +16,19 @@ DEFAULTS = {
     "auto_finalize_source_closed": True,
     "auto_close_after_finalize": False,
     "silence_timeout_minutes": 0,
+    "first_run_complete": False,
+    "performance_preset": "balanced",
+    "start_with_windows": False,
+    "start_minimized": False,
+    "remember_audio_source": True,
+    "show_overlay_on_start": False,
+    "last_audio_source_label": "",
+    "minimize_to_tray": True,
+    "tray_prompt_seen": False,
+    "session_root": "",
+    "update_checks": True,
+    "overlay_geometry": {},
+    "advanced_visible": False,
 }
 
 

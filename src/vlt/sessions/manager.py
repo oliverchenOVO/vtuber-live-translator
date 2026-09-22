@@ -8,6 +8,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from vlt.database.database import Database
+from vlt.version import __version__
 
 
 def _atomic_json(path: Path, data: object) -> None:
@@ -40,12 +41,12 @@ def _language_name(code: str) -> str:
             "zh-TW": "Traditional Chinese", "zh-CN": "Simplified Chinese"}.get(code, code)
 
 
-APP_VERSION = "0.6.0"
+APP_VERSION = __version__
 
 
 class SessionManager:
-    def __init__(self, root: Path, database: Database):
-        self.root = root / "sessions"
+    def __init__(self, root: Path, database: Database, session_root: Path | None = None):
+        self.root = session_root or root / "sessions"
         self.root.mkdir(parents=True, exist_ok=True)
         self.db = database
 

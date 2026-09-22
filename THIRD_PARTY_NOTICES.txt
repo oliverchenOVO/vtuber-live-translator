@@ -1,0 +1,7 @@
+Vtuber Live Translator includes open source components. Their licenses are distributed with
+the packaged Python modules where applicable. Principal components include Qt for Python
+(LGPLv3/GPLv3/commercial), faster-whisper (MIT), CTranslate2 (MIT), sherpa-onnx (Apache-2.0),
+NumPy (BSD-3-Clause), psutil (BSD-3-Clause), comtypes (MIT), pycaw (MIT), soxr-python (LGPL-2.1),
+webrtcvad (MIT), OpenCC Python reimplementation (Apache-2.0), and PyInstaller (GPLv2 with a
+bootloader exception). Ollama is downloaded separately during First Run and is licensed under MIT.
+Model licenses are shown by their upstream distributors and may differ from the application.

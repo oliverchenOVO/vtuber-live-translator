@@ -12,10 +12,13 @@ from vlt.translation.base import TranslationRequest
 
 class OllamaTranslationBackend:
     def __init__(self, model: str = "qwen2.5:1.5b", endpoint: str = "http://127.0.0.1:11434",
-                 fallback_model: str = "qwen2.5:7b"):
+                 fallback_model: str = "qwen2.5:7b", allow_fallback: bool = True,
+                 cpu_threads: int = 4):
         self.model = model
         self.fallback_model = fallback_model
         self.endpoint = endpoint.rstrip("/")
+        self.allow_fallback = allow_fallback
+        self.cpu_threads = max(1, int(cpu_threads))
         self.target_language = "zh-TW"
         self.style = "natural"
         self.context: tuple[str, ...] = ()
@@ -46,7 +49,7 @@ class OllamaTranslationBackend:
                       if part.strip()]
             if len(chunks) > 1:
                 return " ".join(self._translate(replace(request, original=part)) for part in chunks)
-        return self._translate(request)
+        return self._translate(request, allow_fallback=self.allow_fallback)
 
     def _translate(self, request: TranslationRequest, *, allow_fallback: bool = True) -> str:
         self.set_target_language(request.target_language)
@@ -114,7 +117,7 @@ class OllamaTranslationBackend:
     def _generate(self, prompt: str, model: str) -> str:
         payload = json.dumps({
             "model": model, "prompt": prompt, "stream": False, "keep_alive": "10m",
-            "options": {"num_gpu": 0, "num_thread": 4, "num_predict": 128,
+            "options": {"num_gpu": 0, "num_thread": self.cpu_threads, "num_predict": 128,
                         "temperature": 0, "repeat_penalty": 1.08},
         }).encode("utf-8")
         req = urllib.request.Request(self.endpoint + "/api/generate", payload,
@@ -123,7 +126,7 @@ class OllamaTranslationBackend:
             with urllib.request.urlopen(req, timeout=25) as response:
                 return json.load(response)["response"].strip()
         except (urllib.error.URLError, TimeoutError, KeyError, ValueError) as exc:
-            raise RuntimeError("本機 Ollama 翻譯服務暫時不可用，請啟動服務並安裝 qwen2.5:1.5b 與 qwen2.5:7b。") from exc
+            raise RuntimeError("本機翻譯服務（Ollama runtime）暫時不可用，請在 Settings 修復 Translation 元件。") from exc
 
     @staticmethod
     def _verify_facts(original: str, result: str, terms: list[str]) -> None:

@@ -38,9 +38,12 @@ class FasterWhisperBackend:
     MAX_UTTERANCE_BYTES = 15 * SAMPLE_RATE * 2
 
     def __init__(self, model_name: str = "base", model_dir: Path | None = None,
+                 device: str = "auto", cpu_threads: int = 4,
                  model_factory: Callable[..., object] = WhisperModel):
         self.model_name = model_name
         self.model_dir = model_dir
+        self.device = device
+        self.cpu_threads = max(1, int(cpu_threads))
         self._model_factory = model_factory
         self._model = None
         self._active_device = "cpu"
@@ -99,12 +102,12 @@ class FasterWhisperBackend:
             return
         self._set_status("connecting", "正在啟動本機語音辨識；首次使用可能需要下載資料。")
         try:
-            use_cuda = ctranslate2.get_cuda_device_count() > 0
+            use_cuda = self.device != "cpu" and ctranslate2.get_cuda_device_count() > 0
         except Exception:
             logging.exception("CUDA device inspection failed; using CPU")
             use_cuda = False
         kwargs = {"device": "cuda" if use_cuda else "cpu",
-                  "compute_type": "float16" if use_cuda else "int8", "cpu_threads": 4}
+                  "compute_type": "float16" if use_cuda else "int8", "cpu_threads": self.cpu_threads}
         if self.model_dir is not None:
             kwargs["download_root"] = str(self.model_dir)
         try:
@@ -285,7 +288,7 @@ class FasterWhisperBackend:
             if self._active_device != "cuda":
                 raise
             logging.exception("CUDA ASR inference failed; falling back to CPU")
-            kwargs = {"device": "cpu", "compute_type": "int8", "cpu_threads": 4}
+            kwargs = {"device": "cpu", "compute_type": "int8", "cpu_threads": self.cpu_threads}
             if self.model_dir is not None:
                 kwargs["download_root"] = str(self.model_dir)
             self._model = self._model_factory(self.model_name, **kwargs)

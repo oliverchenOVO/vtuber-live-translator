@@ -76,9 +76,10 @@ class SherpaOnnxDiarizationBackend:
 
     MAX_CHUNK_BYTES = 16000 * 2  # At most one second per queued item.
 
-    def __init__(self, model_dir: Path, max_speakers: int = 4):
+    def __init__(self, model_dir: Path, max_speakers: int = 4, process_interval_ms: int = 3000):
         self.model_dir = model_dir
         self.max_speakers = max(1, max_speakers)
+        self.process_interval_ms = max(1000, int(process_interval_ms))
         self._queue: queue.Queue[AudioChunk] = queue.Queue(maxsize=256)
         self._lock = threading.RLock()
         self._stop = threading.Event()
@@ -340,7 +341,7 @@ class SherpaOnnxDiarizationBackend:
                     del pcm[:cut]
                     window_start += cut // 32
                 window_end = window_start + len(pcm) // 32
-                if window_end - last_process_end < 3000 or len(pcm) < 6 * 16000 * 2:
+                if window_end - last_process_end < self.process_interval_ms or len(pcm) < 6 * 16000 * 2:
                     continue
                 previous_end = last_process_end
                 last_process_end = window_end

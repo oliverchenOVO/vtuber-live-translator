@@ -2,6 +2,9 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import os
+import shutil
+import sys
 import threading
 import time
 from datetime import datetime
@@ -22,6 +25,14 @@ from vlt.translation.base import TranslationBackend, TranslationRequest
 from vlt.translation.glossary import Glossary
 from vlt.translation.ollama_backend import OllamaTranslationBackend
 from vlt.translation.pipeline import TranslationPipeline
+from vlt.product.cache import CacheManager
+from vlt.product.compatibility import windows_build
+from vlt.product.hardware import detect_hardware, recommended_preset
+from vlt.product.models import ModelManager
+from vlt.product.paths import ProductPaths
+from vlt.product.startup import set_start_with_windows
+from vlt.product.updates import UpdateChecker
+from vlt.version import __version__
 
 
 class StudioController(QObject):
@@ -38,6 +49,8 @@ class StudioController(QObject):
     diarizationNew = Signal(str)
     diarizationUpdated = Signal()
     diarizationOverlap = Signal(object)
+    componentProgress = Signal(str, int, str)
+    updateResult = Signal(str)
 
     def __init__(self, sessions: SessionManager, settings: SettingsManager,
                  asr_backend_factory: Callable[[], ASRBackend],
@@ -47,15 +60,29 @@ class StudioController(QObject):
         super().__init__()
         self.sessions = sessions
         self.settings = settings
+        self.paths = ProductPaths(settings.path.parent, sessions.root,
+                                  settings.path.parent / "models", settings.path.parent / "cache",
+                                  settings.path.parent / "logs", settings.path.parent / "runtime")
+        self.paths.ensure()
+        self.hardware = detect_hardware()
+        self.model_manager = ModelManager(self.paths.models, self.paths.cache, self.paths.runtime)
+        self.cache_manager = CacheManager(self.paths.cache)
+        self.cache_manager.prune()
+        self.update_checker = UpdateChecker(os.environ.get("VLT_RELEASES_API", ""))
+        self._component_state = {"component": "", "percent": 0, "message": "", "busy": False,
+                                 **self.model_manager.status()}
+        self._audio_test_only = False
         self._asr_backend_factory = asr_backend_factory
         self._selected_id = ""
-        self._overlay_visible = False
+        self._overlay_visible = bool(settings.values["show_overlay_on_start"])
         self._message = "選擇程式音訊後開始監聽；逐字稿會即時保存至 Session。"
         self.audio = audio or WindowsProcessLoopback()
         self._audio_sources: list[dict] = []
         self._pending_audio_source = ""
         self._audio_busy = False
         self._refresh_inflight = False
+        self._refresh_thread: threading.Thread | None = None
+        self._shutting_down = False
         self._audio_status = "請選擇音訊來源"
         self._display_peak = 0.0
         self._asr_state = "idle"
@@ -83,14 +110,17 @@ class StudioController(QObject):
         self._translation_status = "正在等待語音…"
         self._translation_latency_ms: float | None = None
         self._translation_retry_after: dict[str, float] = {}
+        self._translation_backend_factory = translation_backend_factory or OllamaTranslationBackend
         self._translation_pipeline = TranslationPipeline(
-            translation_backend_factory or OllamaTranslationBackend,
+            self._translation_backend_factory,
             lambda request, result, latency, error: self.translationReady.emit(request, result, latency, error))
         self._translation_pipeline.start()
         self.translationReady.connect(self._on_translation_ready)
         self.diarizationNew.connect(self._on_diarization_new)
         self.diarizationUpdated.connect(self._on_diarization_updated)
         self.diarizationOverlap.connect(self._on_diarization_overlap)
+        self.componentProgress.connect(self._on_component_progress)
+        self.updateResult.connect(self._on_update_result)
         self.sourcesReady.connect(self._on_sources_ready)
         self.audioOperationDone.connect(self._on_audio_operation_done)
         self.asrRecognition.connect(self._on_asr_recognition)
@@ -110,6 +140,205 @@ class StudioController(QObject):
         self._pending_timer.timeout.connect(self._enqueue_pending_translations)
         self._pending_timer.start()
         self.refreshAudioSources()
+
+    @Property(str, constant=True)
+    def appVersion(self) -> str:
+        return __version__
+
+    @Property(str, constant=True)
+    def appBuild(self) -> str:
+        return f"{__version__}.{windows_build()}"
+
+    @Property(bool, notify=changed)
+    def firstRunComplete(self) -> bool:
+        return bool(self.settings.values["first_run_complete"])
+
+    @Property("QVariantMap", notify=changed)
+    def hardwareProfile(self) -> dict:
+        value = self.hardware.to_dict()
+        value["recommended"] = recommended_preset(self.hardware)
+        return value
+
+    @Property("QVariantMap", notify=changed)
+    def componentState(self) -> dict:
+        return dict(self._component_state)
+
+    @Property(str, notify=changed)
+    def dataFolder(self) -> str:
+        return str(self.paths.root)
+
+    @Property(str, constant=True)
+    def logFolder(self) -> str:
+        return str(self.paths.logs)
+
+    @Property(str, notify=changed)
+    def sessionFolder(self) -> str:
+        return str(self.sessions.root)
+
+    @Property(str, notify=changed)
+    def cacheSize(self) -> str:
+        return f"{self.cache_manager.size() / 1024 ** 2:.1f} MB"
+
+    @Slot(str)
+    def selectPerformancePreset(self, name: str) -> None:
+        if name not in ("gaming", "balanced", "quality"):
+            return
+        self.settings.set("performance_preset", name)
+        self._translation_pipeline.stop()
+        self._translation_pipeline = TranslationPipeline(
+            self._translation_backend_factory,
+            lambda request, result, latency, error:
+                self.translationReady.emit(request, result, latency, error))
+        self._translation_pipeline.start()
+        if self.audio.state != "capturing":
+            self._message = "效能模式已套用；下一次監聽會使用新的 ASR 與 Speaker 設定。"
+        else:
+            self._message = "翻譯效能模式已套用；ASR 與 Speaker 設定會在下一個 Session 套用。"
+        self.changed.emit()
+
+    @Slot(str)
+    def installComponent(self, component: str) -> None:
+        if self._component_state["busy"] or component not in ("asr", "translation", "diarization"):
+            return
+        self._component_state.update(component=component, percent=0, message="正在檢查元件…", busy=True)
+        self.changed.emit()
+
+        def run() -> None:
+            try:
+                self.model_manager.install(component,
+                    lambda message, percent: self.componentProgress.emit(component, percent, message))
+                self.componentProgress.emit(component, 100, "安裝完成")
+            except Exception as exc:
+                logging.exception("Component installation failed: %s", component)
+                self.componentProgress.emit(component, -1, str(exc))
+        threading.Thread(target=run, name=f"install-{component}", daemon=True).start()
+
+    @Slot(str)
+    def removeComponent(self, component: str) -> None:
+        if self._component_state["busy"] or component not in ("asr", "translation", "diarization"):
+            return
+        self._component_state.update(component=component, percent=0, message="正在移除元件…", busy=True)
+        self.changed.emit()
+
+        def run() -> None:
+            try:
+                self.model_manager.remove(component)
+                self.componentProgress.emit(component, 100, "元件已移除；需要時可重新下載。")
+            except Exception as exc:
+                logging.exception("Component removal failed: %s", component)
+                self.componentProgress.emit(component, -1, str(exc))
+        threading.Thread(target=run, name=f"remove-{component}", daemon=True).start()
+
+    @Slot(str, int, str)
+    def _on_component_progress(self, component: str, percent: int, message: str) -> None:
+        self._component_state.update(component=component, percent=max(0, percent), message=message,
+                                     busy=0 <= percent < 100)
+        if percent == 100:
+            self._component_state.update(self.model_manager.status())
+        self.changed.emit()
+
+    @Slot()
+    def completeFirstRun(self) -> None:
+        self.settings.set("first_run_complete", True)
+        self.changed.emit()
+
+    @Slot()
+    def clearCache(self) -> None:
+        freed = self.cache_manager.clear()
+        self._message = f"已清除 {freed / 1024 ** 2:.1f} MB 快取。"
+        self.changed.emit()
+
+    @Slot()
+    def checkForUpdates(self) -> None:
+        self._message = "正在檢查更新…"
+        self.changed.emit()
+
+        def run() -> None:
+            try:
+                info = self.update_checker.check(__version__)
+                if info.available:
+                    message = f"Vtuber Live Translator {info.version} 已可下載。"
+                else:
+                    message = info.message or "目前已是最新版本。"
+            except Exception:
+                logging.exception("Update check failed")
+                message = "目前無法檢查更新，請稍後再試。"
+            self.updateResult.emit(message)
+        threading.Thread(target=run, name="update-check", daemon=True).start()
+
+    @Slot(str)
+    def _on_update_result(self, message: str) -> None:
+        self._message = message
+        self.changed.emit()
+
+    @Slot()
+    def quitApplication(self) -> None:
+        QCoreApplication.quit()
+
+    @Slot()
+    def openDataFolder(self) -> None:
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(self.paths.root)))
+
+    @Slot()
+    def openLogFolder(self) -> None:
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(self.paths.logs)))
+
+    def _open_bundled_document(self, name: str) -> None:
+        base = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parents[3]))
+        target = base / name
+        if target.exists():
+            QDesktopServices.openUrl(QUrl.fromLocalFile(str(target)))
+        else:
+            self._message = f"找不到 {name}。請重新安裝應用程式。"
+            self.changed.emit()
+
+    @Slot()
+    def openLicense(self) -> None:
+        self._open_bundled_document("LICENSE.txt")
+
+    @Slot()
+    def openOpenSourceNotices(self) -> None:
+        self._open_bundled_document("THIRD_PARTY_NOTICES.txt")
+
+    @Slot(str)
+    def setSessionRoot(self, value: str) -> None:
+        path = Path(value.strip()).expanduser() if value.strip() else self.paths.sessions
+        try:
+            path.mkdir(parents=True, exist_ok=True)
+            free = shutil.disk_usage(path).free
+            required = 512 * 1024 ** 2
+            if free < required:
+                self._message = (f"Session 儲存空間不足。Available: {free / 1024 ** 3:.1f} GB · "
+                                 f"Required: {required / 1024 ** 3:.1f} GB")
+                self.changed.emit()
+                return
+            probe = path / ".vlt-write-test"
+            probe.write_text("ok", encoding="utf-8")
+            probe.unlink()
+            self.sessions.root = path
+            self.settings.set("session_root", "" if path == self.paths.sessions else str(path.resolve()))
+            self._message = "新的 Session 將保存到指定位置；既有 History 保持可用。"
+        except OSError:
+            self._message = "無法使用此 Session 儲存位置，請確認路徑與寫入權限。"
+        self.changed.emit()
+
+    @Slot()
+    def startAudioTest(self) -> None:
+        if self.audioBusy or not self._pending_audio_source:
+            return
+        self._audio_test_only = True
+        source_id = self._pending_audio_source
+        self._audio_busy = True
+        self._audio_status = "正在測試指定程式音訊…"
+        self.audioChanged.emit()
+        def run() -> None:
+            try:
+                asyncio.run(self.audio.select_source(source_id))
+                asyncio.run(self.audio.start())
+                self.audioOperationDone.emit("")
+            except Exception as exc:
+                self.audioOperationDone.emit(str(exc))
+        threading.Thread(target=run, name="audio-test", daemon=True).start()
 
     @Property("QVariantList", notify=changed)
     def history(self) -> list[dict]:
@@ -498,27 +727,50 @@ class StudioController(QObject):
                             "display": f"{source.label}  ·  PID {source.pid}  ·  "
                                        f"{'有音訊' if source.is_outputting else '目前無聲'}"}
                            for source in sources]
-                self.sourcesReady.emit({"sources": payload, "error": ""})
+                if not self._shutting_down:
+                    try:
+                        self.sourcesReady.emit({"sources": payload, "error": ""})
+                    except RuntimeError:
+                        pass
             except Exception:
                 logging.exception("Audio source enumeration failed")
-                self.sourcesReady.emit({"sources": [], "error": "無法讀取 Windows 音訊來源。請確認音訊裝置可用，再按重新偵測。"})
+                if not self._shutting_down:
+                    try:
+                        self.sourcesReady.emit({"sources": [], "error": "無法讀取 Windows 音訊來源。請確認音訊裝置可用，再按重新偵測。"})
+                    except RuntimeError:
+                        pass
 
-        threading.Thread(target=run, name="audio-source-refresh", daemon=True).start()
+        self._refresh_thread = threading.Thread(target=run, name="audio-source-refresh", daemon=True)
+        self._refresh_thread.start()
 
     @Slot(object)
     def _on_sources_ready(self, result: dict) -> None:
         self._refresh_inflight = False
         sources = result["sources"]
-        self._audio_sources = sources
         if result["error"] and self.audio.state != "capturing":
             self._audio_status = result["error"]
+        remembered = str(self.settings.values.get("last_audio_source_label", ""))
+        selected = (next((item for item in sources if item["label"] == remembered), None)
+                    if self.settings.values.get("remember_audio_source") else None)
+        if selected:
+            sources = [selected, *(item for item in sources if item["id"] != selected["id"])]
+            if not any(item["id"] == self._pending_audio_source for item in sources):
+                self._pending_audio_source = selected["id"]
+        elif self.audio.state != "capturing" and not any(
+                item["id"] == self._pending_audio_source for item in sources):
+            self._pending_audio_source = ""
         if not self._pending_audio_source and sources:
-            self._pending_audio_source = sources[0]["id"]
+            self._pending_audio_source = (selected or sources[0])["id"]
+        self._audio_sources = sources
         self.audioChanged.emit()
 
     @Slot(str)
     def selectAudioSource(self, source_id: str) -> None:
         self._pending_audio_source = source_id
+        if self.settings.values.get("remember_audio_source"):
+            selected = next((item for item in self._audio_sources if item["id"] == source_id), None)
+            if selected:
+                self.settings.set("last_audio_source_label", selected["label"])
         self._audio_status = "已選擇來源，按「開始監聽」檢查音量。"
         self.audioChanged.emit()
 
@@ -526,6 +778,7 @@ class StudioController(QObject):
     def startAudioCapture(self) -> None:
         if self.audioBusy or not self._pending_audio_source:
             return
+        self._audio_test_only = False
         session = self.selectedSession
         try:
             if not session or session["status"] == "completed":
@@ -594,9 +847,12 @@ class StudioController(QObject):
         if not error and self.audio.state == "capturing":
             self._source_error_handled = False
             self._last_audible_at = time.monotonic()
-            self._start_asr()
+            if not self._audio_test_only:
+                self._start_asr()
         elif self.audio.state != "capturing" and self._asr_pipeline:
             self._asr_pipeline.stop()
+        if self.audio.state != "capturing":
+            self._audio_test_only = False
         if self._finish_requested and self.audio.state == "capturing":
             self.stopAudioCapture()
         elif self._finish_requested and not self._asr_pipeline and self.audio.state != "capturing":
@@ -889,10 +1145,12 @@ class StudioController(QObject):
         self.audioChanged.emit()
 
     def shutdown(self) -> None:
+        self._shutting_down = True
         self._audio_timer.stop()
         self._source_timer.stop()
         self._pending_timer.stop()
         self._translation_pipeline.stop()
+        self.model_manager.close()
         if self._diarization:
             self._diarization.stop()
         if self._asr_pipeline:
@@ -901,6 +1159,8 @@ class StudioController(QObject):
             asyncio.run(self.audio.stop())
         if self._asr_thread and self._asr_thread.is_alive():
             self._asr_thread.join(timeout=10)
+        if self._refresh_thread and self._refresh_thread.is_alive():
+            self._refresh_thread.join(timeout=15)
         QCoreApplication.processEvents()
 
     @Slot()
@@ -995,6 +1255,8 @@ class StudioController(QObject):
     @Slot(str, "QVariant")
     def setPreference(self, key: str, value: object) -> None:
         self.settings.set(key, value)
+        if key == "start_with_windows":
+            set_start_with_windows(bool(value))
         if key == "source_language" and self._asr_pipeline:
             self._asr_pipeline.set_language(str(value))
         if key == "source_language" and self._selected_id:

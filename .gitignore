@@ -5,10 +5,12 @@ __pycache__/
 *.egg-info/
 build/
 dist/
-*.spec
 .env
 /data/
 /logs/
 /models/
 /cache/
 /sessions/
+/release/
+/installer/output/
+/packaging/version_info.txt

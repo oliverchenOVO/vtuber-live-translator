@@ -1,6 +1,43 @@
 # Vtuber Live Translator
 
-Windows 即時翻譯桌面程式，開發中。此版本是 **Phase 6**：保留 Windows 指定程式擷取、串流辨識、本機即時中譯與 Speaker 分離，加入可恢復的 Session History、Speaker 人工修正、搜尋與 Markdown/SRT/VTT 最終輸出。**目前尚無正式 EXE**。
+Windows 即時翻譯桌面程式 **1.0.0 Release Candidate**。指定一個正在播放聲音的 Windows 程式後，本機完成音訊擷取、串流辨識、中文翻譯、Speaker 分離、Overlay 與可恢復的逐字稿。正式安裝版不需要 Python、Git、終端機或預先安裝 Ollama。
+
+## 安裝版
+
+在 Windows 11 或 Windows Server 2022 build **20348 以上**執行 `VtuberLiveTranslator-Setup.exe`。安裝程式採每位使用者安裝，不要求系統管理員權限；可建立桌面與開始功能表捷徑。首次啟動會引導選擇繁體／簡體中文、推薦效能模式、下載模型並測試指定程式音訊。
+
+應用資料預設位於 `%LOCALAPPDATA%\VtuberLiveTranslator`：
+
+```text
+Sessions/   Models/   Cache/   Logs/   Runtime/   settings.json
+```
+
+Settings 可另選新 Session 的儲存位置；既有 History 保留原路徑。升級不會搬動或刪除使用者資料，卸載時才會詢問是否一併刪除。模型與快取可由 Settings 下載、修復、移除或清理。
+
+程式採單一執行個體；再次啟動會喚回既有 Studio。系統匣可開啟 Studio、切換 Overlay、開始／停止 Session、進入設定或完整結束。診斷 log 每檔最多 5 MB、保留五個備份；未處理的 UI 錯誤另覆寫 `Logs\crash.log`，下次啟動會把未完成 Session 標記為可恢復。Cache 預設上限 2 GB，啟動時自動清理最舊檔案。
+
+### 首次下載與執行環境
+
+| 元件 | 策略 | 說明 |
+| --- | --- | --- |
+| PySide6 / QML、Python runtime | 隨程式 bundle | 使用者不需另裝 Python；不包含 Qt WebEngine 等未使用模組。 |
+| CTranslate2、faster-whisper、soxr、sherpa-onnx | 隨程式 bundle | native DLL 與 Python bindings 已包含。 |
+| SQLite、Windows Process Loopback | 系統／程式 bundle | SQLite 隨 Python；Process Loopback 由 Windows Audio API 提供。 |
+| Faster-Whisper base | First Run 下載 | 約 145 MB；High Quality 會改用較大的 small model。 |
+| Diarization ONNX 模型 | First Run 可選下載 | 約 35 MB。 |
+| Ollama 0.34.2 runtime | First Run 自動下載 | 1.36 GiB 壓縮檔、解壓後 1.80 GiB；固定版本與 SHA-256，支援續傳。 |
+| Qwen2.5 1.5B | First Run 自動下載 | 約 986 MB 量化模型。 |
+| Qwen2.5 7B | 選用 | 只供 High Quality fallback；Gaming 與 Balanced 不下載也不呼叫。 |
+
+首次網路下載合計約 **2.45 GB**；保留下載快取時，程式與必要模型完整安裝約 **4.7 GB**，清除下載快取後約 **3.3 GB**。下載前會要求至少 7 GB 可用空間，預留解壓與模型建立空間；暫存 `.part` 檔支援續傳，完成時驗證 SHA-256。錯誤可在精靈或 Settings 重試。AI 模型在開始 Session 時才載入，避免拖慢一般冷啟動。
+
+### 效能模式
+
+* **Gaming Priority**：base ASR、CPU 2 threads、較低頻率 Speaker 分析、1.5B 翻譯且禁止 7B fallback。
+* **Balanced**：base ASR、自動選 GPU/CPU、CPU 最多 4 threads、1.5B 翻譯且禁止 7B fallback。
+* **High Quality**：small ASR、CPU 最多 6 threads，允許 7B 翻譯修正；需要較多 RAM/VRAM。
+
+NVIDIA CUDA 不可用時會自動使用 CPU int8 並在介面提示，不會中止程式。
 
 ## 開發版啟動
 
@@ -20,7 +57,7 @@ ollama pull qwen2.5:7b
 .\.venv\Scripts\python.exe -m pytest
 ```
 
-使用者資料預設保存在 Windows 的 `%LOCALAPPDATA%\VtuberLiveTranslator`；可在開發或測試時用 `VLT_DATA_DIR` 改變位置。Session 使用 UUID 作為身份，SQLite 記錄路徑和狀態，個別資料夾保存 `session.json` 與 `transcript.json`。未先建立 Session 時，按「開始監聽」會自動建立；中斷後從 History 選回原 Session 可在同一資料夾繼續。
+開發版也使用 `%LOCALAPPDATA%\VtuberLiveTranslator`；可在開發或測試時用 `VLT_DATA_DIR` 改變位置。Session 使用 UUID 作為身份，SQLite 記錄路徑和狀態，個別資料夾保存 `session.json` 與 `transcript.json`。未先建立 Session 時，按「開始監聽」會自動建立；中斷後從 History 選回原 Session 可在同一資料夾繼續。
 
 ## 音訊監聽
 
@@ -38,7 +75,7 @@ ollama pull qwen2.5:7b
 
 ## 即時翻譯
 
-本機 `OllamaTranslationBackend` 使用 Qwen2.5 1.5B 量化模型（只有 Final 必要時才用 CPU 的 7B 模型補救事實檢查未通過的句子；Partial 永不觸發 7B）。不需要 API Key，翻譯文字只傳至 `127.0.0.1:11434`，模型以 `num_gpu=0` 與四個 CPU threads 運行，不佔用 Faster-Whisper 的 GPU 計算。請先啟動 Ollama 並拉取上述兩個模型；若服務不可用，原文會繼續保存，翻譯標記 `translation_pending`，約 30 秒後重試。開啟既有 Session 或恢復中斷 Session 也會掃描 pending，不建立新資料夾。
+本機 `OllamaTranslationBackend` 使用 Qwen2.5 1.5B 量化模型；7B 只允許在 High Quality 模式作 Final 事實修正，Gaming 與 Balanced 不會載入它，Partial 也永不觸發 7B。First Run 或 Settings 的 Model Manager 會下載、啟動及管理固定版本的 Ollama runtime 與 1.5B 模型，使用者不需要安裝 Ollama CLI 或執行 `ollama pull`。翻譯不需要 API Key，文字只傳至 `127.0.0.1:11434`，模型以 `num_gpu=0` 與效能模式指定的 CPU threads 運行，不佔用 Faster-Whisper 的 GPU 計算。若服務不可用，原文會繼續保存，翻譯標記 `translation_pending`，約 30 秒後重試；使用者可直接在 Settings 修復 Translation 元件。開啟既有 Session 或恢復中斷 Session 也會掃描 pending，不建立新資料夾。
 
 右側可以切換 `zh-TW` / `zh-CN` 和 Natural / Faithful / Minimal Subtitle；詞庫在 Dictionary 中增改刪並用 JSON 路徑匯入、匯出。兩個中文 locale 會進入模型 prompt，OpenCC 只作最後字形檢查，指定譯名最後套用。最近五句、30 秒內的 Final 原文用於消歧。翻譯部分更新同一 LIVE 項目；ASR Final 先持久化原文與 pending 標記，再對完整原文重新翻譯並原子更新 SQLite/JSON。長句按句子邊界翻譯，避免過長 prompt；明顯丟失數字、時間、否定、推測、譯名時拒絕 Final 並等待重試。這是保守檢查，並不能形式化保證每一項語意完全正確，重要內容仍需人工核對。
 
@@ -86,6 +123,24 @@ $env:PYTHONPATH="src"
 
 `scripts\verify_isolation.py --chrome-pid 12345` 會在另一個 Python 程序播放合成測試音，並比較兩個程序的記憶體擷取頻譜；測試音與 capture 都不寫入硬碟。
 
+## Release build
+
+開發機需 Python 3.12 virtual environment、PyInstaller 與 Inno Setup 6。以下命令會先執行完整測試，再清理舊產物、建立 portable app、編譯 installer 並生成 SHA-256：
+
+```powershell
+.\scripts\build_release.ps1
+```
+
+輸出：
+
+```text
+release\VtuberLiveTranslator\VtuberLiveTranslator.exe
+release\VtuberLiveTranslator-Setup.exe
+release\SHA256SUMS.txt
+```
+
+版本唯一來源為 `src\vlt\version.py`，build script 會將同一版本注入 EXE metadata 與 installer。`data/`、`release/`、模型、Session、log、`.env` 與本機憑證均由 `.gitignore` 排除。
+
 ## 階段
 
 - Phase 1：Studio、Overlay 預覽、設定、Session/DB 基礎，已完成。
@@ -94,4 +149,5 @@ $env:PYTHONPATH="src"
 - Phase 4：本機翻譯、詞庫與 Overlay，已完成。
 - Phase 5：即時 Speaker 分離、管理、多人事件與顯示名稱輸出，已完成。
 - Phase 6：Session History、中斷恢復、Speaker 修正、搜尋與 Markdown/SRT/VTT 匯出，已完成。
-- 後續階段尚未開始。
+- Phase 7：Windows EXE/Installer、First Run、模型管理、硬體模式、系統匣、單一執行個體與 release hardening，已完成。
+- Phase 8 尚未開始。

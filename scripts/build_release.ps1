@@ -1,0 +1,62 @@
+[CmdletBinding()]
+param(
+    [switch]$SkipTests,
+    [switch]$SkipInstaller
+)
+$ErrorActionPreference = 'Stop'
+$ProjectRoot = Split-Path -Parent $PSScriptRoot
+$Python = Join-Path $ProjectRoot '.venv\Scripts\python.exe'
+$PyInstaller = Join-Path $ProjectRoot '.venv\Scripts\pyinstaller.exe'
+if (-not (Test-Path -LiteralPath $Python)) { throw '找不到 .venv Python。' }
+$BuildNumber = [Environment]::OSVersion.Version.Build
+if ($BuildNumber -lt 20348) { throw "Windows Build $BuildNumber 不支援 Process Loopback；需要 20348 或更新版本。" }
+$VersionLine = Get-Content -LiteralPath (Join-Path $ProjectRoot 'src\vlt\version.py') | Where-Object { $_ -match '^__version__' }
+$Version = [regex]::Match($VersionLine, '"([0-9]+\.[0-9]+\.[0-9]+)"').Groups[1].Value
+if (-not $Version) { throw '無法讀取產品版本。' }
+
+Set-Location -LiteralPath $ProjectRoot
+if (-not $SkipTests) { & $Python -m pytest -q; if ($LASTEXITCODE) { throw '測試失敗。' } }
+foreach ($name in @('build', 'dist', 'release')) {
+    $target = Join-Path $ProjectRoot $name
+    if (Test-Path -LiteralPath $target) {
+        $resolved = (Resolve-Path -LiteralPath $target).Path
+        if (-not $resolved.StartsWith($ProjectRoot, [StringComparison]::OrdinalIgnoreCase)) { throw "拒絕清除工作區外路徑：$resolved" }
+        Remove-Item -LiteralPath $resolved -Recurse -Force
+    }
+}
+New-Item -ItemType Directory -Path (Join-Path $ProjectRoot 'release') | Out-Null
+$VersionParts = $Version.Split('.') | ForEach-Object { [int]$_ }
+$VersionInfo = @"
+VSVersionInfo(
+  ffi=FixedFileInfo(filevers=($($VersionParts[0]),$($VersionParts[1]),$($VersionParts[2]),0), prodvers=($($VersionParts[0]),$($VersionParts[1]),$($VersionParts[2]),0), mask=0x3f, flags=0x0,
+    OS=0x40004, fileType=0x1, subtype=0x0, date=(0,0)),
+  kids=[StringFileInfo([StringTable('040904B0', [
+    StringStruct('CompanyName', 'Vtuber Live Translator'),
+    StringStruct('FileDescription', 'Vtuber Live Translator'),
+    StringStruct('FileVersion', '$Version'),
+    StringStruct('InternalName', 'VtuberLiveTranslator'),
+    StringStruct('OriginalFilename', 'VtuberLiveTranslator.exe'),
+    StringStruct('ProductName', 'Vtuber Live Translator'),
+    StringStruct('ProductVersion', '$Version')])]), VarFileInfo([VarStruct('Translation', [1033,1200])])])
+"@
+[IO.File]::WriteAllText((Join-Path $ProjectRoot 'packaging\version_info.txt'), $VersionInfo,
+                        [Text.UTF8Encoding]::new($false))
+& $PyInstaller --noconfirm --clean (Join-Path $ProjectRoot 'packaging\VtuberLiveTranslator.spec')
+if ($LASTEXITCODE) { throw 'EXE 建置失敗。' }
+$AppExe = Join-Path $ProjectRoot 'dist\VtuberLiveTranslator\VtuberLiveTranslator.exe'
+Copy-Item -LiteralPath (Join-Path $ProjectRoot 'dist\VtuberLiveTranslator') -Destination (Join-Path $ProjectRoot 'release\VtuberLiveTranslator') -Recurse
+
+if (-not $SkipInstaller) {
+    $Iscc = Join-Path $env:LOCALAPPDATA 'Programs\Inno Setup 6\ISCC.exe'
+    if (-not (Test-Path -LiteralPath $Iscc)) { $Iscc = (Get-Command iscc.exe -ErrorAction Stop).Source }
+    & $Iscc "/DMyAppVersion=$Version" (Join-Path $ProjectRoot 'installer\VtuberLiveTranslator.iss')
+    if ($LASTEXITCODE) { throw 'Installer 建置失敗。' }
+    Copy-Item -LiteralPath (Join-Path $ProjectRoot 'installer\output\VtuberLiveTranslator-Setup.exe') -Destination (Join-Path $ProjectRoot 'release\VtuberLiveTranslator-Setup.exe')
+}
+$HashTargets = @(Get-ChildItem -LiteralPath (Join-Path $ProjectRoot 'release') -File)
+$HashTargets += Get-Item -LiteralPath (Join-Path $ProjectRoot 'release\VtuberLiveTranslator\VtuberLiveTranslator.exe')
+$HashTargets | ForEach-Object {
+    $hash = Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256
+    "$($hash.Hash.ToLower())  $($_.Name)"
+} | Set-Content -LiteralPath (Join-Path $ProjectRoot 'release\SHA256SUMS.txt') -Encoding ascii
+Write-Host "Vtuber Live Translator $Version release ready: $(Join-Path $ProjectRoot 'release')"
