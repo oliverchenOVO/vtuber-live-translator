@@ -12,6 +12,10 @@ DEFAULTS = {
     "overlay_mode": "gaming",
     "overlay_opacity": 0.9,
     "save_audio": False,
+    "subtitle_mode": "translation",
+    "auto_finalize_source_closed": True,
+    "auto_close_after_finalize": False,
+    "silence_timeout_minutes": 0,
 }
 
 
@@ -36,4 +40,3 @@ class SettingsManager:
         temporary = self.path.with_suffix(".tmp")
         temporary.write_text(json.dumps(self.values, ensure_ascii=False, indent=2), encoding="utf-8")
         temporary.replace(self.path)
-

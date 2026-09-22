@@ -137,12 +137,12 @@ ApplicationWindow {
                     color: "#202a32"; border.color: "#34474b"
                     Column {
                         anchors.fill: parent; anchors.margins: 13; spacing: 7
-                        Text { text: "●  PHASE 5"; color: window.accent; font.pixelSize: 11; font.bold: true; font.letterSpacing: 1 }
-                        Text { text: "Live Translation"; color: window.ink; font.pixelSize: 13; font.bold: true }
-                        Text { text: "即時中譯 · Speaker 分離"; color: window.muted; font.pixelSize: 11; width: 150; wrapMode: Text.WordWrap }
+                        Text { text: "●  PHASE 6"; color: window.accent; font.pixelSize: 11; font.bold: true; font.letterSpacing: 1 }
+                        Text { text: "Session Archive"; color: window.ink; font.pixelSize: 13; font.bold: true }
+                        Text { text: "History · 搜尋 · 最終輸出"; color: window.muted; font.pixelSize: 11; width: 150; wrapMode: Text.WordWrap }
                     }
                 }
-                Text { text: "v0.5.0  ·  Windows preview"; color: "#647185"; font.pixelSize: 10; Layout.topMargin: 9 }
+                Text { text: "v0.6.0  ·  Windows preview"; color: "#647185"; font.pixelSize: 10; Layout.topMargin: 9 }
             }
         }
 
@@ -205,6 +205,23 @@ ApplicationWindow {
                                   window.page === "Exports" ? "查看隨 Session 更新的字幕輸出。" :
                                   "此區域將隨後續階段開放。"
                             color: window.muted; font.pixelSize: 13
+                        }
+
+                        InfoCard {
+                            visible: window.page === "LIVE" && !!studio.interruptedSession.session_id
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 130
+                            color: "#2b2720"; border.color: "#695637"
+                            ColumnLayout {
+                                anchors.fill: parent; anchors.margins: 18; spacing: 9
+                                Text { text: "上次 Session 未正常結束"; color: "#f0cd8d"; font.pixelSize: 15; font.bold: true }
+                                Text { text: studio.interruptedSession.title + "  ·  " + studio.interruptedSession.duration; color: window.ink; font.pixelSize: 12 }
+                                RowLayout {
+                                    AppButton { text: "繼續原 Session"; primary: true; onClicked: studio.continueInterruptedSession(studio.interruptedSession.session_id) }
+                                    AppButton { text: "完成並封存"; onClicked: studio.archiveInterruptedSession(studio.interruptedSession.session_id) }
+                                    AppButton { text: "新建 Session"; onClicked: studio.createSession() }
+                                }
+                            }
                         }
 
                         InfoCard {
@@ -307,9 +324,35 @@ ApplicationWindow {
                                     Layout.fillWidth: true
                                     Text { text: "逐字稿"; color: window.ink; font.pixelSize: 16; font.bold: true }
                                     Item { Layout.fillWidth: true }
+                                    DarkField { id: transcriptSearch; Layout.preferredWidth: 230; placeholderText: "搜尋原文、譯文或 Speaker"; onAccepted: studio.searchTranscript(text) }
+                                    AppButton { text: "搜尋"; onClicked: studio.searchTranscript(transcriptSearch.text) }
                                     Text { text: "SESSION VIEW"; color: "#607287"; font.pixelSize: 10; font.bold: true; font.letterSpacing: 1.4 }
                                 }
                                 Rectangle { Layout.fillWidth: true; height: 1; color: window.line }
+                                Text { visible: transcriptSearch.text.length > 0; text: studio.searchResults.length + " 筆符合結果"; color: window.muted; font.pixelSize: 11 }
+                                Flow {
+                                    visible: studio.searchResults.length > 0
+                                    Layout.fillWidth: true; spacing: 7
+                                    Repeater {
+                                        model: studio.searchResults
+                                        delegate: AppButton {
+                                            required property var modelData
+                                            text: window.formatTime(modelData.start_ms) + " · " + (modelData.speaker_display_name || "未知說話人")
+                                            onClicked: studio.showSearchResult(modelData.id)
+                                        }
+                                    }
+                                }
+                                Rectangle {
+                                    visible: !!studio.focusedSegment.id
+                                    Layout.fillWidth: true; implicitHeight: focusColumn.implicitHeight + 24
+                                    radius: 10; color: "#263d3c"; border.color: "#3d6961"
+                                    ColumnLayout {
+                                        id: focusColumn; anchors.fill: parent; anchors.margins: 12; spacing: 6
+                                        Text { text: "搜尋結果 · " + window.formatTime(studio.focusedSegment.start_ms || 0); color: window.accent; font.pixelSize: 11; font.bold: true }
+                                        Text { text: studio.focusedSegment.translation ? studio.focusedSegment.translation.text : ""; visible: !!studio.focusedSegment.translation; color: window.ink; font.pixelSize: 15; font.bold: true; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                                        Text { text: studio.focusedSegment.original || ""; color: "#b0bdca"; font.pixelSize: 13; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                                    }
+                                }
                                 Item { Layout.fillHeight: true; visible: studio.transcriptSegments.length === 0 && !studio.liveSegment.id }
                                 Text {
                                     visible: studio.transcriptSegments.length === 0 && !studio.liveSegment.id
@@ -345,12 +388,12 @@ ApplicationWindow {
                                             Text { visible: modelData.type !== "multi_speaker_event" && !modelData.translation; text: "翻譯等待中…"; color: window.muted; font.pixelSize: 11 }
                                             Text { visible: modelData.type !== "multi_speaker_event"; Layout.fillWidth: true; text: modelData.original || ""; wrapMode: Text.WordWrap; color: "#b0bdca"; font.pixelSize: 14 }
                                             RowLayout {
-                                                visible: modelData.type === "speech" && studio.speakers.length > 1
+                                                visible: modelData.type === "speech"
                                                 Text { text: "Speaker"; color: window.muted; font.pixelSize: 10 }
                                                 ComboBox {
                                                     id: segmentSpeakerPicker
                                                     Layout.preferredWidth: 145
-                                                    model: studio.speakers.map(s => s.speaker_id)
+                                                    model: ["unknown"].concat(studio.speakers.map(s => s.speaker_id))
                                                     currentIndex: Math.max(0, model.indexOf(modelData.speaker_id))
                                                 }
                                                 AppButton { text: "手動指定"; onClicked: studio.assignSegmentSpeaker(modelData.id, segmentSpeakerPicker.currentText) }
@@ -383,25 +426,54 @@ ApplicationWindow {
                             Layout.preferredHeight: Math.max(150, historyColumn.implicitHeight + 38)
                             ColumnLayout {
                                 id: historyColumn
-                                anchors.fill: parent; anchors.margins: 18; spacing: 9
+                                anchors.fill: parent; anchors.margins: 18; spacing: 12
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    Text { text: "SESSION HISTORY"; color: window.ink; font.pixelSize: 15; font.bold: true; font.letterSpacing: 1 }
+                                    Item { Layout.fillWidth: true }
+                                    Text { text: studio.history.length + " sessions"; color: window.muted; font.pixelSize: 11 }
+                                }
                                 Text { visible: studio.history.length === 0; text: "尚未建立 Session。可從 LIVE 建立空白 Session。"; color: window.muted; font.pixelSize: 13 }
                                 Repeater {
                                     model: studio.history
                                     delegate: Rectangle {
                                         required property var modelData
-                                        Layout.fillWidth: true; height: 65; radius: 10
-                                        color: historyMouse.containsMouse ? "#293443" : window.raised
-                                        border.color: window.line
-                                        RowLayout {
-                                            anchors.fill: parent; anchors.margins: 14
-                                            ColumnLayout {
-                                                Layout.fillWidth: true; spacing: 5
-                                                Text { text: modelData.title; color: window.ink; font.pixelSize: 14; font.bold: true }
-                                                Text { text: modelData.created_at + "  ·  " + modelData.session_id.slice(0, 8); color: window.muted; font.pixelSize: 11 }
+                                        Layout.fillWidth: true; implicitHeight: historyItemColumn.implicitHeight + 24; radius: 10
+                                        color: historyMouse.hovered ? "#293443" : window.raised
+                                        border.color: studio.selectedSession.session_id === modelData.session_id ? window.accent : window.line
+                                        ColumnLayout {
+                                            id: historyItemColumn
+                                            anchors.fill: parent; anchors.margins: 12; spacing: 9
+                                            RowLayout {
+                                                Layout.fillWidth: true
+                                                ColumnLayout {
+                                                    Layout.fillWidth: true; spacing: 4
+                                                    Text { text: modelData.title; color: window.ink; font.pixelSize: 15; font.bold: true }
+                                                    Text { text: modelData.date + "  ·  " + modelData.duration + "  ·  " + window.languageName(modelData.source_language) + " → " + modelData.target_language + "  ·  " + modelData.speaker_count + " speakers"; color: window.muted; font.pixelSize: 11 }
+                                                }
+                                                Text { text: modelData.status.toUpperCase(); color: modelData.status === "completed" ? window.accent : "#e6bc79"; font.pixelSize: 10; font.bold: true }
                                             }
-                                            Text { text: modelData.status.toUpperCase(); color: modelData.status === "completed" ? window.accent : "#e6bc79"; font.pixelSize: 10; font.bold: true }
+                                            RowLayout {
+                                                Layout.fillWidth: true; spacing: 7
+                                                AppButton { text: "開啟"; primary: true; onClicked: { studio.selectSession(modelData.session_id); window.page = "LIVE" } }
+                                                AppButton { text: "資料夾"; onClicked: studio.openSessionFolderFor(modelData.session_id) }
+                                                AppButton { text: "匯出"; onClicked: studio.exportSession(modelData.session_id) }
+                                                DarkField { id: historyRename; Layout.fillWidth: true; text: modelData.title; placeholderText: "Session 名稱" }
+                                                AppButton { text: "改名"; onClicked: studio.renameSession(modelData.session_id, historyRename.text) }
+                                                AppButton { text: "刪除"; danger: true; onClicked: studio.requestDeleteSession(modelData.session_id) }
+                                            }
+                                            Rectangle {
+                                                visible: studio.pendingDeleteSessionId === modelData.session_id
+                                                Layout.fillWidth: true; height: 54; radius: 8; color: "#382930"; border.color: "#6b3b47"
+                                                RowLayout {
+                                                    anchors.fill: parent; anchors.margins: 8
+                                                    Text { text: "確定刪除此 Session 與其所有輸出？"; color: "#ffb9bc"; font.pixelSize: 12; Layout.fillWidth: true }
+                                                    AppButton { text: "取消"; onClicked: studio.cancelDeleteSession() }
+                                                    AppButton { text: "確定刪除"; danger: true; onClicked: studio.confirmDeleteSession() }
+                                                }
+                                            }
                                         }
-                                        MouseArea { id: historyMouse; anchors.fill: parent; hoverEnabled: true; onClicked: studio.selectSession(modelData.session_id) }
+                                        HoverHandler { id: historyMouse }
                                     }
                                 }
                             }
@@ -410,7 +482,7 @@ ApplicationWindow {
                         InfoCard {
                             visible: window.page === "Settings"
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 335
+                            Layout.preferredHeight: 520
                             ColumnLayout {
                                 anchors.fill: parent; anchors.margins: 24; spacing: 17
                                 Text { text: "偏好設定"; color: window.ink; font.pixelSize: 17; font.bold: true }
@@ -429,6 +501,26 @@ ApplicationWindow {
                                     Layout.fillWidth: true
                                     Text { text: "翻譯風格"; color: window.ink; font.pixelSize: 13; Layout.fillWidth: true }
                                     ComboBox { model: ["自然", "忠實", "精簡字幕"]; currentIndex: ["natural", "faithful", "minimal"].indexOf(studio.preferences.translation_style); onActivated: studio.setPreference("translation_style", ["natural", "faithful", "minimal"][currentIndex]) }
+                                }
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    Text { text: "字幕輸出內容"; color: window.ink; font.pixelSize: 13; Layout.fillWidth: true }
+                                    ComboBox { model: ["只輸出譯文", "只輸出原文", "原文＋譯文"]; currentIndex: ["translation", "original", "both"].indexOf(studio.preferences.subtitle_mode); onActivated: studio.setPreference("subtitle_mode", ["translation", "original", "both"][currentIndex]) }
+                                }
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    Text { text: "音訊來源關閉時自動完成"; color: window.ink; font.pixelSize: 13; Layout.fillWidth: true }
+                                    Switch { checked: !!studio.preferences.auto_finalize_source_closed; onToggled: studio.setPreference("auto_finalize_source_closed", checked) }
+                                }
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    Text { text: "連續無聲自動完成"; color: window.ink; font.pixelSize: 13; Layout.fillWidth: true }
+                                    ComboBox { model: ["關閉", "5 分鐘", "15 分鐘", "30 分鐘"]; currentIndex: [0, 5, 15, 30].indexOf(Number(studio.preferences.silence_timeout_minutes)); onActivated: studio.setPreference("silence_timeout_minutes", [0, 5, 15, 30][currentIndex]) }
+                                }
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    Text { text: "Session 完成後自動關閉應用程式"; color: window.ink; font.pixelSize: 13; Layout.fillWidth: true }
+                                    Switch { checked: !!studio.preferences.auto_close_after_finalize; onToggled: studio.setPreference("auto_close_after_finalize", checked) }
                                 }
                                 Rectangle { Layout.fillWidth: true; height: 1; color: window.line }
                                 Text { text: "原始音訊不保存；每條 Final 逐字稿會即時寫入 Session。"; color: window.muted; font.pixelSize: 11; wrapMode: Text.WordWrap; Layout.fillWidth: true }
@@ -525,10 +617,36 @@ ApplicationWindow {
                         }
                         InfoCard {
                             visible: window.page === "Exports"
-                            Layout.fillWidth: true; Layout.preferredHeight: 170
-                            Column { anchors.centerIn: parent; spacing: 10
-                                Text { text: "Exports"; anchors.horizontalCenter: parent.horizontalCenter; color: window.ink; font.pixelSize: 17; font.bold: true }
-                                Text { text: "完成中的字幕與 transcript.json 可從 Session 資料夾查看。"; color: window.muted; font.pixelSize: 12 }
+                            Layout.fillWidth: true; Layout.preferredHeight: Math.max(310, exportColumn.implicitHeight + 44)
+                            ColumnLayout {
+                                id: exportColumn
+                                anchors.fill: parent; anchors.margins: 22; spacing: 12
+                                Text { text: "Final exports"; color: window.ink; font.pixelSize: 17; font.bold: true }
+                                Text { text: "輸出是 SQLite 與 transcript.json 的可重建視圖；Speaker 編輯後可重新產生。"; color: window.muted; font.pixelSize: 12; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    Text { text: "SRT / VTT 內容"; color: window.ink; font.pixelSize: 12; Layout.fillWidth: true }
+                                    ComboBox { model: ["譯文", "原文", "原文＋譯文"]; currentIndex: ["translation", "original", "both"].indexOf(studio.preferences.subtitle_mode); onActivated: studio.setPreference("subtitle_mode", ["translation", "original", "both"][currentIndex]) }
+                                }
+                                Repeater {
+                                    model: [
+                                        {label: "Markdown", value: studio.exportPaths.markdown || "尚未選擇 Session"},
+                                        {label: "SRT", value: studio.exportPaths.srt || "—"},
+                                        {label: "VTT", value: studio.exportPaths.vtt || "—"},
+                                        {label: "Source JSON", value: studio.exportPaths.json || "—"}
+                                    ]
+                                    delegate: RowLayout {
+                                        required property var modelData
+                                        Layout.fillWidth: true
+                                        Text { text: modelData.label; color: window.accent; font.pixelSize: 11; font.bold: true; Layout.preferredWidth: 90 }
+                                        Text { text: modelData.value; color: window.muted; font.pixelSize: 11; elide: Text.ElideMiddle; Layout.fillWidth: true }
+                                        AppButton { text: "複製路徑"; enabled: !!studio.selectedSession.session_id; onClicked: studio.copyPath(modelData.value) }
+                                    }
+                                }
+                                RowLayout {
+                                    AppButton { text: "重新輸出"; primary: true; enabled: !!studio.selectedSession.session_id; onClicked: studio.exportCurrentSession() }
+                                    AppButton { text: "開啟 Session 資料夾"; enabled: !!studio.selectedSession.session_id; onClicked: studio.openSessionFolder() }
+                                }
                             }
                         }
                     }
@@ -615,7 +733,7 @@ ApplicationWindow {
                     anchors.fill: parent; anchors.leftMargin: 29; anchors.rightMargin: 23; spacing: 13
                     Rectangle { width: 7; height: 7; radius: 4; color: studio.asrState === "live" ? window.accent : "#e6b865" }
                     Text { text: studio.audioState === "capturing" ? "AUDIO LIVE  ·  ASR " + studio.asrState.toUpperCase() + "  ·  " + studio.asrStatus + "  ·  " + studio.translationStatus + "  ·  " + studio.diarizationStatus + (studio.asrLatency ? "  ·  " + studio.asrLatency : "") + (studio.translationLatency ? "  ·  " + studio.translationLatency : "") : studio.message; color: "#a7b4c3"; font.pixelSize: 11; elide: Text.ElideRight; Layout.fillWidth: true }
-                    AppButton { text: "結束 Session"; danger: true; enabled: studio.selectedSession.status === "active"; onClicked: studio.finishSession() }
+                    AppButton { text: studio.finalizing ? "正在完成…" : "結束 Session"; danger: true; enabled: studio.selectedSession.status === "active" && !studio.finalizing; onClicked: studio.finishSession() }
                 }
             }
         }

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import re
+import shutil
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -28,6 +29,20 @@ def _subtitle_time(ms: int, separator: str) -> str:
     return f"{hours:02d}:{minutes:02d}:{seconds:02d}{separator}{millis:03d}"
 
 
+def _display_duration(ms: int) -> str:
+    hours, remainder = divmod(max(0, ms), 3600000)
+    minutes, seconds = divmod(remainder // 1000, 60)
+    return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+
+
+def _language_name(code: str) -> str:
+    return {"ja": "Japanese", "en": "English", "auto": "Auto",
+            "zh-TW": "Traditional Chinese", "zh-CN": "Simplified Chinese"}.get(code, code)
+
+
+APP_VERSION = "0.6.0"
+
+
 class SessionManager:
     def __init__(self, root: Path, database: Database):
         self.root = root / "sessions"
@@ -45,10 +60,11 @@ class SessionManager:
         (folder / "exports").mkdir()
         session = {
             "session_id": session_id, "folder_path": str(folder), "title": title,
-            "created_at": now, "updated_at": now, "ended_at": None,
+            "created_at": now, "started_at": now, "updated_at": now, "ended_at": None,
             "status": "active", "source_language": source_language,
             "target_language": target_language, "translation_style": translation_style,
-            "audio_source": None, "save_audio": False,
+            "audio_source": None, "source_process": None, "save_audio": False,
+            "recording_enabled": False, "app_version": APP_VERSION,
         }
         try:
             with self.db.connection:
@@ -58,7 +74,7 @@ class SessionManager:
                     VALUES (:session_id, :folder_path, :title, :created_at, :updated_at, :ended_at,
                             :status, :source_language, :target_language, :translation_style,
                             :audio_source, :save_audio)""", session)
-            _atomic_json(folder / "session.json", session)
+            self._write_session_json(session_id)
             _atomic_json(folder / "transcript.json", {"session_id": session_id, "speakers": [], "segments": []})
         except Exception:
             # Keep the folder for diagnosis; the UUID prevents a duplicate on retry.
@@ -66,12 +82,46 @@ class SessionManager:
         return session
 
     def list_sessions(self) -> list[dict]:
-        rows = self.db.connection.execute("SELECT * FROM sessions ORDER BY created_at DESC").fetchall()
-        return [dict(row) for row in rows]
+        rows = self.db.connection.execute(
+            "SELECT s.*, COALESCE(MAX(g.end_ms),0) AS duration_ms, "
+            "COUNT(DISTINCT p.speaker_id) AS speaker_count "
+            "FROM sessions s LEFT JOIN segments g ON g.session_id=s.session_id "
+            "LEFT JOIN speakers p ON p.session_id=s.session_id "
+            "GROUP BY s.session_id ORDER BY s.created_at DESC").fetchall()
+        result = []
+        for row in rows:
+            item = dict(row)
+            item["duration"] = _display_duration(item["duration_ms"])
+            item["date"] = item["created_at"][:10]
+            result.append(item)
+        return result
 
     def get(self, session_id: str) -> dict | None:
         row = self.db.connection.execute("SELECT * FROM sessions WHERE session_id = ?", (session_id,)).fetchone()
         return dict(row) if row else None
+
+    def _session_metadata(self, session_id: str) -> dict:
+        session = self.get(session_id)
+        if session is None:
+            raise KeyError(session_id)
+        speakers = self.list_speakers(session_id)
+        duration = self.db.connection.execute(
+            "SELECT COALESCE(MAX(end_ms),0) FROM segments WHERE session_id=?", (session_id,)).fetchone()[0]
+        return {**session,
+                "started_at": session["created_at"],
+                "source_process": session.get("audio_source"),
+                "recording_enabled": bool(session.get("save_audio")),
+                "audio_recording": "enabled" if session.get("save_audio") else "disabled",
+                "speaker_mappings": speakers,
+                "next_speaker_index": self.next_speaker_number(session_id),
+                "duration_ms": duration,
+                "app_version": APP_VERSION}
+
+    def _write_session_json(self, session_id: str) -> None:
+        session = self.get(session_id)
+        if session is None:
+            raise KeyError(session_id)
+        _atomic_json(Path(session["folder_path"]) / "session.json", self._session_metadata(session_id))
 
     def resume(self, session_id: str) -> dict:
         """Resume the same identity and folder after an interrupted run."""
@@ -86,7 +136,7 @@ class SessionManager:
                 self.db.connection.execute(
                     "UPDATE sessions SET status='active', updated_at=? WHERE session_id=?", (now, session_id))
             session.update(status="active", updated_at=now)
-            _atomic_json(Path(session["folder_path"]) / "session.json", session)
+            self._write_session_json(session_id)
         self.reconcile_transcript(session_id)
         return session
 
@@ -96,6 +146,22 @@ class SessionManager:
             (session_id,),
         ).fetchall()
         return [json.loads(row["payload_json"]) for row in rows]
+
+    def segment_count(self, session_id: str) -> int:
+        return int(self.db.connection.execute(
+            "SELECT COUNT(*) FROM segments WHERE session_id=?", (session_id,)).fetchone()[0])
+
+    def list_segments_page(self, session_id: str, offset: int, limit: int) -> list[dict]:
+        rows = self.db.connection.execute(
+            "SELECT payload_json FROM segments WHERE session_id=? "
+            "ORDER BY start_ms,end_ms,segment_id LIMIT ? OFFSET ?",
+            (session_id, max(1, min(int(limit), 500)), max(0, int(offset))),
+        ).fetchall()
+        return [json.loads(row["payload_json"]) for row in rows]
+
+    def segment_ids(self, session_id: str) -> set[str]:
+        return {row["segment_id"] for row in self.db.connection.execute(
+            "SELECT segment_id FROM segments WHERE session_id=?", (session_id,))}
 
     def list_speakers(self, session_id: str) -> list[dict]:
         rows = self.db.connection.execute(
@@ -136,6 +202,7 @@ class SessionManager:
                     "INSERT INTO speaker_embeddings VALUES(?,?,0,?)",
                     (session_id, speaker_id, json.dumps(embedding)))
         self.reconcile_transcript(session_id)
+        self._write_session_json(session_id)
         return speaker_id
 
     def register_speaker(self, session_id: str, speaker_id: str, joined_at_ms: int,
@@ -155,6 +222,7 @@ class SessionManager:
                                            (session_id, speaker_id, json.dumps(embedding)))
         if cursor.rowcount:
             self.reconcile_transcript(session_id)
+            self._write_session_json(session_id)
         return bool(cursor.rowcount)
 
     def add_embedding(self, session_id: str, speaker_id: str, vector: list[float]) -> None:
@@ -189,15 +257,17 @@ class SessionManager:
                 self._audit(session_id, "update", {"speaker_id": speaker_id, **fields})
         if cursor.rowcount:
             self.reconcile_transcript(session_id)
+            self.render_exports(session_id)
+            self._write_session_json(session_id)
         return bool(cursor.rowcount)
 
     def assign_segment_speaker(self, session_id: str, segment_id: str, speaker_id: str) -> bool:
         row = self.db.connection.execute(
             "SELECT payload_json FROM segments WHERE session_id=? AND segment_id=?",
             (session_id, segment_id)).fetchone()
-        if not row or not self.db.connection.execute(
+        if not row or (speaker_id != "unknown" and not self.db.connection.execute(
                 "SELECT 1 FROM speakers WHERE session_id=? AND speaker_id=?",
-                (session_id, speaker_id)).fetchone():
+                (session_id, speaker_id)).fetchone()):
             return False
         payload = json.loads(row["payload_json"])
         old_id = payload.get("speaker_id")
@@ -209,6 +279,7 @@ class SessionManager:
             self._audit(session_id, "manual_assignment", {"segment_id": segment_id,
                                                           "from": old_id, "to": speaker_id})
         self.reconcile_transcript(session_id)
+        self.render_exports(session_id)
         return True
 
     def update_automatic_assignment(self, session_id: str, segment_id: str,
@@ -275,9 +346,12 @@ class SessionManager:
                                        (session_id, source_id))
             self.db.connection.execute("DELETE FROM speakers WHERE session_id=? AND speaker_id=?",
                                        (session_id, source_id))
-            self._audit(session_id, "merge", {"source": source_id, "target": target_id,
+            self._audit(session_id, "merge", {"type": "speaker_merge",
+                                              "source": source_id, "target": target_id,
                                               "segments": len(rows)})
         self.reconcile_transcript(session_id)
+        self.render_exports(session_id)
+        self._write_session_json(session_id)
         return len(rows)
 
     def _audit(self, session_id: str, operation: str, details: dict) -> None:
@@ -306,9 +380,11 @@ class SessionManager:
                 "multi_speaker_event", None, None, None, json.dumps(payload, ensure_ascii=False)))
         if cursor.rowcount:
             self.reconcile_transcript(session_id)
+            self.render_exports(session_id)
         return bool(cursor.rowcount)
 
     def reconcile_transcript(self, session_id: str) -> None:
+        """Atomically refresh the machine-readable source without rendering derived exports."""
         session = self.get(session_id)
         if session is None:
             raise KeyError(session_id)
@@ -322,39 +398,93 @@ class SessionManager:
         if existing.get("segments") != segments or existing.get("speakers") != speakers:
             _atomic_json(path, {"session_id": session_id,
                                 "speakers": speakers, "segments": segments})
-            self._render_exports(Path(session["folder_path"]), segments, speakers)
 
-    def _render_exports(self, folder: Path, segments: list[dict], speakers: list[dict]) -> None:
-        """Human-readable views derive from IDs and current mapping, never mutate source text."""
+    def render_exports(self, session_id: str, subtitle_mode: str = "translation") -> dict[str, str]:
+        """Render human-readable derivatives from SQLite/JSON without mutating source data."""
+        if subtitle_mode not in ("translation", "original", "both"):
+            raise ValueError(subtitle_mode)
+        session = self._session_metadata(session_id)
+        folder = Path(session["folder_path"])
+        segments = self.list_segments(session_id)
+        speakers = self.list_speakers(session_id)
         names = {row["speaker_id"]: row["display_name"] for row in speakers}
+        unknown = "未知說話人"
+        markdown = [f"# {session['title']}", "", "## Session", "",
+                    f"- Session ID：`{session_id}`",
+                    f"- 開始：{session['started_at']}",
+                    f"- 結束：{session.get('ended_at') or '進行中'}",
+                    f"- Duration：{_display_duration(session['duration_ms'])}",
+                    f"- Audio Source：{session.get('audio_source') or 'Unknown'}",
+                    f"- Source：{_language_name(session['source_language'])}",
+                    f"- Target：{_language_name(session['target_language'])}",
+                    f"- Translation Style：{session['translation_style'].title()}",
+                    f"- Audio Recording：{'Enabled' if session.get('save_audio') else 'Disabled'}",
+                    f"- Status：{session['status']}", "", "## Speakers", ""]
+        for row in speakers:
+            identity = f" · person_id: {row['person_id']}" if row.get("person_id") else ""
+            markdown.append(f"- {row['display_name']} (`{row['speaker_id']}`){identity} · "
+                            f"detected {_subtitle_time(row['joined_at_ms'], '.')} · "
+                            f"{row['segment_count']} segments")
+        if any(item.get("speaker_id") in (None, "unknown") for item in segments
+               if item.get("type") == "speech"):
+            markdown.append(f"- {unknown}")
+        audits = self.db.connection.execute(
+            "SELECT operation,details_json,at FROM speaker_audit WHERE session_id=? ORDER BY audit_id",
+            (session_id,)).fetchall()
+        if audits:
+            markdown.extend(["", "## Session Events", ""])
+            for event in audits:
+                details = json.loads(event["details_json"])
+                markdown.append(f"- {event['at']} · {event['operation']} · "
+                                f"`{json.dumps(details, ensure_ascii=False)}`")
+        markdown.extend(["", "---", "", "## Transcript", ""])
         subtitles: list[tuple[int, int, str]] = []
-        markdown = ["# Transcript", ""]
         for item in segments:
-            name = names.get(item.get("speaker_id"), "")
             if item.get("type") == "multi_speaker_event":
+                name = "多人"
                 label = "【重疊】" if item.get("event_type") == "unknown_overlap" else "【多人】"
-                text = label + item.get("description", {}).get("zh_tw", "偵測到重疊聲音，無法可靠區分。")
+                translated = item.get("description", {}).get("zh_tw", "偵測到重疊聲音，無法可靠區分。")
+                original = ""
             else:
-                text = (item.get("translation") or {}).get("text") or item.get("original", "")
-                if name and (len(speakers) > 1 or name != "Speaker 1"):
-                    text = name + "：" + text
-            if not text:
-                continue
-            subtitles.append((item["start_ms"], item["end_ms"], text))
-            markdown.extend([f"## {_subtitle_time(item['start_ms'], '.')}" + (f" · {name}" if name else ""),
-                             "", text, ""])
-            if item.get("original") and item.get("translation"):
-                markdown.extend([item["original"], ""])
+                name = names.get(item.get("speaker_id"), unknown)
+                original = item.get("original", "")
+                translated = (item.get("translation") or {}).get("text", "")
+                label = ""
+            markdown.extend([f"### {_subtitle_time(item['start_ms'], '.')} — {name}", ""])
+            if item.get("type") == "multi_speaker_event":
+                markdown.extend([f"{label} {translated}", ""])
+            else:
+                markdown.extend(["**翻譯**", "", translated or "[翻譯待補]", "",
+                                 "**原文**", "", original or "[無原文]", ""])
+            if item.get("type") == "multi_speaker_event":
+                body = f"{label} {translated}"
+            else:
+                chosen = original if subtitle_mode == "original" else translated
+                if subtitle_mode == "both":
+                    chosen = "\n".join(part for part in (translated or "[翻譯待補]", original) if part)
+                chosen = chosen or "[翻譯待補]"
+                body = f"{name}: {chosen}"
+            subtitles.append((item["start_ms"], item["end_ms"], body))
+            markdown.extend(["---", ""])
         exports = folder / "exports"
         exports.mkdir(exist_ok=True)
+        md = "\n".join(markdown).rstrip() + "\n"
         srt = "\n\n".join(f"{index}\n{_subtitle_time(start, ',')} --> {_subtitle_time(end, ',')}\n{text}"
                           for index, (start, end, text) in enumerate(subtitles, 1)) + "\n"
         vtt = "WEBVTT\n\n" + "\n\n".join(
             f"{_subtitle_time(start, '.')} --> {_subtitle_time(end, '.')}\n{text}"
             for start, end, text in subtitles) + "\n"
+        paths = {"markdown": folder / "transcript.md",
+                 "srt": exports / "transcript.srt", "vtt": exports / "transcript.vtt",
+                 "json": folder / "transcript.json"}
+        _atomic_text(paths["markdown"], md)
+        _atomic_text(paths["srt"], srt)
+        _atomic_text(paths["vtt"], vtt)
+        # Keep Phase 5 paths compatible while new exports use the requested final names.
+        _atomic_text(exports / "transcript.md", md)
         _atomic_text(exports / "subtitles.srt", srt)
         _atomic_text(exports / "subtitles.vtt", vtt)
-        _atomic_text(exports / "transcript.md", "\n".join(markdown))
+        return {key: str(value) for key, value in paths.items()}
 
     def append_final(self, session_id: str, segment: dict) -> bool:
         """Persist each final to SQLite and atomically render transcript.json."""
@@ -366,6 +496,8 @@ class SessionManager:
         if segment["start_ms"] < 0 or segment["end_ms"] <= segment["start_ms"]:
             raise ValueError("Invalid segment timestamps")
         now = datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
+        segment = dict(segment)
+        segment.setdefault("translation_status", segment.get("translation_state", "pending"))
         payload = json.dumps(segment, ensure_ascii=False)
         with self.db.connection:
             if segment.get("speaker_id") and segment["speaker_id"] != "unknown":
@@ -426,6 +558,7 @@ class SessionManager:
             changed += 1
         if changed:
             self.reconcile_transcript(session_id)
+            self.render_exports(session_id)
         return changed
 
     def update_final_translation(self, session_id: str, segment_id: str, translation: dict) -> bool:
@@ -440,6 +573,7 @@ class SessionManager:
             return False
         payload["translation"] = translation
         payload["translation_state"] = "final"
+        payload["translation_status"] = "final"
         with self.db.connection:
             self.db.connection.execute(
                 "UPDATE segments SET translation=?, payload_json=? WHERE session_id=? AND segment_id=?",
@@ -463,7 +597,14 @@ class SessionManager:
         with self.db.connection:
             self.db.connection.execute(
                 "UPDATE sessions SET source_language=? WHERE session_id=?", (language, session_id))
-        _atomic_json(Path(session["folder_path"]) / "session.json", session)
+        self._write_session_json(session_id)
+
+    def set_audio_source(self, session_id: str, source_process: str) -> None:
+        source = source_process.strip()[:160] or None
+        with self.db.connection:
+            self.db.connection.execute("UPDATE sessions SET audio_source=? WHERE session_id=?",
+                                       (source, session_id))
+        self._write_session_json(session_id)
 
     def set_translation_preferences(self, session_id: str, key: str, value: str) -> None:
         choices = {"target_language": ("zh-TW", "zh-CN"),
@@ -477,27 +618,109 @@ class SessionManager:
         with self.db.connection:
             self.db.connection.execute(f"UPDATE sessions SET {key}=? WHERE session_id=?",
                                        (value, session_id))
-        _atomic_json(Path(session["folder_path"]) / "session.json", session)
+        self._write_session_json(session_id)
 
-    def finish(self, session_id: str) -> dict:
+    def rename(self, session_id: str, title: str) -> dict:
+        value = title.strip()[:120]
+        if not value:
+            raise ValueError("Session 名稱不能留空。")
+        now = datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
+        with self.db.connection:
+            self.db.connection.execute("UPDATE sessions SET title=?,updated_at=? WHERE session_id=?",
+                                       (value, now, session_id))
+        self._write_session_json(session_id)
+        self.render_exports(session_id)
+        return self.get(session_id) or {}
+
+    def search(self, session_id: str, query: str, limit: int = 100) -> list[dict]:
+        needle = query.strip().casefold()
+        if not needle:
+            return []
+        names = {row["speaker_id"]: row["display_name"] for row in self.list_speakers(session_id)}
+        result = []
+        for item in self.list_segments(session_id):
+            haystack = "\n".join((item.get("original", ""),
+                                  (item.get("translation") or {}).get("text", ""),
+                                  names.get(item.get("speaker_id"), "未知說話人"))).casefold()
+            if needle in haystack:
+                result.append({**item, "speaker_display_name": names.get(
+                    item.get("speaker_id"), "未知說話人")})
+                if len(result) >= max(1, min(limit, 500)):
+                    break
+        return result
+
+    def delete(self, session_id: str) -> None:
+        session = self.get(session_id)
+        if not session:
+            return
+        if session["status"] == "active":
+            raise ValueError("請先結束或封存 Session，再執行刪除。")
+        folder = Path(session["folder_path"]).resolve()
+        root = self.root.resolve()
+        if root not in folder.parents:
+            raise ValueError("Session 資料夾不在預期位置，拒絕刪除。")
+        with self.db.connection:
+            self.db.connection.execute("DELETE FROM sessions WHERE session_id=?", (session_id,))
+        if folder.exists():
+            shutil.rmtree(folder)
+
+    def clear_temporary_cache(self, session_id: str) -> None:
+        session = self.get(session_id)
+        if not session:
+            return
+        folder = Path(session["folder_path"])
+        for name in ("cache", "tmp", "temporary_pcm", "diarization_chunks", "translation_buffers"):
+            path = folder / name
+            if path.is_dir():
+                shutil.rmtree(path)
+            elif path.exists():
+                path.unlink()
+
+    def finish(self, session_id: str, subtitle_mode: str = "translation") -> dict:
         session = self.get(session_id)
         if session is None:
             raise KeyError(session_id)
         if session["status"] != "active":
             return session
+        # Keep the Session active when any required durable output fails.
+        self.reconcile_transcript(session_id)
         now = datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
-        session.update(status="completed", updated_at=now, ended_at=now)
-        with self.db.connection:
+        try:
             self.db.connection.execute("UPDATE sessions SET status=?, updated_at=?, ended_at=? WHERE session_id=?",
                                        ("completed", now, now, session_id))
-        _atomic_json(Path(session["folder_path"]) / "session.json", session)
-        return session
+            self._write_session_json(session_id)
+            self.render_exports(session_id, subtitle_mode)
+            self.db.connection.commit()
+        except Exception:
+            self.db.connection.rollback()
+            with self.db.connection:
+                self.db.connection.execute(
+                    "UPDATE sessions SET status='active',ended_at=NULL WHERE session_id=?", (session_id,))
+            self._write_session_json(session_id)
+            raise
+        self.db.connection.execute("PRAGMA wal_checkpoint(PASSIVE)")
+        self.clear_temporary_cache(session_id)
+        return self.get(session_id) or session
+
+    def archive_interrupted(self, session_id: str, subtitle_mode: str = "translation") -> dict:
+        session = self.get(session_id)
+        if not session or session["status"] != "interrupted":
+            raise ValueError("只能封存中斷的 Session。")
+        with self.db.connection:
+            self.db.connection.execute("UPDATE sessions SET status='active' WHERE session_id=?", (session_id,))
+        try:
+            return self.finish(session_id, subtitle_mode)
+        except Exception:
+            with self.db.connection:
+                self.db.connection.execute(
+                    "UPDATE sessions SET status='interrupted',ended_at=NULL WHERE session_id=?", (session_id,))
+            self._write_session_json(session_id)
+            raise
 
     def mark_interrupted(self) -> int:
         rows = self.db.connection.execute("SELECT session_id, folder_path FROM sessions WHERE status='active'").fetchall()
         with self.db.connection:
             self.db.connection.execute("UPDATE sessions SET status='interrupted' WHERE status='active'")
         for row in rows:
-            session = self.get(row["session_id"])
-            _atomic_json(Path(row["folder_path"]) / "session.json", session)
+            self._write_session_json(row["session_id"])
         return len(rows)

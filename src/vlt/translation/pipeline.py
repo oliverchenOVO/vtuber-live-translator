@@ -54,6 +54,10 @@ class BoundedTranslationQueue:
         with self._lock:
             return len(self._items)
 
+    def final_count(self) -> int:
+        with self._lock:
+            return sum(1 for item in self._items if item.final)
+
 
 class TranslationPipeline:
     def __init__(self, backend_factory: Callable[[], TranslationBackend],
@@ -81,6 +85,10 @@ class TranslationPipeline:
         self._running = False
         if self._thread and self._thread.is_alive():
             self._thread.join(timeout=2)
+
+    def pending_final_count(self) -> int:
+        with self._lock:
+            return len(self._inflight)
 
     def submit(self, request: TranslationRequest) -> bool:
         if not request.original.strip():

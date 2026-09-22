@@ -12,12 +12,20 @@ from vlt.sessions.manager import SessionManager
 
 class TranscriptCoordinator:
     def __init__(self, sessions: SessionManager, session_id: str, offset_ms: int = 0,
-                 speaker_for_interval: Callable[[int, int], SpeakerDecision] | None = None):
+                 speaker_for_interval: Callable[[int, int], SpeakerDecision] | None = None,
+                 initial_limit: int | None = None):
         self.sessions = sessions
         self.session_id = session_id
         self.offset_ms = max(0, offset_ms)
-        self.finals = sessions.list_segments(session_id)
-        self._seen = {item["id"] for item in self.finals}
+        self.total_final_count = sessions.segment_count(session_id)
+        self._page_offset = 0
+        if initial_limit is None:
+            self.finals = sessions.list_segments(session_id)
+        else:
+            self._page_offset = max(0, self.total_final_count - max(1, initial_limit))
+            self.finals = sessions.list_segments_page(
+                session_id, self._page_offset, max(1, initial_limit))
+        self._seen = sessions.segment_ids(session_id)
         self.live: dict | None = None
         self.partial_latency_ms: float | None = None
         self.final_latency_ms: float | None = None
@@ -50,7 +58,31 @@ class TranscriptCoordinator:
             segment["speaker_id"] = "speaker_001"
         if result.is_final:
             segment["translation_state"] = "pending"
+            segment["translation_status"] = "pending"
         return segment
+
+    @property
+    def earlier_count(self) -> int:
+        return self._page_offset
+
+    def load_earlier(self, count: int = 120) -> int:
+        if self._page_offset <= 0:
+            return 0
+        offset = max(0, self._page_offset - max(1, count))
+        earlier = self.sessions.list_segments_page(
+            self.session_id, offset, self._page_offset - offset)
+        self.finals = earlier + self.finals
+        loaded = self._page_offset - offset
+        self._page_offset = offset
+        return loaded
+
+    def reload_loaded(self) -> None:
+        self.total_final_count = self.sessions.segment_count(self.session_id)
+        loaded = max(1, len(self.finals))
+        self._page_offset = max(0, self.total_final_count - loaded)
+        self.finals = self.sessions.list_segments_page(
+            self.session_id, self._page_offset, loaded)
+        self._seen = self.sessions.segment_ids(self.session_id)
 
     def apply_partial_translation(self, segment_id: str, original: str, translation: dict) -> bool:
         if not self.live or self.live["id"] != segment_id or self.live["original"] != original:
@@ -100,8 +132,26 @@ class TranscriptCoordinator:
             self.live = None
         if inserted:
             self.finals.append(segment)
+            self.total_final_count += 1
             self.finals.sort(key=lambda item: (item["start_ms"], item["end_ms"], item["id"]))
             if result.speech_end_at is not None:
                 measured = max(0, (time.monotonic() - result.speech_end_at) * 1000)
                 self.final_latency_ms = measured if self.final_latency_ms is None else (0.7 * self.final_latency_ms + 0.3 * measured)
         return inserted
+
+    def finalize_live(self) -> dict | None:
+        """Persist a non-empty last partial during an orderly Session finalization."""
+        if not self.live or self.live["id"] in self._seen or not self.live.get("original", "").strip():
+            self.live = None
+            return None
+        segment = {key: value for key, value in self.live.items() if key != "translation"}
+        segment.update(asr_state="final", translation_state="pending", translation_status="pending")
+        if not self.sessions.append_final(self.session_id, segment):
+            self.live = None
+            return None
+        self._seen.add(segment["id"])
+        self.finals.append(segment)
+        self.total_final_count += 1
+        self.finals.sort(key=lambda item: (item["start_ms"], item["end_ms"], item["id"]))
+        self.live = None
+        return segment

@@ -1,6 +1,6 @@
 # Vtuber Live Translator
 
-Windows 即時翻譯桌面程式，開發中。此版本是 **Phase 5**：保留 Windows 指定程式擷取、串流辨識與本機即時中譯，加入直播中的 Speaker 分離、Session 內穩定 ID、Speakers 管理與多人事件。**目前尚無正式 EXE**。
+Windows 即時翻譯桌面程式，開發中。此版本是 **Phase 6**：保留 Windows 指定程式擷取、串流辨識、本機即時中譯與 Speaker 分離，加入可恢復的 Session History、Speaker 人工修正、搜尋與 Markdown/SRT/VTT 最終輸出。**目前尚無正式 EXE**。
 
 ## 開發版啟動
 
@@ -54,6 +54,14 @@ Session Speaker 使用不可變 `speaker_001` 等 ID，顯示名稱與 `person_i
 
 **限制：**此版是有限視窗的即時分離，並非離線全場回看。交疊聲音、短句、音效、遠近音量差異大的情況可能輸出 `unknown` 或多餘候選；請用 Speakers 頁面的合併與手動指定修正。笑聲與集體反應只接受明確、雙 Speaker 的原文證據，通常會保守地保留為一般 overlap。
 
+## Session History 與最終輸出
+
+Session 以 UUID 作為真正身份，可讀資料夾名只用於辨識。每場至少有 `session.json`、`transcript.json`、`transcript.md`、`exports/transcript.srt` 與 `exports/transcript.vtt`；原始音訊預設不儲存。SQLite 和 `transcript.json` 在直播中持續更新，Markdown/SRT/VTT 在 Session 完成、Speaker 改名／合併／手動指定或人工匯出時重新產生。SRT/VTT 可選譯文、原文或雙語。
+
+History 可開啟舊 Session、改名、開啟資料夾、重新匯出與刪除；刪除需要第二次確認。意外中斷的 Session 在下次啟動顯示繼續、封存或新建選項，繼續時保留原 session ID、資料夾、speaker ID 與待補翻譯。完成時會等待背景 Final 翻譯最多 15 秒，逾時保留 `translation_pending` 與原文，不會無限卡住。可設定音訊來源關閉或指定無聲時間後自動完成，並可在所有持久化與匯出成功後自動關閉。
+
+Studio 搜尋可配對原文、譯文與 Speaker 顯示名稱。控制器只從 SQLite 載入最新 120 筆 Final，「載入更早逐字稿」每次再載入 120 筆；搜尋結果上限 100，避免長直播在 Python 與 QML 同時建立數千張卡片。
+
 中斷補譯驗證（使用資料目錄中現有 Session，**不建立新 Session**）：
 
 ```powershell
@@ -85,4 +93,5 @@ $env:PYTHONPATH="src"
 - Phase 3：本機 Streaming ASR、partial/final 與即時持久化，已完成。
 - Phase 4：本機翻譯、詞庫與 Overlay，已完成。
 - Phase 5：即時 Speaker 分離、管理、多人事件與顯示名稱輸出，已完成。
+- Phase 6：Session History、中斷恢復、Speaker 修正、搜尋與 Markdown/SRT/VTT 匯出，已完成。
 - 後續階段尚未開始。

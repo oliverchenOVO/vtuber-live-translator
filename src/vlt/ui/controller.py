@@ -9,7 +9,7 @@ from pathlib import Path
 from collections.abc import Callable
 
 from PySide6.QtCore import QCoreApplication, QObject, Property, QTimer, Signal, Slot, QUrl
-from PySide6.QtGui import QDesktopServices
+from PySide6.QtGui import QDesktopServices, QGuiApplication
 
 from vlt.audio.windows_process_loopback import WindowsProcessLoopback
 from vlt.asr.base import ASRBackend, Recognition
@@ -67,6 +67,13 @@ class StudioController(QObject):
         self._last_pipeline_log = 0.0
         self._transcript: TranscriptCoordinator | None = None
         self._visible_segment_limit = 120
+        self._search_results: list[dict] = []
+        self._focused_segment: dict = {}
+        self._pending_delete_session_id = ""
+        self._finalizing = False
+        self._finalize_deadline = 0.0
+        self._source_error_handled = False
+        self._last_audible_at = time.monotonic()
         self._diarization_factory = diarization_backend_factory
         self._diarization: DiarizationBackend | None = None
         self._speaker_rows: list[dict] = []
@@ -106,7 +113,42 @@ class StudioController(QObject):
 
     @Property("QVariantList", notify=changed)
     def history(self) -> list[dict]:
-        return self.sessions.list_sessions()
+        return [item for item in self.sessions.list_sessions()
+                if item["status"] in ("completed", "interrupted")]
+
+    @Property("QVariantMap", notify=changed)
+    def interruptedSession(self) -> dict:
+        return next((item for item in self.sessions.list_sessions()
+                     if item["status"] == "interrupted"), {})
+
+    @Property(bool, notify=changed)
+    def finalizing(self) -> bool:
+        return self._finalizing
+
+    @Property(str, notify=changed)
+    def pendingDeleteSessionId(self) -> str:
+        return self._pending_delete_session_id
+
+    @Property("QVariantList", notify=transcriptChanged)
+    def searchResults(self) -> list[dict]:
+        return [self._decorate_segment(item) for item in self._search_results]
+
+    @Property("QVariantMap", notify=transcriptChanged)
+    def focusedSegment(self) -> dict:
+        return self._decorate_segment(self._focused_segment) if self._focused_segment else {}
+
+    @Property("QVariantMap", notify=changed)
+    def exportPaths(self) -> dict:
+        if not self._selected_id:
+            return {}
+        session = self.sessions.get(self._selected_id)
+        if not session:
+            return {}
+        folder = Path(session["folder_path"])
+        return {"markdown": str(folder / "transcript.md"),
+                "srt": str(folder / "exports" / "transcript.srt"),
+                "vtt": str(folder / "exports" / "transcript.vtt"),
+                "json": str(folder / "transcript.json"), "folder": str(folder)}
 
     @Property("QVariantMap", notify=changed)
     def selectedSession(self) -> dict:
@@ -156,12 +198,19 @@ class StudioController(QObject):
 
     @Property(int, notify=transcriptChanged)
     def earlierSegmentCount(self) -> int:
-        return max(0, len(self._transcript.finals) - self._visible_segment_limit) if self._transcript else 0
+        if not self._transcript:
+            return 0
+        return max(self._transcript.earlier_count,
+                   len(self._transcript.finals) - self._visible_segment_limit)
 
     @Slot()
     def loadEarlierSegments(self) -> None:
         if self._transcript and self.earlierSegmentCount:
-            self._visible_segment_limit += 120
+            if self._transcript.earlier_count:
+                self._transcript.load_earlier(120)
+                self._visible_segment_limit = len(self._transcript.finals)
+            else:
+                self._visible_segment_limit += 120
             self.transcriptChanged.emit()
 
     @Property("QVariantMap", notify=transcriptChanged)
@@ -247,6 +296,8 @@ class StudioController(QObject):
         try:
             if self._selected_id:
                 self.sessions.update_speaker(self._selected_id, speaker_id, display_name=name)
+                self.sessions.render_exports(
+                    self._selected_id, str(self.settings.values["subtitle_mode"]))
                 self._refresh_speakers()
         except ValueError as exc:
             self._message = str(exc)
@@ -256,6 +307,8 @@ class StudioController(QObject):
     def mapSpeakerPerson(self, speaker_id: str, person_id: str) -> None:
         if self._selected_id:
             self.sessions.update_speaker(self._selected_id, speaker_id, person_id=person_id)
+            self.sessions.render_exports(
+                self._selected_id, str(self.settings.values["subtitle_mode"]))
             self._refresh_speakers()
 
     @Slot(str, str)
@@ -263,10 +316,12 @@ class StudioController(QObject):
         try:
             if self._selected_id:
                 self.sessions.merge_speakers(self._selected_id, source_id, target_id)
+                self.sessions.render_exports(
+                    self._selected_id, str(self.settings.values["subtitle_mode"]))
                 if self._diarization and hasattr(self._diarization, "remap_speaker"):
                     self._diarization.remap_speaker(source_id, target_id)
                 if self._transcript:
-                    self._transcript.finals = self.sessions.list_segments(self._selected_id)
+                    self._transcript.reload_loaded()
                 self._refresh_speakers()
         except ValueError as exc:
             self._message = str(exc)
@@ -275,9 +330,119 @@ class StudioController(QObject):
     @Slot(str, str)
     def assignSegmentSpeaker(self, segment_id: str, speaker_id: str) -> None:
         if self._selected_id and self.sessions.assign_segment_speaker(self._selected_id, segment_id, speaker_id):
+            self.sessions.render_exports(
+                self._selected_id, str(self.settings.values["subtitle_mode"]))
             if self._transcript:
-                self._transcript.finals = self.sessions.list_segments(self._selected_id)
+                self._transcript.reload_loaded()
             self._refresh_speakers()
+
+    @Slot(str)
+    def searchTranscript(self, query: str) -> None:
+        self._search_results = self.sessions.search(self._selected_id, query) if self._selected_id else []
+        self._focused_segment = {}
+        self.transcriptChanged.emit()
+
+    @Slot(str)
+    def showSearchResult(self, segment_id: str) -> None:
+        self._focused_segment = next((item for item in self._search_results
+                                      if item.get("id") == segment_id), {})
+        self.transcriptChanged.emit()
+
+    @Slot(str)
+    def openSessionFolderFor(self, session_id: str) -> None:
+        session = self.sessions.get(session_id)
+        if session:
+            QDesktopServices.openUrl(QUrl.fromLocalFile(str(Path(session["folder_path"]))))
+
+    @Slot(str)
+    def exportSession(self, session_id: str) -> None:
+        if not self.sessions.get(session_id):
+            return
+        try:
+            self.sessions.render_exports(session_id, str(self.settings.values["subtitle_mode"]))
+            self._message = "Markdown、SRT、VTT 已重新輸出。"
+        except Exception:
+            logging.exception("Session export failed")
+            self._message = "匯出失敗，SQLite 與 transcript.json 仍保留。"
+        self.changed.emit()
+
+    @Slot(str, str)
+    def renameSession(self, session_id: str, title: str) -> None:
+        try:
+            self.sessions.rename(session_id, title)
+            self.sessions.render_exports(session_id, str(self.settings.values["subtitle_mode"]))
+            self._message = "Session 名稱與匯出已更新。"
+        except (KeyError, ValueError, OSError) as exc:
+            self._message = str(exc) or "Session 改名失敗。"
+        self.changed.emit()
+
+    @Slot(str)
+    def requestDeleteSession(self, session_id: str) -> None:
+        self._pending_delete_session_id = session_id
+        self.changed.emit()
+
+    @Slot()
+    def cancelDeleteSession(self) -> None:
+        self._pending_delete_session_id = ""
+        self.changed.emit()
+
+    @Slot()
+    def confirmDeleteSession(self) -> None:
+        session_id = self._pending_delete_session_id
+        if not session_id:
+            return
+        try:
+            self.sessions.delete(session_id)
+            if self._selected_id == session_id:
+                self._selected_id = ""
+                self._transcript = None
+                self._speaker_rows = []
+            self._message = "Session 已刪除。"
+        except (OSError, ValueError):
+            logging.exception("Session deletion failed")
+            self._message = "Session 刪除失敗，資料仍保留。"
+        self._pending_delete_session_id = ""
+        self.transcriptChanged.emit()
+        self.changed.emit()
+
+    @Slot(str)
+    def continueInterruptedSession(self, session_id: str) -> None:
+        try:
+            self.sessions.resume(session_id)
+            self.selectSession(session_id)
+            self._message = "已恢復原 Session；選擇音訊來源後可繼續。"
+        except (KeyError, ValueError) as exc:
+            self._message = str(exc)
+        self.changed.emit()
+
+    @Slot(str)
+    def archiveInterruptedSession(self, session_id: str) -> None:
+        try:
+            self.sessions.archive_interrupted(session_id, str(self.settings.values["subtitle_mode"]))
+            self.selectSession(session_id)
+            self._message = "中斷的 Session 已完成匯出並封存。"
+        except Exception:
+            logging.exception("Interrupted Session archive failed")
+            self._message = "封存失敗；Session 仍保留，可重試。"
+        self.changed.emit()
+
+    @Slot()
+    def exportCurrentSession(self) -> None:
+        if not self._selected_id:
+            return
+        try:
+            self.sessions.render_exports(self._selected_id, str(self.settings.values["subtitle_mode"]))
+            self._message = "Markdown、SRT、VTT 已重新輸出。"
+        except Exception:
+            logging.exception("Manual export failed")
+            self._message = "匯出失敗，SQLite 與 transcript.json 仍保留。"
+        self.changed.emit()
+
+    @Slot(str)
+    def copyPath(self, path: str) -> None:
+        QGuiApplication.clipboard().setText(path)
+        self._message = "路徑已複製。"
+        self.changed.emit()
 
     @Property("QVariantList", notify=changed)
     def glossaryEntries(self) -> list[dict]:
@@ -371,8 +536,14 @@ class StudioController(QObject):
             elapsed = int((datetime.now().astimezone() - datetime.fromisoformat(session["created_at"])).total_seconds() * 1000)
             prior = self.sessions.list_segments(session["session_id"])
             offset = max(0, elapsed, max((item["end_ms"] for item in prior), default=0))
-            self._transcript = TranscriptCoordinator(self.sessions, session["session_id"], offset)
+            self._transcript = TranscriptCoordinator(
+                self.sessions, session["session_id"], offset, initial_limit=120)
             self._visible_segment_limit = 120
+            selected_source = next((item for item in self._audio_sources
+                                    if item["id"] == self._pending_audio_source), None)
+            if selected_source:
+                self.sessions.set_audio_source(session["session_id"],
+                                               f"{selected_source['label']} · PID {selected_source['pid']}")
             self._refresh_speakers()
             self._enqueue_pending_translations()
             self.transcriptChanged.emit()
@@ -421,6 +592,8 @@ class StudioController(QObject):
         self._audio_status = error or ("正在擷取指定程式音訊" if self.audio.state == "capturing" else "已停止監聽")
         self.audioChanged.emit()
         if not error and self.audio.state == "capturing":
+            self._source_error_handled = False
+            self._last_audible_at = time.monotonic()
             self._start_asr()
         elif self.audio.state != "capturing" and self._asr_pipeline:
             self._asr_pipeline.stop()
@@ -563,7 +736,7 @@ class StudioController(QObject):
                                                   list(observation.speaker_ids),
                                                   "overlapping_speech" if len(observation.speaker_ids) > 1
                                                   else "unknown_overlap", observation.confidence):
-                self._transcript.finals = self.sessions.list_segments(session_id)
+                self._transcript.reload_loaded()
                 self.transcriptChanged.emit()
         except Exception:
             logging.exception("Overlap event could not be saved")
@@ -602,11 +775,15 @@ class StudioController(QObject):
                 if request.final:
                     changed = self.sessions.update_final_translation(request.session_id, request.segment_id, translation)
                     self._translation_retry_after.pop(request.segment_id, None)
+                    if changed and (self.sessions.get(request.session_id) or {}).get("status") == "completed":
+                        self.sessions.render_exports(
+                            request.session_id, str(self.settings.values["subtitle_mode"]))
                     if changed and self._transcript and self._transcript.session_id == request.session_id:
                         for item in self._transcript.finals:
                             if item["id"] == request.segment_id:
                                 item["translation"] = translation
                                 item["translation_state"] = "final"
+                                item["translation_status"] = "final"
                                 break
                 elif self._transcript and self._transcript.session_id == request.session_id:
                     self._transcript.apply_partial_translation(request.segment_id, request.original, translation)
@@ -664,6 +841,8 @@ class StudioController(QObject):
     def _poll_audio(self) -> None:
         self._display_peak = max(float(self.audio.peak), self._display_peak * 0.72)
         now = time.monotonic()
+        if self.audio.state == "capturing" and float(self.audio.peak) >= 0.002:
+            self._last_audible_at = now
         expired = [speaker for speaker, until in self._speaker_new_until.items() if now >= until]
         if expired:
             for speaker in expired:
@@ -688,6 +867,25 @@ class StudioController(QObject):
         if self.audio.state == "error" and self._audio_status != self.audio.error:
             self._audio_status = self.audio.error
             self.refreshAudioSources()
+        if (self.audio.state == "error" and not self._source_error_handled and
+                self.settings.values.get("auto_finalize_source_closed") and
+                self.selectedSession.get("status") == "active"):
+            self._source_error_handled = True
+            self._finish_requested = True
+            if self._asr_pipeline:
+                self._asr_pipeline.stop()
+            else:
+                self._finish_requested = False
+                self._complete_session()
+        silence_minutes = int(self.settings.values.get("silence_timeout_minutes", 0) or 0)
+        if (silence_minutes > 0 and self.audio.state == "capturing" and
+                not self._finish_requested and
+                now - self._last_audible_at >= silence_minutes * 60 and
+                self.selectedSession.get("status") == "active"):
+            self._finish_requested = True
+            self._message = f"已連續 {silence_minutes} 分鐘未收到聲音，正在完成 Session。"
+            self.changed.emit()
+            self.stopAudioCapture()
         self.audioChanged.emit()
 
     def shutdown(self) -> None:
@@ -717,7 +915,8 @@ class StudioController(QObject):
                                        translation_style=values["translation_style"])
         self._selected_id = session["session_id"]
         self._speaker_new_until.clear()
-        self._transcript = TranscriptCoordinator(self.sessions, self._selected_id)
+        self._transcript = TranscriptCoordinator(
+            self.sessions, self._selected_id, initial_limit=120)
         self._visible_segment_limit = 120
         self._refresh_speakers()
         self._enqueue_pending_translations()
@@ -731,8 +930,11 @@ class StudioController(QObject):
             return
         if self.sessions.get(session_id):
             self._selected_id = session_id
+            self._search_results = []
+            self._focused_segment = {}
             self._speaker_new_until.clear()
-            self._transcript = TranscriptCoordinator(self.sessions, session_id)
+            self._transcript = TranscriptCoordinator(
+                self.sessions, session_id, initial_limit=120)
             self._visible_segment_limit = 120
             self._refresh_speakers()
             self._enqueue_pending_translations()
@@ -752,10 +954,43 @@ class StudioController(QObject):
 
     def _complete_session(self) -> None:
         session = self.selectedSession
-        if session and session["status"] == "active":
-            self.sessions.finish(session["session_id"])
-            self._message = "Session 已結束並保存。"
-            self.changed.emit()
+        if not session or session["status"] != "active" or self._finalizing:
+            return
+        self._finalizing = True
+        self._finalize_deadline = time.monotonic() + 15
+        if self._transcript:
+            final_partial = self._transcript.finalize_live()
+            if final_partial:
+                self._submit_translation(final_partial, True)
+        self._enqueue_pending_translations()
+        self._message = "正在完成待處理翻譯與記錄檔…"
+        self.changed.emit()
+        QTimer.singleShot(100, self._finish_after_pending)
+
+    @Slot()
+    def _finish_after_pending(self) -> None:
+        if not self._finalizing:
+            return
+        self._enqueue_pending_translations()
+        pending = self._translation_pipeline.pending_final_count()
+        if pending and time.monotonic() < self._finalize_deadline:
+            QTimer.singleShot(200, self._finish_after_pending)
+            return
+        session = self.selectedSession
+        try:
+            if session and session["status"] == "active":
+                self.sessions.finish(session["session_id"], str(self.settings.values["subtitle_mode"]))
+            self._message = ("Session 已完成；逾時的翻譯保留為待補。" if pending else
+                             "Session 已完成並輸出 Markdown、SRT、VTT。")
+            should_close = bool(self.settings.values.get("auto_close_after_finalize"))
+        except Exception:
+            logging.exception("Session finalization failed")
+            self._message = "完成記錄檔失敗，Session 尚未封存；請重試。"
+            should_close = False
+        self._finalizing = False
+        self.changed.emit()
+        if should_close:
+            QTimer.singleShot(50, QCoreApplication.quit)
 
     @Slot(str, "QVariant")
     def setPreference(self, key: str, value: object) -> None:
