@@ -1,7 +1,8 @@
 # Vtuber Live Translator 1.0.0 — Release Candidate
 
-Status: **Release Candidate Approved** — 2026-09-24. Approval is limited to the executed local
-acceptance scope: 0 open BLOCKER, 0 open CRITICAL, 3 open MAJOR issues below.
+Status: **Release Candidate; GA withheld** — 2026-09-24. Phase 8 approval was limited to its executed
+local scope. Phase 9 found missing independent acceptance and a critical translation-quality issue.
+See PHASE9_REPORT.md for the current release gates. Do not distribute this candidate as 1.0.0 GA.
 
 ## Features
 
@@ -39,6 +40,10 @@ credentials, paths, person identities or voice embeddings are included.
   -0.22 MiB/min. Queues/live history are bounded, but arbitrary-duration memory stability is unproven.
 - Quality remains a MAJOR: small models can mistranslate, misdetect short utterances, or occasionally
   include instruction-like text in output. Passing factual guards is not a correctness guarantee.
+- Phase 9 review found multiple clear invented-content translations in a 100 Japanese / 50 English
+  sample. A narrow guard now rejects explicit prompt leakage, unchanged Japanese source text and
+  grossly overlong output, retaining the original as translation pending. Semantic drift remains
+  a CRITICAL GA gate; this guard is not a complete quality fix.
 - Gaming/Balanced use 1.5B only; optional 7B correction requires High Quality and explicit opt-in,
   approximately 5 GB additional RAM, and an already installed 7B model. It may delay subtitles.
 - This RC is unsigned unless the builder provides SIGNING_CERT. Unknown publisher or SmartScreen

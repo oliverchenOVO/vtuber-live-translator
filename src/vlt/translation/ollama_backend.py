@@ -136,6 +136,13 @@ class OllamaTranslationBackend:
     @staticmethod
     def _verify_facts(original: str, result: str, terms: list[str]) -> None:
         """Reject obvious factual drift; retain the original as a pending segment."""
+        if re.search(r"\b(?:current utterance|earlier utterances|context only|translation into|output chinese translation)\b|^\s*translation\s*[:：]", result,
+                     re.IGNORECASE | re.MULTILINE):
+            raise RuntimeError("翻譯包含模型指令或標籤，已等待重試。")
+        if re.search(r"[\u3040-\u30ff]", original) and result.strip() == original.strip():
+            raise RuntimeError("翻譯仍是原文，已等待重試。")
+        if len(original.strip()) <= 80 and len(result.strip()) > max(60, 3 * len(original.strip())):
+            raise RuntimeError("翻譯比原文長太多，可能加入額外內容，已等待重試。")
         source = unicodedata.normalize("NFKC", original)
         target = unicodedata.normalize("NFKC", result)
         from decimal import Decimal

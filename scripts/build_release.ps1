@@ -15,6 +15,16 @@ function Sign-ReleaseFile([string]$File) {
     $result = Set-AuthenticodeSignature -FilePath $File -Certificate $cert -HashAlgorithm SHA256
     if ($result.Status -ne 'Valid') { throw "簽章失敗：$($result.Status)" }
     if ((Get-AuthenticodeSignature -FilePath $File).Status -ne 'Valid') { throw '簽章驗證失敗。' }
+    $signTool = (Get-Command signtool.exe -ErrorAction SilentlyContinue).Source
+    if (-not $signTool) {
+        $sdkBin = Join-Path ${env:ProgramFiles(x86)} 'Windows Kits\10\bin'
+        $signTool = Get-ChildItem -LiteralPath $sdkBin -Filter signtool.exe -Recurse -ErrorAction SilentlyContinue |
+            Where-Object { $_.FullName -match '\\x64\\signtool\.exe$' } |
+            Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+    }
+    if (-not $signTool) { throw '已要求簽章，但找不到 Windows SDK signtool.exe 可供驗證。' }
+    & $signTool verify /pa /v $File
+    if ($LASTEXITCODE) { throw "signtool 驗證失敗：$File" }
 }
 $ProjectRoot = Split-Path -Parent $PSScriptRoot
 $Python = Join-Path $ProjectRoot '.venv\Scripts\python.exe'

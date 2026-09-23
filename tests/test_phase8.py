@@ -70,6 +70,21 @@ def test_uncertain_japanese_is_not_mistaken_for_negative():
         OllamaTranslationBackend._verify_facts("雨かもしれない", "會下雨", [])
 
 
+@pytest.mark.parametrize("source,output", [
+    ("え、やって", "Translation into Traditional Chinese as used in Taiwan: 嘛，幹了"),
+    ("おかよな!", "哇！等等！\nTranslation:"),
+    ("で、見ました", "で、見ました"),
+    ("よいしょー", "今天發生了很多事情。我去買了東西，然後見了朋友。" * 4),
+])
+def test_obvious_model_leakage_or_runaway_translation_stays_pending(source, output):
+    with pytest.raises(RuntimeError):
+        OllamaTranslationBackend._verify_facts(source, output, [])
+
+
+def test_short_valid_translation_is_not_marked_as_runaway():
+    OllamaTranslationBackend._verify_facts("よいしょー", "嘿咻！", [])
+
+
 def test_score_is_not_translated_as_minutes():
     with pytest.raises(RuntimeError, match="分數"):
         OllamaTranslationBackend._verify_facts("100 points remaining", "還剩100分鐘", [])

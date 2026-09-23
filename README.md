@@ -16,6 +16,18 @@ Sessions/   Models/   Cache/   Logs/   Runtime/   settings.json
 
 Settings 可另選新 Session 的儲存位置；既有 History 保留原路徑。升級不會搬動或刪除使用者資料，卸載時才會詢問是否一併刪除。模型與快取可由 Settings 下載、修復、移除或清理。
 
+## 第一次使用
+
+完成首次模型下載並重新啟動後，先在 Chrome 播放直播，於 Studio 的「程式音訊」選取正在輸出的 `chrome.exe`，選擇來源語言和目標中文，按「開始監聽」。逐字稿會先顯示 LIVE 原文與譯文；確認後的內容會立即保存在 Session。Overlay 可切換 Gaming、Watching、Minimal，完成後按「停止」並從 History 開啟或匯出 Markdown/SRT/VTT。翻譯暫時未完成的句子會明確標示待補；Speaker 不確定時顯示 Unknown，可稍後在 Speakers 或逐字稿修正。
+
+## 儲存與隱私
+
+Session 的原文、譯文、Speaker 設定及匯出檔只保存在本機；原始音訊預設不落盤。語音辨識、Speaker 分離與翻譯都在本機執行，正常 Session 不需要把音訊或文字送到外部 AI 服務。首次下載模型與 runtime 需要連線至 GitHub 和模型來源；程式目前沒有設定自動更新來源，也沒有遙測上傳。診斷封存只含白名單設定和數值指標，不含逐字稿、音訊、金鑰或聲紋。
+
+## 已知限制
+
+較舊的 Windows build 無法使用 Process Loopback。多人同時說話、短句和音效可能讓 Speaker 顯示 Unknown 或辨識錯誤；翻譯可能延遲、遺漏或產生錯誤事實，重要內容請核對原文。首次下載約 2.45 GB，請保留至少 7 GB 磁碟空間。未簽章的安裝檔可能觸發 Windows Unknown publisher／SmartScreen。正式 GA 尚需獨立乾淨 Windows 和實際遊戲／Overlay 操作驗證；詳見 [Phase 9 驗證報告](PHASE9_REPORT.md)。
+
 程式採單一執行個體；再次啟動會喚回既有 Studio。系統匣可開啟 Studio、切換 Overlay、開始／停止 Session、進入設定或完整結束。診斷 log 每檔最多 5 MB、保留五個備份；未處理的 UI 錯誤另覆寫 `Logs\crash.log`，下次啟動會把未完成 Session 標記為可恢復。Cache 預設上限 2 GB，啟動時自動清理最舊檔案。
 
 ### 首次下載與執行環境
@@ -159,4 +171,4 @@ release\RELEASE_NOTES_1.0.0.md
 - Phase 6：Session History、中斷恢復、Speaker 修正、搜尋與 Markdown/SRT/VTT 匯出，已完成。
 - Phase 7：Windows EXE/Installer、First Run、模型管理、硬體模式、系統匣、單一執行個體與 release hardening，已完成。
 - Phase 8：Release Candidate Hardening，驗收範圍、實測數字與未驗證項目見 [驗證報告](PHASE8_REPORT.md)。
-- Phase 9 尚未開始。
+- Phase 9：真實環境驗證與 GA 判定，進行中；未達正式發布條件前保留 RC 標示。
