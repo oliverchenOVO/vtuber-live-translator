@@ -4,7 +4,9 @@ Windows 即時翻譯桌面程式 **1.0.0 Release Candidate**。指定一個正�
 
 ## 安裝版
 
-在 Windows 11 或 Windows Server 2022 build **20348 以上**執行 `VtuberLiveTranslator-Setup.exe`。安裝程式採每位使用者安裝，不要求系統管理員權限；可建立桌面與開始功能表捷徑。首次啟動會引導選擇繁體／簡體中文、推薦效能模式、下載模型並測試指定程式音訊。
+在 Windows 11 或 Windows Server 2022 build **20348 以上**執行 `VtuberLiveTranslator-1.0.0-Setup.exe`。安裝程式採每位使用者安裝，不要求系統管理員權限；可建立桌面與開始功能表捷徑。首次啟動會引導選擇繁體／簡體中文、推薦效能模式、下載模型並測試指定程式音訊。
+
+目前為候選版本。完整驗證範圍與限制見 [Release Notes](RELEASE_NOTES_1.0.0.md) 和 [Phase 8 驗證報告](PHASE8_REPORT.md)。未提供簽章憑證的版本為 unsigned，Windows 可能顯示 **Unknown publisher / SmartScreen**；不需要也不建議關閉 Windows Defender。
 
 應用資料預設位於 `%LOCALAPPDATA%\VtuberLiveTranslator`：
 
@@ -35,7 +37,7 @@ Settings 可另選新 Session 的儲存位置；既有 History 保留原路徑�
 
 * **Gaming Priority**：base ASR、CPU 2 threads、較低頻率 Speaker 分析、1.5B 翻譯且禁止 7B fallback。
 * **Balanced**：base ASR、自動選 GPU/CPU、CPU 最多 4 threads、1.5B 翻譯且禁止 7B fallback。
-* **High Quality**：small ASR、CPU 最多 6 threads，允許 7B 翻譯修正；需要較多 RAM/VRAM。
+* **High Quality**：small ASR、CPU 最多 6 threads。7B 翻譯修正還需要使用者另外勾選，且模型須已安裝；不會偷偷下載。額外約需 5 GB RAM，部分字幕可能延後修正。
 
 NVIDIA CUDA 不可用時會自動使用 CPU int8 並在介面提示，不會中止程式。
 
@@ -47,7 +49,6 @@ NVIDIA CUDA 不可用時會自動使用 CPU int8 並在介面提示，不會中�
 py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e ".[dev]"
 ollama pull qwen2.5:1.5b
-ollama pull qwen2.5:7b
 .\.venv\Scripts\python.exe -m vlt.app
 ```
 
@@ -61,7 +62,7 @@ ollama pull qwen2.5:7b
 
 ## 音訊監聽
 
-在 LIVE 的 **APPLICATION AUDIO** 選擇程式並按「開始監聽」。清單顯示程序名稱、根 PID 和音訊輸出狀態，每 2.5 秒更新。來源消失後可重新偵測再連接。只監聽選取程序及其子程序；不會儲存擷取的原始音訊。
+在「即時逐字稿」的 **程式音訊** 選擇程式並按「開始監聽」。清單顯示程序名稱、根 PID 和音訊輸出狀態，每 2.5 秒更新。來源消失後可重新偵測再連接。只監聽選取程序及其子程序；不會儲存擷取的原始音訊。
 
 使用 Windows `ActivateAudioInterfaceAsync`、`AUDIOCLIENT_ACTIVATION_TYPE_PROCESS_LOOPBACK` 與 `PROCESS_LOOPBACK_MODE_INCLUDE_TARGET_PROCESS_TREE`。需要 Windows Build **20348 或更新**。較舊 Windows 10 不具備此正式 API，本版本會顯示清楚的版本錯誤；不會暗中退回整機 Stereo Mix。
 
@@ -75,7 +76,13 @@ ollama pull qwen2.5:7b
 
 ## 即時翻譯
 
-本機 `OllamaTranslationBackend` 使用 Qwen2.5 1.5B 量化模型；7B 只允許在 High Quality 模式作 Final 事實修正，Gaming 與 Balanced 不會載入它，Partial 也永不觸發 7B。First Run 或 Settings 的 Model Manager 會下載、啟動及管理固定版本的 Ollama runtime 與 1.5B 模型，使用者不需要安裝 Ollama CLI 或執行 `ollama pull`。翻譯不需要 API Key，文字只傳至 `127.0.0.1:11434`，模型以 `num_gpu=0` 與效能模式指定的 CPU threads 運行，不佔用 Faster-Whisper 的 GPU 計算。若服務不可用，原文會繼續保存，翻譯標記 `translation_pending`，約 30 秒後重試；使用者可直接在 Settings 修復 Translation 元件。開啟既有 Session 或恢復中斷 Session 也會掃描 pending，不建立新資料夾。
+本機 `OllamaTranslationBackend` 使用 Qwen2.5 1.5B 量化模型；7B 只允許在 High Quality 並另外勾選修正時作 Final 修正，Gaming 與 Balanced 不會載入它，Partial 也永不觸發 7B。First Run 或 Settings 的 Model Manager 會下載、啟動及管理固定版本的 Ollama runtime 與 1.5B 模型，使用者不需要安裝 Ollama CLI 或執行 `ollama pull`。翻譯不需要 API Key，文字只傳至 `127.0.0.1:11434`，模型以 `num_gpu=0` 與效能模式指定的 CPU threads 運行，不佔用 Faster-Whisper 的 GPU 計算。若服務不可用，原文會繼續保存，翻譯標記 `translation_pending`，按 30 秒至 15 分鐘的退避重試；使用者可直接在 Settings 修復 Translation 元件。開啟既有 Session 或恢復中斷 Session 也會掃描 pending，不建立新資料夾。
+
+Settings 的 **Export Diagnostics** 只輸出版本、Windows build、數值硬體摘要、白名單設定與數值診斷紀錄；不包含原始音訊、逐字稿、金鑰、聲紋或人名。
+
+### RC 建置與簽章
+
+執行 `scripts/build_release.ps1` 會先跑全部測試，再產生 EXE、版本化 Installer、Release Notes 與 `SHA256SUMS.txt`。可選的 `SIGNING_CERT` 是目前使用者 Windows Personal 憑證庫內的 code-signing certificate thumbprint；私鑰保留在憑證庫。設定後會自動簽署 EXE 與 Installer 並驗證，失敗則中止 build。未設定時正常產生 unsigned RC。
 
 右側可以切換 `zh-TW` / `zh-CN` 和 Natural / Faithful / Minimal Subtitle；詞庫在 Dictionary 中增改刪並用 JSON 路徑匯入、匯出。兩個中文 locale 會進入模型 prompt，OpenCC 只作最後字形檢查，指定譯名最後套用。最近五句、30 秒內的 Final 原文用於消歧。翻譯部分更新同一 LIVE 項目；ASR Final 先持久化原文與 pending 標記，再對完整原文重新翻譯並原子更新 SQLite/JSON。長句按句子邊界翻譯，避免過長 prompt；明顯丟失數字、時間、否定、推測、譯名時拒絕 Final 並等待重試。這是保守檢查，並不能形式化保證每一項語意完全正確，重要內容仍需人工核對。
 
@@ -83,7 +90,7 @@ ollama pull qwen2.5:7b
 
 ## 即時 Speaker 分離
 
-`DiarizationBackend` 與 UI、ASR 和音訊擷取解耦。預設 `SherpaOnnxDiarizationBackend` 使用 sherpa-onnx 的 pyannote segmentation 3.0 int8 ONNX 與 3D-Speaker CampPlus 中英語 embedding，均在 CPU 執行；已有 512 維 ERes2Net embedding 的 Session 恢復時仍使用原模型，保留舊 speaker profile。首次開始監聽時從 sherpa-onnx 官方 GitHub release 下載並檢查 SHA-256。模型存放在使用者資料目錄 `diarization-models`；不需 API Key。若無網路或模型載入失敗，Speaker 會顯示暫不可用，ASR 和翻譯繼續。
+`DiarizationBackend` 與 UI、ASR 和音訊擷取解耦。預設 `SherpaOnnxDiarizationBackend` 使用 sherpa-onnx 的 pyannote segmentation 3.0 int8 ONNX 與 3D-Speaker CampPlus 中英語 embedding，均在 CPU 執行；已有 512 維 ERes2Net embedding 的 Session 恢復時仍使用原模型，保留舊 speaker profile。首次開始監聽時從 sherpa-onnx 官方 GitHub release 下載並檢查 SHA-256。模型存放在使用者資料目錄 `Models/diarization`；不需 API Key。若無網路或模型載入失敗，Speaker 會顯示暫不可用，ASR 和翻譯繼續。
 
 分離器讀取同一份 16 kHz mono int16 PCM，獨立工作執行緒處理最多 20 秒的記憶體視窗。輸入佇列最多 256 塊，每塊最多一秒 PCM（約 8 MB 上限）；結果最多 180 個時間區間，最多八個暫定候選，每位 Speaker 最多保存三個代表 embedding（新 Session 為 192 維，舊 Session 為 512 維）；佇列滿時丟棄最舊塊。原始直播音訊不寫入硬碟。每次 Final 以時間區間優勢判斷 Speaker；不足時標 `unknown`，後續可靠結果可補回自動指定，手動指定永不被覆蓋。多人同時說話而無法可靠分離時建立 `multi_speaker_event`。只有兩位已確認 Speaker 的原文均明確標示笑聲或同時驚呼，才會將事件升級為 laughter 或 collective reaction；其餘保留 overlapping_speech/unknown_overlap，不推測原因。
 
@@ -135,11 +142,12 @@ $env:PYTHONPATH="src"
 
 ```text
 release\VtuberLiveTranslator\VtuberLiveTranslator.exe
-release\VtuberLiveTranslator-Setup.exe
+release\VtuberLiveTranslator-1.0.0-Setup.exe
 release\SHA256SUMS.txt
+release\RELEASE_NOTES_1.0.0.md
 ```
 
-版本唯一來源為 `src\vlt\version.py`，build script 會將同一版本注入 EXE metadata 與 installer。`data/`、`release/`、模型、Session、log、`.env` 與本機憑證均由 `.gitignore` 排除。
+版本唯一來源為 `src\vlt\version.py`，build script 會將同一版本注入 EXE metadata 與 installer。`data/`、`release/`、模型、Session、log 與 `.env` 由 `.gitignore` 排除。選用簽章透過 `SIGNING_CERT` 指向 Windows 個人憑證庫中的 thumbprint，私鑰不放入專案。
 
 ## 階段
 
@@ -150,4 +158,5 @@ release\SHA256SUMS.txt
 - Phase 5：即時 Speaker 分離、管理、多人事件與顯示名稱輸出，已完成。
 - Phase 6：Session History、中斷恢復、Speaker 修正、搜尋與 Markdown/SRT/VTT 匯出，已完成。
 - Phase 7：Windows EXE/Installer、First Run、模型管理、硬體模式、系統匣、單一執行個體與 release hardening，已完成。
-- Phase 8 尚未開始。
+- Phase 8：Release Candidate Hardening，驗收範圍、實測數字與未驗證項目見 [驗證報告](PHASE8_REPORT.md)。
+- Phase 9 尚未開始。

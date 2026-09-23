@@ -24,6 +24,14 @@ ApplicationWindow {
     property int firstRunPage: 0
     property bool trayPromptVisible: false
     property string modelRemovalTarget: ""
+    function pageLabel(value) {
+        return ({LIVE: "即時逐字稿", History: "歷史記錄", Speakers: "Speaker 管理",
+                 Dictionary: "詞庫", Exports: "匯出", Settings: "設定"})[value] || value
+    }
+    Shortcut { sequence: "Ctrl+L"; onActivated: window.page = "LIVE" }
+    Shortcut { sequence: "Ctrl+H"; onActivated: window.page = "History" }
+    Shortcut { sequence: "Ctrl+O"; onActivated: studio.toggleOverlay() }
+    Shortcut { sequence: "Escape"; onActivated: { window.modelRemovalTarget = ""; window.trayPromptVisible = false } }
 
     onClosing: function(close) {
         if (!!studio.preferences.minimize_to_tray) {
@@ -33,6 +41,9 @@ ApplicationWindow {
             } else {
                 window.hide()
             }
+        } else {
+            close.accepted = false
+            studio.quitApplication()
         }
     }
 
@@ -67,7 +78,8 @@ ApplicationWindow {
             color: control.primary ? (control.down ? "#49bd9e" : control.hovered ? "#8ef2d8" : window.accent)
                                    : control.danger ? (control.hovered ? "#4a3038" : "#382930")
                                                     : (control.hovered ? "#344052" : window.raised)
-            border.color: control.primary ? "transparent" : window.line
+            border.color: control.activeFocus ? "#ffffff" : control.primary ? "transparent" : window.line
+            border.width: control.activeFocus ? 2 : 1
             Behavior on color { ColorAnimation { duration: 140 } }
         }
     }
@@ -83,7 +95,7 @@ ApplicationWindow {
         color: window.ink
         placeholderTextColor: window.muted
         font.pixelSize: 12
-        background: Rectangle { radius: 8; color: window.raised; border.color: window.line }
+        background: Rectangle { radius: 8; color: window.raised; border.color: parent.activeFocus ? window.accent : window.line }
     }
 
     RowLayout {
@@ -117,7 +129,7 @@ ApplicationWindow {
                     }
                 }
                 Rectangle { Layout.fillWidth: true; Layout.topMargin: 21; Layout.bottomMargin: 10; height: 1; color: window.line }
-                Text { text: "WORKSPACE"; color: "#68788d"; font.pixelSize: 10; font.bold: true; font.letterSpacing: 1.7; Layout.bottomMargin: 7 }
+                Text { text: "工作區"; color: "#68788d"; font.pixelSize: 10; font.bold: true; font.letterSpacing: 1.7; Layout.bottomMargin: 7 }
                 Repeater {
                     model: [
                         {name: "LIVE", icon: "◉"}, {name: "History", icon: "▤"},
@@ -126,13 +138,19 @@ ApplicationWindow {
                     ]
                     delegate: Rectangle {
                         required property var modelData
+                        activeFocusOnTab: true
+                        Accessible.role: Accessible.Button
+                        Accessible.name: window.pageLabel(modelData.name)
+                        Keys.onReturnPressed: window.page = modelData.name
+                        Keys.onSpacePressed: window.page = modelData.name
                         Layout.fillWidth: true
                         Layout.minimumWidth: 0
                         Layout.maximumWidth: 178
                         height: 43
                         radius: 10
                         color: window.page === modelData.name ? "#263d3c" : navMouse.containsMouse ? "#222b37" : "transparent"
-                        border.color: window.page === modelData.name ? "#3d6961" : "transparent"
+                        border.color: activeFocus ? window.accent : window.page === modelData.name ? "#3d6961" : "transparent"
+                        border.width: activeFocus ? 2 : 1
                         Behavior on color { ColorAnimation { duration: 130 } }
                         Row {
                             anchors.verticalCenter: parent.verticalCenter
@@ -140,7 +158,7 @@ ApplicationWindow {
                             anchors.leftMargin: 13
                             spacing: 13
                             Text { text: modelData.icon; color: window.page === modelData.name ? window.accent : window.muted; font.pixelSize: 18; width: 19 }
-                            Text { text: modelData.name; color: window.page === modelData.name ? window.ink : "#adbac8"; font.pixelSize: 13; font.bold: window.page === modelData.name }
+                            Text { text: window.pageLabel(modelData.name); color: window.page === modelData.name ? window.ink : "#adbac8"; font.pixelSize: 13; font.bold: window.page === modelData.name }
                         }
                         MouseArea { id: navMouse; anchors.fill: parent; hoverEnabled: true; onClicked: window.page = modelData.name }
                     }
@@ -152,8 +170,8 @@ ApplicationWindow {
                     color: "#202a32"; border.color: "#34474b"
                     Column {
                         anchors.fill: parent; anchors.margins: 13; spacing: 7
-                        Text { text: "●  READY"; color: window.accent; font.pixelSize: 11; font.bold: true; font.letterSpacing: 1 }
-                        Text { text: "Live Workspace"; color: window.ink; font.pixelSize: 13; font.bold: true }
+                        Text { text: "●  已就緒"; color: window.accent; font.pixelSize: 11; font.bold: true; font.letterSpacing: 1 }
+                        Text { text: "直播工作區"; color: window.ink; font.pixelSize: 13; font.bold: true }
                         Text { text: "即時字幕 · 歷史 · 輸出"; color: window.muted; font.pixelSize: 11; width: 150; wrapMode: Text.WordWrap }
                     }
                 }
@@ -200,7 +218,7 @@ ApplicationWindow {
                         RowLayout {
                             Layout.fillWidth: true
                             Text {
-                                text: window.page === "LIVE" ? "Live transcript" : window.page
+                                text: window.pageLabel(window.page)
                                 color: window.ink; font.pixelSize: 29; font.bold: true
                             }
                             Item { Layout.fillWidth: true }
@@ -268,7 +286,7 @@ ApplicationWindow {
                                 anchors.fill: parent; anchors.margins: 20; spacing: 10
                                 RowLayout {
                                     Layout.fillWidth: true
-                                    Text { text: "APPLICATION AUDIO"; color: window.ink; font.pixelSize: 13; font.bold: true; font.letterSpacing: 1.1 }
+                                    Text { text: "程式音訊"; color: window.ink; font.pixelSize: 13; font.bold: true; font.letterSpacing: 1.1 }
                                     Item { Layout.fillWidth: true }
                                     AppButton { text: "↻  重新偵測"; onClicked: studio.refreshAudioSources() }
                                 }
@@ -276,20 +294,22 @@ ApplicationWindow {
                                     Layout.fillWidth: true; spacing: 11
                                     ComboBox {
                                         id: sourcePicker
+                                        Accessible.name: "音訊來源"
                                         Layout.fillWidth: true
                                         Layout.minimumWidth: 0
                                         model: studio.audioSources
                                         textRole: "display"
                                         valueRole: "id"
+                                        currentIndex: studio.audioSources.findIndex(item => item.id === studio.selectedAudioSource)
                                         enabled: studio.audioSources.length > 0 && !studio.audioBusy && studio.audioState !== "capturing"
                                         onActivated: studio.selectAudioSource(String(currentValue))
                                     }
                                     AppButton {
-                                        text: studio.audioState === "capturing" ? "停止監聽" : "開始監聽"
+                                        text: studio.audioBusy ? "取消啟動／停止" : studio.audioState === "capturing" ? "停止監聽" : "開始監聽"
                                         primary: studio.audioState !== "capturing"
-                                        enabled: !studio.audioBusy && (studio.audioState === "capturing" || studio.audioSources.length > 0)
+                                        enabled: studio.audioBusy || studio.audioState === "capturing" || studio.audioSources.length > 0
                                         onClicked: {
-                                            if (studio.audioState === "capturing") studio.stopAudioCapture()
+                                            if (studio.audioBusy || studio.audioState === "capturing") studio.stopAudioCapture()
                                             else {
                                                 studio.selectAudioSource(String(sourcePicker.currentValue))
                                                 studio.startAudioCapture()
@@ -299,14 +319,14 @@ ApplicationWindow {
                                 }
                                 Text {
                                     Layout.fillWidth: true
-                                    text: studio.audioSources.length === 0 && studio.audioState !== "error" && studio.audioStatus === "請選擇音訊來源" ?
+                                    text: studio.audioState === "capturing" ? studio.audioStatus + " · 切換來源前請先停止監聽。" : studio.audioSources.length === 0 && studio.audioState !== "error" && studio.audioStatus === "請選擇音訊來源" ?
                                           "尚未發現具有 Windows 音訊 Session 的程式。請播放聲音後重新偵測。" : studio.audioStatus
                                     color: studio.audioState === "error" ? "#ffb9bc" : window.muted
                                     font.pixelSize: 11; wrapMode: Text.WordWrap
                                 }
                                 RowLayout {
                                     Layout.fillWidth: true; spacing: 12
-                                    Text { text: "INPUT LEVEL"; color: "#7e91a1"; font.pixelSize: 10; font.bold: true; font.letterSpacing: 1 }
+                                    Text { text: "音量"; color: "#7e91a1"; font.pixelSize: 10; font.bold: true; font.letterSpacing: 1 }
                                     Rectangle {
                                         Layout.fillWidth: true; height: 9; radius: 5; color: "#2d3743"
                                         Rectangle {
@@ -327,6 +347,19 @@ ApplicationWindow {
                             AppButton { text: "＋  建立空白 Session"; primary: true; enabled: studio.audioState !== "capturing" && !studio.audioBusy; onClicked: studio.createSession() }
                             AppButton { text: studio.overlayVisible ? "隱藏 Overlay" : "預覽 Overlay"; onClicked: studio.toggleOverlay() }
                         }
+                        Flow {
+                            visible: window.page === "LIVE" && (studio.audioBusy || studio.audioState === "capturing")
+                            Layout.fillWidth: true; spacing: 12
+                            Text { text: studio.startupStages.filter(s => s.ready).length + " / 4"; color: window.accent; font.pixelSize: 12 }
+                            Repeater {
+                                model: studio.startupStages
+                                delegate: Text {
+                                    required property var modelData
+                                    text: (modelData.ready ? "✓ " : "● ") + modelData.name
+                                    color: modelData.ready ? window.accent : window.muted; font.pixelSize: 12
+                                }
+                            }
+                        }
 
                         InfoCard {
                             visible: window.page === "LIVE"
@@ -341,7 +374,7 @@ ApplicationWindow {
                                     Item { Layout.fillWidth: true }
                                     DarkField { id: transcriptSearch; Layout.preferredWidth: 230; placeholderText: "搜尋原文、譯文或 Speaker"; onAccepted: studio.searchTranscript(text) }
                                     AppButton { text: "搜尋"; onClicked: studio.searchTranscript(transcriptSearch.text) }
-                                    Text { text: "SESSION VIEW"; color: "#607287"; font.pixelSize: 10; font.bold: true; font.letterSpacing: 1.4 }
+                                    Text { text: "Session 檢視"; color: "#607287"; font.pixelSize: 10; font.bold: true; font.letterSpacing: 1.4 }
                                 }
                                 Rectangle { Layout.fillWidth: true; height: 1; color: window.line }
                                 Text { visible: transcriptSearch.text.length > 0; text: studio.searchResults.length + " 筆符合結果"; color: window.muted; font.pixelSize: 11 }
@@ -384,6 +417,7 @@ ApplicationWindow {
                                 Repeater {
                                     model: studio.transcriptSegments
                                     delegate: Rectangle {
+                                        id: transcriptCard
                                         required property var modelData
                                         Layout.fillWidth: true
                                         implicitHeight: finalColumn.implicitHeight + 25
@@ -412,6 +446,18 @@ ApplicationWindow {
                                                     currentIndex: Math.max(0, model.indexOf(modelData.speaker_id))
                                                 }
                                                 AppButton { text: "手動指定"; onClicked: studio.assignSegmentSpeaker(modelData.id, segmentSpeakerPicker.currentText) }
+                                            }
+                                            Flow {
+                                                Layout.fillWidth: true; spacing: 6
+                                                visible: modelData.type === "speech" && (!modelData.speaker_id || modelData.speaker_id === "unknown")
+                                                Repeater {
+                                                    model: studio.speakers.slice(0, 4)
+                                                    delegate: AppButton {
+                                                        required property var modelData
+                                                        text: modelData.display_name
+                                                        onClicked: studio.assignSegmentSpeaker(transcriptCard.modelData.id, modelData.speaker_id)
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -444,7 +490,7 @@ ApplicationWindow {
                                 anchors.fill: parent; anchors.margins: 18; spacing: 12
                                 RowLayout {
                                     Layout.fillWidth: true
-                                    Text { text: "SESSION HISTORY"; color: window.ink; font.pixelSize: 15; font.bold: true; font.letterSpacing: 1 }
+                                    Text { text: "Session 歷史"; color: window.ink; font.pixelSize: 15; font.bold: true; font.letterSpacing: 1 }
                                     Item { Layout.fillWidth: true }
                                     Text { text: studio.history.length + " sessions"; color: window.muted; font.pixelSize: 11 }
                                 }
@@ -508,6 +554,8 @@ ApplicationWindow {
                                     Text { text: "效能模式"; color: window.ink; font.pixelSize: 13; Layout.fillWidth: true }
                                     ComboBox { model: ["Gaming", "Balanced", "High Quality"]; currentIndex: ["gaming", "balanced", "quality"].indexOf(studio.preferences.performance_preset); onActivated: studio.selectPerformancePreset(["gaming", "balanced", "quality"][currentIndex]) }
                                 }
+                                Text { visible: studio.preferences.performance_preset === "quality"; text: "High Quality 使用 small ASR。選用 7B 修正額外約需 5 GB RAM，部分字幕可能延後修正；不會自動下載。"; color: window.muted; wrapMode: Text.WordWrap; Layout.fillWidth: true; font.pixelSize: 12 }
+                                CheckBox { visible: studio.preferences.performance_preset === "quality"; text: "啟用已安裝的 High Quality Correction（7B）"; checked: !!studio.preferences.quality_correction; onToggled: { studio.setPreference("quality_correction", checked); studio.selectPerformancePreset("quality") } }
                                 RowLayout {
                                     Layout.fillWidth: true
                                     Text { text: "來源語言"; color: window.ink; font.pixelSize: 13; Layout.fillWidth: true }
@@ -531,7 +579,7 @@ ApplicationWindow {
                                 RowLayout {
                                     Layout.fillWidth: true
                                     Text { text: "音訊來源關閉時自動完成"; color: window.ink; font.pixelSize: 13; Layout.fillWidth: true }
-                                    Switch { checked: !!studio.preferences.auto_finalize_source_closed; onToggled: studio.setPreference("auto_finalize_source_closed", checked) }
+                                    Switch { Accessible.name: "音訊來源關閉時自動完成"; checked: !!studio.preferences.auto_finalize_source_closed; onToggled: studio.setPreference("auto_finalize_source_closed", checked) }
                                 }
                                 RowLayout {
                                     Layout.fillWidth: true
@@ -541,43 +589,44 @@ ApplicationWindow {
                                 RowLayout {
                                     Layout.fillWidth: true
                                     Text { text: "Session 完成後自動關閉應用程式"; color: window.ink; font.pixelSize: 13; Layout.fillWidth: true }
-                                    Switch { checked: !!studio.preferences.auto_close_after_finalize; onToggled: studio.setPreference("auto_close_after_finalize", checked) }
+                                    Switch { Accessible.name: "Session 完成後關閉"; checked: !!studio.preferences.auto_close_after_finalize; onToggled: studio.setPreference("auto_close_after_finalize", checked) }
                                 }
                                 RowLayout {
                                     Layout.fillWidth: true
                                     Text { text: "登入 Windows 後啟動"; color: window.ink; font.pixelSize: 13; Layout.fillWidth: true }
-                                    Switch { checked: !!studio.preferences.start_with_windows; onToggled: studio.setPreference("start_with_windows", checked) }
+                                    Switch { Accessible.name: "登入 Windows 後啟動"; checked: !!studio.preferences.start_with_windows; onToggled: studio.setPreference("start_with_windows", checked) }
                                 }
                                 RowLayout {
                                     Layout.fillWidth: true
                                     Text { text: "啟動後最小化"; color: window.ink; font.pixelSize: 13; Layout.fillWidth: true }
-                                    Switch { checked: !!studio.preferences.start_minimized; onToggled: studio.setPreference("start_minimized", checked) }
+                                    Switch { Accessible.name: "啟動後最小化"; checked: !!studio.preferences.start_minimized; onToggled: studio.setPreference("start_minimized", checked) }
                                 }
                                 RowLayout {
                                     Layout.fillWidth: true
                                     Text { text: "記住上次音訊來源"; color: window.ink; font.pixelSize: 13; Layout.fillWidth: true }
-                                    Switch { checked: !!studio.preferences.remember_audio_source; onToggled: studio.setPreference("remember_audio_source", checked) }
+                                    Switch { Accessible.name: "記住上次音訊來源"; checked: !!studio.preferences.remember_audio_source; onToggled: studio.setPreference("remember_audio_source", checked) }
                                 }
                                 RowLayout {
                                     Layout.fillWidth: true
                                     Text { text: "啟動後顯示 Overlay"; color: window.ink; font.pixelSize: 13; Layout.fillWidth: true }
-                                    Switch { checked: !!studio.preferences.show_overlay_on_start; onToggled: studio.setPreference("show_overlay_on_start", checked) }
+                                    Switch { Accessible.name: "啟動時顯示 Overlay"; checked: !!studio.preferences.show_overlay_on_start; onToggled: studio.setPreference("show_overlay_on_start", checked) }
                                 }
                                 RowLayout {
                                     Layout.fillWidth: true
                                     Text { text: "啟動時檢查更新"; color: window.ink; font.pixelSize: 13; Layout.fillWidth: true }
-                                    Switch { checked: !!studio.preferences.update_checks; onToggled: studio.setPreference("update_checks", checked) }
+                                    Switch { Accessible.name: "啟動時檢查更新"; checked: !!studio.preferences.update_checks; onToggled: studio.setPreference("update_checks", checked) }
                                     AppButton { text: "檢查更新"; onClicked: studio.checkForUpdates() }
                                 }
                                 RowLayout {
                                     Layout.fillWidth: true
                                     Text { text: "關閉視窗時縮到系統匣"; color: window.ink; font.pixelSize: 13; Layout.fillWidth: true }
-                                    Switch { checked: !!studio.preferences.minimize_to_tray; onToggled: studio.setPreference("minimize_to_tray", checked) }
+                                    Switch { Accessible.name: "關閉視窗時縮到系統匣"; checked: !!studio.preferences.minimize_to_tray; onToggled: studio.setPreference("minimize_to_tray", checked) }
                                 }
                                 RowLayout {
                                     Layout.fillWidth: true
                                     AppButton { text: "資料資料夾"; onClicked: studio.openDataFolder() }
                                     AppButton { text: "診斷記錄"; onClicked: studio.openLogFolder() }
+                                    AppButton { text: "匯出診斷"; onClicked: studio.exportDiagnostics() }
                                     AppButton { text: "清除快取 " + studio.cacheSize; enabled: !studio.componentState.busy; onClicked: studio.clearCache() }
                                 }
                                 Text { text: "AI 元件"; color: window.ink; font.pixelSize: 13; font.bold: true }
@@ -586,8 +635,9 @@ ApplicationWindow {
                                     delegate: RowLayout {
                                         required property var modelData; Layout.fillWidth: true
                                         Text { text: modelData.title + "  ·  " + (modelData.ready ? "已安裝" : "尚未安裝"); color: modelData.ready ? window.accent : window.muted; font.pixelSize: 12; Layout.fillWidth: true }
-                                        AppButton { text: modelData.ready ? "修復" : "下載"; enabled: !studio.componentState.busy; onClicked: studio.installComponent(modelData.id) }
-                                        AppButton { text: "移除"; danger: true; visible: modelData.ready; enabled: !studio.componentState.busy; onClicked: window.modelRemovalTarget = modelData.id }
+                                        AppButton { text: modelData.ready ? "修復" : "下載"; enabled: !studio.componentState.busy && !studio.audioBusy && studio.audioState !== "capturing"; onClicked: studio.installComponent(modelData.id) }
+                                        AppButton { text: "驗證"; visible: modelData.ready; enabled: !studio.componentState.busy && studio.audioState !== "capturing"; onClicked: studio.verifyComponent(modelData.id) }
+                                        AppButton { text: "移除"; danger: true; visible: modelData.ready; enabled: !studio.componentState.busy && !studio.audioBusy && studio.audioState !== "capturing"; onClicked: window.modelRemovalTarget = modelData.id }
                                     }
                                 }
                                 ProgressBar { Layout.fillWidth: true; visible: studio.componentState.busy; value: studio.componentState.percent / 100 }
@@ -599,8 +649,10 @@ ApplicationWindow {
                                 }
                                 Rectangle { Layout.fillWidth: true; height: 1; color: window.line }
                                 Text { text: "Vtuber Live Translator " + studio.appVersion + "  ·  Build " + studio.appBuild; color: window.ink; font.pixelSize: 13; font.bold: true }
-                                Text { text: "原始音訊不保存；每條 Final 逐字稿會即時寫入 Session。第三方授權與 notices 隨安裝目錄提供。"; color: window.muted; font.pixelSize: 11; wrapMode: Text.WordWrap; Layout.fillWidth: true }
-                                Text { text: "Data  " + studio.dataFolder + "\nLogs  " + studio.logFolder; color: window.muted; font.pixelSize: 10; wrapMode: Text.WrapAnywhere; Layout.fillWidth: true }
+                                Text { text: "隱私：音訊於本機處理，預設不保存原始音訊；逐字稿儲存在本機。診斷 ZIP 不含逐字稿、音訊、API Key 或聲紋。"; color: window.muted; font.pixelSize: 11; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                                AppButton { text: studio.preferences.overlay_locked ? "解鎖 Overlay 編輯" : "鎖定 Overlay（滑鼠穿透）"; onClicked: studio.setPreference("overlay_locked", !studio.preferences.overlay_locked) }
+                                Text { text: "Overlay 解鎖後可拖曳，右下角調整大小；Escape 鎖定。Ctrl+L 直播、Ctrl+H 歷史、Ctrl+O Overlay。"; color: window.muted; wrapMode: Text.WordWrap; Layout.fillWidth: true; font.pixelSize: 11 }
+                                Text { text: "資料  " + studio.dataFolder + "\n記錄  " + studio.logFolder; color: window.muted; font.pixelSize: 10; wrapMode: Text.WrapAnywhere; Layout.fillWidth: true }
                                 RowLayout {
                                     AppButton { text: "檢視授權"; onClicked: studio.openLicense() }
                                     AppButton { text: "開放原始碼聲明"; onClicked: studio.openOpenSourceNotices() }
@@ -620,7 +672,7 @@ ApplicationWindow {
                                 Text { text: "原文 / 別名 → 繁體及簡體譯名；相同原文可直接覆寫。"; color: window.muted; font.pixelSize: 11 }
                                 DarkField { id: glossarySource; Layout.fillWidth: true; placeholderText: "原文（例：兎田ぺこら）" }
                                 DarkField { id: glossaryTw; Layout.fillWidth: true; placeholderText: "繁體譯名" }
-                                DarkField { id: glossaryCn; Layout.fillWidth: true; placeholderText: "简体译名" }
+                                DarkField { id: glossaryCn; Layout.fillWidth: true; placeholderText: "簡體譯名" }
                                 DarkField { id: glossaryAliases; Layout.fillWidth: true; placeholderText: "別名，以逗號分隔（Pekora,ぺこら）" }
                                 AppButton { text: "保存譯名"; primary: true; onClicked: studio.saveGlossaryEntry(glossarySource.text, glossaryTw.text, glossaryCn.text, glossaryAliases.text) }
                                 Repeater {
@@ -647,8 +699,15 @@ ApplicationWindow {
                             ColumnLayout {
                                 id: speakerColumn
                                 anchors.fill: parent; anchors.margins: 20; spacing: 12
-                                Text { text: "Speakers"; color: window.ink; font.pixelSize: 17; font.bold: true }
-                                Text { text: "Session 內的 speaker ID 保持不變；改名、合併與 person_id 會立即儲存。"; color: window.muted; font.pixelSize: 11 }
+                                Text { text: "Speaker 管理"; color: window.ink; font.pixelSize: 17; font.bold: true }
+                                Text { text: "Detected Speaker 為音訊分組；Confirmed Identity 為您手動確認的身分，模型分組不代表人物已確認。"; color: window.muted; font.pixelSize: 11; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                                Flow {
+                                    Layout.fillWidth: true; spacing: 8
+                                    DarkField { id: unknownStart; width: 100; text: "00:00:00"; placeholderText: "開始時間" }
+                                    DarkField { id: unknownEnd; width: 100; text: "00:05:00"; placeholderText: "結束時間" }
+                                    ComboBox { id: unknownTarget; width: 150; model: studio.speakers; textRole: "display_name"; valueRole: "speaker_id" }
+                                    AppButton { text: "指定此範圍 Unknown"; enabled: studio.speakers.length > 0; onClicked: studio.assignUnknownRange(unknownStart.text, unknownEnd.text, String(unknownTarget.currentValue)) }
+                                }
                                 Text { visible: studio.speakers.length === 0; text: "尚未偵測到說話者。"; color: window.muted; font.pixelSize: 13 }
                                 Repeater {
                                     model: studio.speakers
@@ -673,7 +732,7 @@ ApplicationWindow {
                                             RowLayout {
                                                 Layout.fillWidth: true
                                                 DarkField { id: personId; Layout.fillWidth: true; text: modelData.person_id || ""; placeholderText: "person_id（選填）" }
-                                                AppButton { text: "保存 mapping"; onClicked: studio.mapSpeakerPerson(modelData.speaker_id, personId.text) }
+                                                AppButton { text: "確認身分"; onClicked: studio.mapSpeakerPerson(modelData.speaker_id, personId.text) }
                                             }
                                         }
                                     }
@@ -702,7 +761,7 @@ ApplicationWindow {
                             ColumnLayout {
                                 id: exportColumn
                                 anchors.fill: parent; anchors.margins: 22; spacing: 12
-                                Text { text: "Final exports"; color: window.ink; font.pixelSize: 17; font.bold: true }
+                                Text { text: "最終輸出"; color: window.ink; font.pixelSize: 17; font.bold: true }
                                 Text { text: "輸出是 SQLite 與 transcript.json 的可重建視圖；Speaker 編輯後可重新產生。"; color: window.muted; font.pixelSize: 12; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                                 RowLayout {
                                     Layout.fillWidth: true
@@ -740,12 +799,12 @@ ApplicationWindow {
                     border.color: window.line
                     ColumnLayout {
                         anchors.fill: parent; anchors.margins: 20; spacing: 17
-                        Text { text: "SESSION DETAILS"; color: window.muted; font.pixelSize: 11; font.bold: true; font.letterSpacing: 1.8 }
+                        Text { text: "Session 詳細資料"; color: window.muted; font.pixelSize: 11; font.bold: true; font.letterSpacing: 1.8 }
                         InfoCard {
                             Layout.fillWidth: true; Layout.preferredHeight: 145
                             ColumnLayout {
                                 anchors.fill: parent; anchors.margins: 15; spacing: 7
-                                Text { text: "CURRENT SESSION"; color: "#78919d"; font.pixelSize: 10; font.bold: true; font.letterSpacing: 1 }
+                                Text { text: "目前 Session"; color: "#78919d"; font.pixelSize: 10; font.bold: true; font.letterSpacing: 1 }
                                 Text { text: studio.selectedSession.title || "尚未選擇"; color: window.ink; font.pixelSize: 17; font.bold: true; elide: Text.ElideRight; Layout.fillWidth: true }
                                 Text { text: studio.selectedSession.session_id ? "ID  " + studio.selectedSession.session_id.slice(0, 8) : "從 LIVE 建立空白 Session"; color: window.muted; font.pixelSize: 11 }
                                 Text { text: studio.selectedSession.status ? studio.selectedSession.status.toUpperCase() : "—"; color: window.accent; font.pixelSize: 10; font.bold: true }
@@ -755,7 +814,7 @@ ApplicationWindow {
                             Layout.fillWidth: true; Layout.preferredHeight: 260
                             ColumnLayout {
                                 anchors.fill: parent; anchors.margins: 15; spacing: 10
-                                Text { text: "SESSION SETUP"; color: "#78919d"; font.pixelSize: 10; font.bold: true; font.letterSpacing: 1 }
+                                Text { text: "辨識設定"; color: "#78919d"; font.pixelSize: 10; font.bold: true; font.letterSpacing: 1 }
                                 RowLayout {
                                     Layout.fillWidth: true
                                     Text { text: "來源語言"; color: window.ink; font.pixelSize: 12; Layout.fillWidth: true }
@@ -858,14 +917,20 @@ ApplicationWindow {
                     Text { text: "選擇效能模式"; color: window.ink; font.pixelSize: 28; font.bold: true }
                     Text { text: "已偵測 " + studio.hardwareProfile.logical_cores + " 執行緒 · " + studio.hardwareProfile.ram_gb + " GB RAM\n" + studio.hardwareProfile.gpu; color: window.muted; font.pixelSize: 14; lineHeight: 1.45 }
                     Repeater {
-                        model: [{id:"gaming", title:"Gaming", body:"優先保留遊戲效能；2 CPU threads、base ASR、1.5B 翻譯。"}, {id:"balanced", title:"Balanced", body:"日常直播建議；4 CPU threads、自動選擇裝置、1.5B 翻譯。"}, {id:"quality", title:"High Quality", body:"較高辨識品質；small ASR，並允許 7B 翻譯 fallback。"}]
+                        model: [{id:"gaming", title:"Gaming", body:"優先保留遊戲效能；2 CPU threads、base ASR、1.5B 翻譯。"}, {id:"balanced", title:"Balanced", body:"日常直播建議；4 CPU threads、自動選擇裝置、1.5B 翻譯。"}, {id:"quality", title:"High Quality", body:"small ASR（首次監聽另下載約 460 MB）。7B 修正預設關閉；於設定選用額外約需 5 GB RAM。"}]
                         delegate: Rectangle {
-                            required property var modelData; Layout.fillWidth: true; height: 78; radius: 12
+                            required property var modelData; Layout.fillWidth: true; height: Math.max(78, presetText.implicitHeight + 28); radius: 12
+                            activeFocusOnTab: true
+                            Accessible.role: Accessible.Button
+                            Accessible.name: modelData.title
+                            Keys.onReturnPressed: studio.selectPerformancePreset(modelData.id)
+                            Keys.onSpacePressed: studio.selectPerformancePreset(modelData.id)
                             color: studio.preferences.performance_preset === modelData.id ? "#263d3c" : window.raised
-                            border.color: studio.preferences.performance_preset === modelData.id ? window.accent : window.line
-                            Column { anchors.fill: parent; anchors.margins: 14; spacing: 5
+                            border.color: activeFocus || studio.preferences.performance_preset === modelData.id ? window.accent : window.line
+                            border.width: activeFocus ? 2 : 1
+                            Column { id: presetText; anchors.fill: parent; anchors.margins: 14; spacing: 5
                                 Text { text: modelData.title + (studio.hardwareProfile.recommended === modelData.id ? "  ·  建議" : ""); color: window.ink; font.pixelSize: 15; font.bold: true }
-                                Text { text: modelData.body; color: window.muted; font.pixelSize: 12 }
+                                Text { text: modelData.body; color: window.muted; font.pixelSize: 12; width: parent.width; wrapMode: Text.WordWrap }
                             }
                             MouseArea { anchors.fill: parent; onClicked: studio.selectPerformancePreset(modelData.id) }
                         }
@@ -883,7 +948,7 @@ ApplicationWindow {
                             RowLayout { anchors.fill: parent; anchors.margins: 13
                                 Text { text: modelData.title; color: window.ink; font.pixelSize: 14; font.bold: true; Layout.fillWidth: true }
                                 Text { text: modelData.ready ? "已就緒" : "尚未安裝"; color: modelData.ready ? window.accent : "#dfbd82"; font.pixelSize: 12 }
-                                AppButton { text: modelData.ready ? "重新檢查" : "下載"; enabled: !studio.componentState.busy; onClicked: studio.installComponent(modelData.id) }
+                                AppButton { text: modelData.ready ? "重新檢查" : "下載"; enabled: !studio.componentState.busy && !studio.audioBusy && studio.audioState !== "capturing"; onClicked: studio.installComponent(modelData.id) }
                             }
                         }
                     }

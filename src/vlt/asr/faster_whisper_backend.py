@@ -4,12 +4,21 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import os
+import sys
 import time
 import uuid
 from collections import deque
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
+
+# Windows oneMKL's per-thread fast allocator retains buffers across CT2 worker
+# lifetimes (~35 MiB for each Start/Stop in the RC probe). Configure it before
+# importing the native runtime; inference still uses the same model and settings.
+# https://www.intel.com/content/www/us/en/docs/onemkl/developer-guide-windows/2024-2/avoiding-memory-leaks-in-onemkl.html
+if sys.platform == "win32":
+    os.environ.setdefault("MKL_DISABLE_FAST_MM", "1")
 
 import numpy as np
 import webrtcvad
@@ -148,6 +157,16 @@ class FasterWhisperBackend:
             except Exception:
                 pass  # The inference worker already reported the error.
         self.queue.clear()
+        # Completed/cancelled Tasks can retain traceback frames and this backend.
+        # Release heavy native weights explicitly after all inference has drained.
+        unload = getattr(getattr(self._model, "model", None), "unload_model", None)
+        if unload:
+            await asyncio.to_thread(unload)
+        self._model = None
+        self._consumer = None
+        self._infer_worker = None
+        self._frame_bytes.clear()
+        self._reset_utterance()
         self._set_status("idle", "語音辨識已停止")
 
     async def push_audio(self, chunk: AudioChunk) -> None:

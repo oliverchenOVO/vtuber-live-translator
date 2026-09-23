@@ -17,6 +17,7 @@ import numpy as np
 
 from vlt.audio.base import AudioChunk
 from vlt.diarization.base import SpeakerDecision, SpeakerObservation
+from vlt.product.downloads import download_resumable
 
 SEGMENTATION_URL = ("https://github.com/k2-fsa/sherpa-onnx/releases/download/"
                     "speaker-segmentation-models/sherpa-onnx-pyannote-segmentation-3-0.tar.bz2")
@@ -33,14 +34,7 @@ LEGACY_EMBEDDING_SHA256 = "1a331345f04805badbb495c775a6ddffcdd1a732567d5ec8b3d57
 def _download_verified(url: str, path: Path, digest: str) -> None:
     if path.exists() and hashlib.sha256(path.read_bytes()).hexdigest() == digest:
         return
-    temp = path.with_suffix(path.suffix + ".download")
-    with urllib.request.urlopen(url, timeout=120) as source, temp.open("wb") as target:
-        while data := source.read(1024 * 1024):
-            target.write(data)
-    if hashlib.sha256(temp.read_bytes()).hexdigest() != digest:
-        temp.unlink(missing_ok=True)
-        raise RuntimeError("Diarization model checksum mismatch")
-    temp.replace(path)
+    download_resumable(url, path, digest)
 
 
 def ensure_models(root: Path, *, legacy: bool = False) -> tuple[Path, Path]:
@@ -143,6 +137,8 @@ class SherpaOnnxDiarizationBackend:
     def start(self) -> None:
         if self._thread and self._thread.is_alive():
             return
+        if self._stop.is_set():
+            raise RuntimeError("Stopped speaker workers cannot be restarted; create a new backend.")
         self._stop.clear()
         self._thread = threading.Thread(target=self._run, name="diarization-cpu", daemon=True)
         self._thread.start()
@@ -151,7 +147,8 @@ class SherpaOnnxDiarizationBackend:
         self._stop.set()
         if self._thread and self._thread.is_alive():
             self._thread.join(timeout=5)
-        self._thread = None
+        if not self._thread or not self._thread.is_alive():
+            self._thread = None
         while not self._queue.empty():
             try:
                 self._queue.get_nowait()
@@ -348,6 +345,8 @@ class SherpaOnnxDiarizationBackend:
                 started = time.monotonic()
                 audio = np.frombuffer(bytes(pcm), dtype="<i2").astype(np.float32) / 32768.0
                 results = diarizer.process(audio).sort_by_start_time()
+                if self._stop.is_set():
+                    break
                 fresh: list[SpeakerObservation] = []
                 local_ids: dict[int, str] = {}
                 local_intervals: list[tuple[str, int, int]] = []

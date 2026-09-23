@@ -1,0 +1,24 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Phase 8 — 1733 Hz process isolation probe</title>
+<style>body{background:#141b24;color:#e9f1f5;font:20px system-ui;padding:48px}button{padding:16px;margin:12px;font:inherit}small{display:block;margin-top:24px}</style>
+<h1>Phase 8 process isolation</h1>
+<p>1733 Hz tone generated in this browser. No recording or network requests.</p>
+<button id="start">Start 1733 Hz tone</button><button id="stop">Stop tone</button>
+<p id="status">Stopped</p>
+<small>This is disposable test input, not part of the product interface.</small>
+<script>
+let context, oscillator;
+document.querySelector('#start').onclick=async()=>{
+  if(oscillator)return;
+  context = new AudioContext(); await context.resume();
+  oscillator=context.createOscillator(); oscillator.frequency.value=1733;
+  const gain=context.createGain(); gain.gain.value=.12;
+  oscillator.connect(gain).connect(context.destination); oscillator.start();
+  document.querySelector('#status').textContent='Playing 1733 Hz';
+};
+document.querySelector('#stop').onclick=async()=>{
+  if(oscillator){oscillator.stop();oscillator=null;await context.close();}
+  document.querySelector('#status').textContent='Stopped';
+};
+</script>

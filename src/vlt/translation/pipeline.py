@@ -25,6 +25,13 @@ class BoundedTranslationQueue:
                 self._items = deque(item for item in self._items if item not in prior)
             elif any(item.final and item.segment_id == request.segment_id for item in self._items):
                 return False
+            else:
+                # A queued snapshot is obsolete once the complete utterance arrives.
+                # Do not spend another model call on it after the Final has finished.
+                before = len(self._items)
+                self._items = deque(item for item in self._items
+                                    if item.final or item.segment_id != request.segment_id)
+                self.dropped_partials += before - len(self._items)
             if len(self._items) >= self.capacity:
                 for item in self._items:
                     if not item.final:
@@ -77,6 +84,8 @@ class TranslationPipeline:
     def start(self) -> None:
         if self._running:
             return
+        if self._thread is not None:
+            raise RuntimeError("Stopped translation workers cannot be restarted; create a new pipeline.")
         self._running = True
         self._thread = threading.Thread(target=self._run, name="translation-worker", daemon=True)
         self._thread.start()
@@ -85,6 +94,8 @@ class TranslationPipeline:
         self._running = False
         if self._thread and self._thread.is_alive():
             self._thread.join(timeout=2)
+        self._deferred_partial = None
+        self._last_partial.clear()
 
     def pending_final_count(self) -> int:
         with self._lock:
@@ -103,6 +114,8 @@ class TranslationPipeline:
                 return True
             self._deferred_partial = None
             self._last_partial[request.segment_id] = (time.monotonic(), request.original)
+            if len(self._last_partial) > 128:
+                self._last_partial.pop(next(iter(self._last_partial)))
         else:
             if self._deferred_partial and self._deferred_partial.segment_id == request.segment_id:
                 self._deferred_partial = None
@@ -118,7 +131,7 @@ class TranslationPipeline:
         return inserted
 
     def _run(self) -> None:
-        backend = self.backend_factory()
+        backend = None
         while self._running:
             request = self.queue.pop()
             if request is None:
@@ -133,6 +146,8 @@ class TranslationPipeline:
                 self._last_partial[request.segment_id] = (time.monotonic(), request.original)
             started = request.submitted_at  # Includes time waiting in the bounded queue.
             try:
+                if backend is None:
+                    backend = self.backend_factory()
                 result = backend.translate_final(request) if request.final else backend.translate_partial(request)
                 if self._running:
                     self.callback(request, result, (time.monotonic() - started) * 1000, "")

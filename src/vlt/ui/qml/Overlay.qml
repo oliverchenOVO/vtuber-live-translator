@@ -9,13 +9,16 @@ Window {
     y: Screen.height - height - 70
     visible: studio.overlayVisible
     color: "transparent"
-    flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.WindowTransparentForInput | Qt.Tool
+    minimumWidth: 320
+    minimumHeight: 100
+    flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool |
+           (studio.preferences.overlay_locked ? Qt.WindowTransparentForInput : 0)
     title: "即時翻譯 Overlay"
 
     Rectangle {
         anchors.fill: parent
         radius: 22
-        color: "#e51b202b"
+        color: Qt.rgba(0.106, 0.125, 0.169, studio.preferences.overlay_opacity)
         border.color: "#516475"
         border.width: 1
 
@@ -55,5 +58,25 @@ Window {
                 anchors.horizontalCenter: parent.horizontalCenter
             }
         }
+    }
+    MouseArea {
+        anchors.fill: parent
+        enabled: !studio.preferences.overlay_locked
+        cursorShape: Qt.SizeAllCursor
+        onPressed: overlay.startSystemMove()
+    }
+    Rectangle {
+        visible: !studio.preferences.overlay_locked
+        anchors.right: parent.right; anchors.bottom: parent.bottom
+        width: 24; height: 24; radius: 4; color: "#6ce2c5"
+        MouseArea {
+            anchors.fill: parent; cursorShape: Qt.SizeFDiagCursor
+            onPressed: overlay.startSystemResize(Qt.RightEdge | Qt.BottomEdge)
+        }
+    }
+    Shortcut {
+        sequence: "Escape"
+        enabled: !studio.preferences.overlay_locked
+        onActivated: studio.setPreference("overlay_locked", true)
     }
 }

@@ -121,13 +121,20 @@ def main() -> int:
 
     def asr_backend() -> FasterWhisperBackend:
         selected = preset(str(settings.values["performance_preset"]))
+        model = selected["asr_model"]
+        if model == "base" and controller.model_manager.asr_snapshot().is_dir():
+            model = str(controller.model_manager.asr_snapshot())
         return FasterWhisperBackend(
-            selected["asr_model"], paths.models, selected["asr_device"], selected["cpu_threads"])
+            model, paths.models, selected["asr_device"], selected["cpu_threads"])
 
     def translation_backend() -> OllamaTranslationBackend:
+        # The managed runtime is not a Windows service. Start it again after an
+        # app restart; this factory runs on the translation worker, never the UI.
+        controller.model_manager.ensure_server()
         selected = preset(str(settings.values["performance_preset"]))
         return OllamaTranslationBackend(
-            model=selected["translation_model"], allow_fallback=selected["translation_fallback"],
+            model=selected["translation_model"], allow_fallback=(selected["translation_fallback"]
+                                                               and settings.values["quality_correction"]),
             cpu_threads=selected["cpu_threads"])
 
     def diarization_backend() -> SherpaOnnxDiarizationBackend:
@@ -258,6 +265,16 @@ def main() -> int:
         QTimer.singleShot(1800, start_test_audio)
         if "--phase7-soak-test" not in sys.argv:
             QTimer.singleShot(30000 if "--asr-smoke-test" in sys.argv else 7000, app.quit)
+
+    if any(flag in sys.argv for flag in ("--phase8-soak-test", "--phase8-cycle-test", "--phase8-recovery-test")):
+        from vlt.product.acceptance import install_probe
+        install_probe(app, controller, main_window, overlay_window, paths.root, _save_quick_window,
+                      cycles="--phase8-cycle-test" in sys.argv,
+                      resume="--phase8-recovery-test" in sys.argv,
+                      finish_after_s=float(os.environ.get("VLT_PHASE8_FINISH_AFTER_S", "0")))
+    if "--phase8-ui-test" in sys.argv:
+        from vlt.product.acceptance import install_ui_probe
+        install_ui_probe(app, controller, main_window, overlay_window, paths.root, _save_quick_window)
 
     try:
         return app.exec()

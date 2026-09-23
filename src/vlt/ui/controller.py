@@ -26,6 +26,7 @@ from vlt.translation.glossary import Glossary
 from vlt.translation.ollama_backend import OllamaTranslationBackend
 from vlt.translation.pipeline import TranslationPipeline
 from vlt.product.cache import CacheManager
+from vlt.product.diagnostics import export_diagnostics
 from vlt.product.compatibility import windows_build
 from vlt.product.hardware import detect_hardware, recommended_preset
 from vlt.product.models import ModelManager
@@ -46,9 +47,9 @@ class StudioController(QObject):
     asrAudioAnchor = Signal(object)
     transcriptChanged = Signal()
     translationReady = Signal(object, object, float, str)
-    diarizationNew = Signal(str)
-    diarizationUpdated = Signal()
-    diarizationOverlap = Signal(object)
+    diarizationNew = Signal(str, int)
+    diarizationUpdated = Signal(int)
+    diarizationOverlap = Signal(object, int)
     componentProgress = Signal(str, int, str)
     updateResult = Signal(str)
 
@@ -72,6 +73,7 @@ class StudioController(QObject):
         self._component_state = {"component": "", "percent": 0, "message": "", "busy": False,
                                  **self.model_manager.status()}
         self._audio_test_only = False
+        self._cancel_start = False
         self._asr_backend_factory = asr_backend_factory
         self._selected_id = ""
         self._overlay_visible = bool(settings.values["show_overlay_on_start"])
@@ -103,13 +105,17 @@ class StudioController(QObject):
         self._last_audible_at = time.monotonic()
         self._diarization_factory = diarization_backend_factory
         self._diarization: DiarizationBackend | None = None
+        self._diarization_epoch = 0
         self._speaker_rows: list[dict] = []
         self._speaker_new_until: dict[str, float] = {}
         self._finish_requested = False
         self.glossary = Glossary(settings.path.parent / "glossary.json")
         self._translation_status = "正在等待語音…"
         self._translation_latency_ms: float | None = None
+        self._translation_ready = False
         self._translation_retry_after: dict[str, float] = {}
+        self._translation_retry_counts: dict[str, int] = {}
+        self._idle_translation_retry_at = 0.0
         self._translation_backend_factory = translation_backend_factory or OllamaTranslationBackend
         self._translation_pipeline = TranslationPipeline(
             self._translation_backend_factory,
@@ -179,6 +185,65 @@ class StudioController(QObject):
     def cacheSize(self) -> str:
         return f"{self.cache_manager.size() / 1024 ** 2:.1f} MB"
 
+    @Property("QVariantList", notify=audioChanged)
+    def startupStages(self) -> list[dict]:
+        diar = getattr(self._diarization, "status", "idle")
+        states = [("音訊引擎", self.audio.state == "capturing"),
+                  ("語音辨識", self._asr_state == "live"),
+                  ("本機翻譯", self._translation_ready),
+                  ("Speaker 分析", diar in ("live", "limited"))]
+        return [{"name": name, "ready": ready} for name, ready in states]
+
+    @Slot()
+    def exportDiagnostics(self) -> None:
+        try:
+            path = self.paths.root / "diagnostics" / ("diagnostics-" + datetime.now().strftime("%Y%m%d-%H%M%S") + ".zip")
+            export_diagnostics(path, self.settings.values, self.hardware.to_dict(), self.paths.logs)
+            self._message = "診斷資料已匯出（不含逐字稿、音訊或個人聲紋）：" + str(path)
+            QDesktopServices.openUrl(QUrl.fromLocalFile(str(path.parent)))
+        except Exception:
+            self._message = "診斷資料無法匯出，請檢查可用磁碟空間。"
+        self.changed.emit()
+
+    @Slot(str)
+    def verifyComponent(self, component: str) -> None:
+        if self._component_state["busy"] or self.audio.state == "capturing":
+            return
+        self._component_state.update(component=component, busy=True, percent=0, message="正在驗證模型…")
+        self.changed.emit()
+        def run() -> None:
+            try:
+                self.model_manager.verify(component)
+                self.componentProgress.emit(component, 100, "模型驗證通過")
+            except Exception:
+                self.componentProgress.emit(component, -1, "模型未通過驗證，請按修復；已保留下載進度。")
+        threading.Thread(target=run, name="model-verify", daemon=True).start()
+
+    @Slot(str, str, str)
+    def assignUnknownRange(self, start: str, end: str, speaker_id: str) -> None:
+        if not self._transcript:
+            return
+        try:
+            def millis(value: str) -> int:
+                parts = value.strip().split(":")
+                if len(parts) != 3 or not all(p.isdigit() for p in parts):
+                    raise ValueError()
+                h, m, s = map(int, parts)
+                if m >= 60 or s >= 60:
+                    raise ValueError()
+                return (h * 3600 + m * 60 + s) * 1000
+            count = self.sessions.assign_unknown_range(self._transcript.session_id, millis(start),
+                                                       millis(end), speaker_id)
+            self._transcript.reload_loaded()
+            self._refresh_speakers()
+            self._message = f"已指定 {count} 筆未知 Speaker（依開始時間，包含起點、不含終點）。"
+            self.transcriptChanged.emit()
+        except ValueError:
+            self._message = "請輸入有效的 HH:MM:SS 範圍及 Speaker。"
+        except Exception:
+            self._message = "Speaker 指定無法完成，請檢查磁碟空間後重試。"
+        self.changed.emit()
+
     @Slot(str)
     def selectPerformancePreset(self, name: str) -> None:
         if name not in ("gaming", "balanced", "quality"):
@@ -198,6 +263,10 @@ class StudioController(QObject):
 
     @Slot(str)
     def installComponent(self, component: str) -> None:
+        if self.audioBusy or self.audio.state == "capturing" or self._asr_pipeline:
+            self._message = "請先停止監聽，再安裝或修復 AI 元件。"
+            self.changed.emit()
+            return
         if self._component_state["busy"] or component not in ("asr", "translation", "diarization"):
             return
         self._component_state.update(component=component, percent=0, message="正在檢查元件…", busy=True)
@@ -206,7 +275,7 @@ class StudioController(QObject):
         def run() -> None:
             try:
                 self.model_manager.install(component,
-                    lambda message, percent: self.componentProgress.emit(component, percent, message))
+                    lambda message, percent: self.componentProgress.emit(component, min(percent, 99), message))
                 self.componentProgress.emit(component, 100, "安裝完成")
             except Exception as exc:
                 logging.exception("Component installation failed: %s", component)
@@ -215,6 +284,10 @@ class StudioController(QObject):
 
     @Slot(str)
     def removeComponent(self, component: str) -> None:
+        if self.audioBusy or self.audio.state == "capturing" or self._asr_pipeline:
+            self._message = "請先停止監聽，再移除 AI 元件。"
+            self.changed.emit()
+            return
         if self._component_state["busy"] or component not in ("asr", "translation", "diarization"):
             return
         self._component_state.update(component=component, percent=0, message="正在移除元件…", busy=True)
@@ -500,7 +573,8 @@ class StudioController(QObject):
         if state == "error":
             return "Speaker 辨識暫不可用，逐字稿仍正常"
         if state == "limited":
-            return "Speaker 已達 4 人 · 其他聲音暫標 unknown"
+            limit = getattr(self._diarization, "max_speakers", 4)
+            return f"Speaker 已達 {limit} 人 · 其他聲音暫標 Unknown"
         latency = getattr(self._diarization, "latency_ms", None)
         return f"Speaker {latency / 1000:.1f}s" if latency is not None else "Speaker 載入中…"
 
@@ -766,6 +840,10 @@ class StudioController(QObject):
 
     @Slot(str)
     def selectAudioSource(self, source_id: str) -> None:
+        if self.audioBusy or self.audio.state == "capturing" or self._asr_pipeline:
+            self._audio_status = "請先停止監聽，再切換音訊來源。"
+            self.audioChanged.emit()
+            return
         self._pending_audio_source = source_id
         if self.settings.values.get("remember_audio_source"):
             selected = next((item for item in self._audio_sources if item["id"] == source_id), None)
@@ -779,6 +857,7 @@ class StudioController(QObject):
         if self.audioBusy or not self._pending_audio_source:
             return
         self._audio_test_only = False
+        self._cancel_start = False
         session = self.selectedSession
         try:
             if not session or session["status"] == "completed":
@@ -823,7 +902,14 @@ class StudioController(QObject):
 
     @Slot()
     def stopAudioCapture(self) -> None:
+        if self.audioBusy and not self._audio_busy:
+            self._audio_status = "正在釋放語音辨識元件，請稍候…"
+            self.audioChanged.emit()
+            return
         if self._audio_busy:
+            self._cancel_start = True
+            self._audio_status = "正在取消啟動…"
+            self.audioChanged.emit()
             return
         self._audio_busy = True
         if self._asr_pipeline:
@@ -842,6 +928,10 @@ class StudioController(QObject):
     @Slot(str)
     def _on_audio_operation_done(self, error: str) -> None:
         self._audio_busy = False
+        if self._cancel_start and self.audio.state == "capturing":
+            self._cancel_start = False
+            self.stopAudioCapture()
+            return
         self._audio_status = error or ("正在擷取指定程式音訊" if self.audio.state == "capturing" else "已停止監聽")
         self.audioChanged.emit()
         if not error and self.audio.state == "capturing":
@@ -864,15 +954,17 @@ class StudioController(QObject):
             return
         if self._transcript and self._diarization_factory:
             try:
+                self._diarization_epoch += 1
+                epoch = self._diarization_epoch
                 diarization = self._diarization_factory()
                 diarization.reset_session(self.sessions.list_speakers(self._transcript.session_id),
                                            self.sessions.list_embeddings(self._transcript.session_id))
                 if hasattr(diarization, "set_next_number"):
                     diarization.set_next_number(self.sessions.next_speaker_number(self._transcript.session_id))
-                diarization.on_speaker_detected(lambda speaker: self.diarizationNew.emit(speaker))
-                diarization.on_overlap_detected(lambda event: self.diarizationOverlap.emit(event))
+                diarization.on_speaker_detected(lambda speaker: self.diarizationNew.emit(speaker, epoch))
+                diarization.on_overlap_detected(lambda event: self.diarizationOverlap.emit(event, epoch))
                 if hasattr(diarization, "on_updated"):
-                    diarization.on_updated(lambda: self.diarizationUpdated.emit())
+                    diarization.on_updated(lambda: self.diarizationUpdated.emit(epoch))
                 diarization.start()
                 self._diarization = diarization
                 self._transcript.speaker_for_interval = diarization.get_speaker_for_interval
@@ -925,8 +1017,10 @@ class StudioController(QObject):
             logging.exception("Could not persist transcript")
             self._on_asr_status("error", "逐字稿無法保存，請檢查資料儲存位置。")
 
-    @Slot(str)
-    def _on_diarization_new(self, speaker_id: str) -> None:
+    @Slot(str, int)
+    def _on_diarization_new(self, speaker_id: str, epoch: int = -1) -> None:
+        if epoch != -1 and epoch != self._diarization_epoch:
+            return
         if not self._transcript or not self._diarization:
             return
         try:
@@ -947,8 +1041,10 @@ class StudioController(QObject):
         except Exception:
             logging.exception("Speaker registration failed")
 
-    @Slot()
-    def _on_diarization_updated(self) -> None:
+    @Slot(int)
+    def _on_diarization_updated(self, epoch: int = -1) -> None:
+        if epoch != -1 and epoch != self._diarization_epoch:
+            return
         if not self._transcript or not self._diarization:
             return
         try:
@@ -980,8 +1076,10 @@ class StudioController(QObject):
         except Exception:
             logging.exception("Diarization update failed; ASR continues")
 
-    @Slot(object)
-    def _on_diarization_overlap(self, observation: SpeakerObservation) -> None:
+    @Slot(object, int)
+    def _on_diarization_overlap(self, observation: SpeakerObservation, epoch: int = -1) -> None:
+        if epoch != -1 and epoch != self._diarization_epoch:
+            return
         if not self._transcript:
             return
         try:
@@ -1020,17 +1118,25 @@ class StudioController(QObject):
     def _on_translation_ready(self, request: TranslationRequest, result: str | None,
                               latency: float, error: str) -> None:
         if error:
+            self._translation_ready = False
             self._translation_status = "原文辨識正常 · 翻譯暫時不可用：" + error
             if request.final:
-                self._translation_retry_after[request.segment_id] = time.monotonic() + 30
+                attempts = min(6, self._translation_retry_counts.get(request.segment_id, 0) + 1)
+                self._translation_retry_counts[request.segment_id] = attempts
+                self._translation_retry_after[request.segment_id] = time.monotonic() + min(900, 30 * 2 ** (attempts - 1))
                 if len(self._translation_retry_after) > 256:
-                    self._translation_retry_after.pop(next(iter(self._translation_retry_after)))
+                    expired = next(iter(self._translation_retry_after))
+                    self._translation_retry_after.pop(expired)
+                    self._translation_retry_counts.pop(expired, None)
         elif result:
+            self._translation_ready = True
+            logging.info("Translation latency: kind=%s ms=%.1f", "final" if request.final else "partial", latency)
             translation = {"target": request.target_language, "style": request.style, "text": result}
             try:
                 if request.final:
                     changed = self.sessions.update_final_translation(request.session_id, request.segment_id, translation)
                     self._translation_retry_after.pop(request.segment_id, None)
+                    self._translation_retry_counts.pop(request.segment_id, None)
                     if changed and (self.sessions.get(request.session_id) or {}).get("status") == "completed":
                         self.sessions.render_exports(
                             request.session_id, str(self.settings.values["subtitle_mode"]))
@@ -1055,9 +1161,16 @@ class StudioController(QObject):
         if not self._transcript:
             return
         try:
+            quiet = not self._finalizing and (self.audio.state != "capturing" or
+                                               time.monotonic() - self._last_audible_at > 30)
+            if quiet and time.monotonic() < self._idle_translation_retry_at:
+                return
             for segment in self.sessions.pending_translations(self._transcript.session_id):
                 if time.monotonic() >= self._translation_retry_after.get(segment["id"], 0):
-                    self._submit_translation(segment, True)
+                    submitted = self._submit_translation(segment, True)
+                    if quiet and submitted:
+                        self._idle_translation_retry_at = time.monotonic() + 30
+                        break
         except Exception:
             logging.exception("Pending translation scan failed")
 
@@ -1083,6 +1196,7 @@ class StudioController(QObject):
 
     @Slot()
     def _on_asr_done(self) -> None:
+        self._diarization_epoch += 1
         if self._diarization:
             self._diarization.stop()
             self._diarization = None
@@ -1109,7 +1223,7 @@ class StudioController(QObject):
             backend = self._asr_pipeline._backend if self._asr_pipeline else None
             logging.info("Pipeline metrics: asr=%s partials=%d finals=%d audio_peak=%.3f "
                          "asr_queue_bytes=%s asr_dropped=%s gap_finals=%s infer_pending=%s infer_busy=%s "
-                         "diarization=%s windows=%s dropped=%s",
+                         "diarization=%s windows=%s dropped=%s translation_queue=%s diarization_queue=%s",
                          self._asr_state, self._asr_partial_count, self._asr_final_count,
                          self.audio.peak,
                          getattr(getattr(backend, "queue", None), "size_bytes", None),
@@ -1119,7 +1233,9 @@ class StudioController(QObject):
                          getattr(backend, "_inference_busy", None),
                          getattr(self._diarization, "status", None),
                          getattr(self._diarization, "processed_windows", None),
-                         getattr(self._diarization, "dropped_chunks", None))
+                         getattr(self._diarization, "dropped_chunks", None),
+                         len(self._translation_pipeline.queue),
+                         getattr(getattr(self._diarization, "_queue", None), "qsize", lambda: 0)())
         if self.audio.state == "error" and self._audio_status != self.audio.error:
             self._audio_status = self.audio.error
             self.refreshAudioSources()
@@ -1165,7 +1281,7 @@ class StudioController(QObject):
 
     @Slot()
     def createSession(self) -> None:
-        if self._audio_busy or self.audio.state == "capturing":
+        if self.audioBusy or self.audio.state == "capturing" or self._asr_pipeline or self._finalizing:
             self._message = "請先停止監聽，再建立新的 Session。"
             self.changed.emit()
             return

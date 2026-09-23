@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import hashlib
+import logging
 import os
 import shutil
 import subprocess
@@ -11,12 +13,20 @@ import zipfile
 from pathlib import Path
 from typing import Callable
 
-from vlt.product.downloads import download_resumable, has_disk_space
+import psutil
+
+from vlt.product.downloads import download_resumable, has_disk_space, sha256
 
 
 OLLAMA_VERSION = "0.34.2"
 OLLAMA_URL = f"https://github.com/ollama/ollama/releases/download/v{OLLAMA_VERSION}/ollama-windows-amd64.zip"
 OLLAMA_SHA256 = "8f3fd071a2a2f9497b562f43502c77c2b701a99d1ee5dfda28da8c786373063b"
+# Official Systran repository metadata, pinned for reproducible RC verification.
+ASR_REVISION = "ebe41f70d5b6dfa9166e2c581c45c9c0cfc57b66"
+ASR_HASHES = {"model.bin": "d01c3014881c9c6f3133c182f3d2887eb6ca1c789a7538c5c007196857a0a6a9",
+              "config.json": "867cf1a0fece1394e01d55e287ba2f09a577c046",
+              "tokenizer.json": "7818adb6de9fa3064d3ff81226fdd675be1f6344",
+              "vocabulary.txt": "c9074644d9d1205686f16d411564729461324b75"}
 
 
 def _download_message(label: str, done: int, total: int, started_at: float) -> str:
@@ -56,21 +66,25 @@ class ModelManager:
         asr_ready = any(self.root.rglob("model.bin"))
         diar_ready = (self.root / "diarization" / "segmentation.onnx").exists()
         ollama = self.ollama_executable()
-        translation_ready = False
+        model_root = (self.root / "translation" if ollama and ollama.is_relative_to(self.runtime)
+                      else Path(os.environ.get("OLLAMA_MODELS", str(Path.home() / ".ollama" / "models"))))
+        translation_ready = (model_root / "manifests" / "registry.ollama.ai" / "library" / "qwen2.5" / "1.5b").is_file()
         if ollama:
             try:
-                result = subprocess.run([str(ollama), "list"], capture_output=True, text=True,
-                                        timeout=8, creationflags=hidden_process_flags())
-                translation_ready = "qwen2.5:1.5b" in result.stdout
-            except (OSError, subprocess.SubprocessError):
+                with urllib.request.urlopen("http://127.0.0.1:11434/api/tags", timeout=.5) as response:
+                    translation_ready = translation_ready or any(item.get("name") == "qwen2.5:1.5b"
+                                            for item in json.load(response).get("models", []))
+            except (OSError, ValueError):
                 pass
         return {"asr": asr_ready, "translation": translation_ready, "diarization": diar_ready,
                 "ollama": bool(ollama)}
 
     def install_ollama(self, progress: Callable[[str, int], None]) -> Path:
         existing = self.ollama_executable()
-        if existing:
+        if existing and not existing.is_relative_to(self.runtime):
             return existing
+        # Explicit Install/Repair re-extracts the managed runtime from its checked
+        # archive. An interrupted extraction may leave ollama.exe but omit DLLs.
         # Keep room for the 1.36 GiB archive, 1.80 GiB runtime and the model
         # that is pulled next. has_disk_space also reserves another 1 GiB.
         required = 6 * 1024 ** 3
@@ -111,7 +125,8 @@ class ModelManager:
             return executable
         except OSError:
             env = dict(os.environ)
-            env["OLLAMA_MODELS"] = str(self.root / "translation")
+            if executable.is_relative_to(self.runtime):
+                env["OLLAMA_MODELS"] = str(self.root / "translation")
             self._ollama_process = subprocess.Popen(
                 [str(executable), "serve"], env=env, stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL, creationflags=hidden_process_flags())
@@ -147,23 +162,82 @@ class ModelManager:
             self.pull_translation("qwen2.5:1.5b", progress)
         elif component == "asr":
             from faster_whisper import WhisperModel
+            from huggingface_hub import snapshot_download
+            if not has_disk_space(self.root, 300 * 1024 ** 2):
+                raise RuntimeError("磁碟空間不足；語音辨識元件需要 1.3 GB 可用空間。")
             progress("正在準備語音辨識模型", 5)
-            had_existing = any(self.root.glob("models--Systran--faster-whisper-*"))
-            try:
-                WhisperModel("base", device="cpu", compute_type="int8",
-                             download_root=str(self.root), cpu_threads=2)
-            except Exception:
-                if not had_existing:
-                    raise
-                self.remove("asr")
-                WhisperModel("base", device="cpu", compute_type="int8",
-                             download_root=str(self.root), cpu_threads=2)
+            # Only replace individually identified corrupt blobs. A network failure must
+            # never erase the repository cache or its resumable .incomplete files.
+            damaged = self._damaged_asr_files()
+            if damaged:
+                for name in damaged:
+                    file = self.asr_snapshot() / name
+                    if file.exists():
+                        # HF force_download updates blobs, but retains an existing
+                        # regular snapshot copy on Windows. Quarantine just that
+                        # copy so the verified replacement can become the pointer.
+                        file.replace(file.with_suffix(file.suffix + ".corrupt"))
+                snapshot_download("Systran/faster-whisper-base", cache_dir=str(self.root),
+                                  revision=ASR_REVISION, allow_patterns=damaged, force_download=True)
+            snapshot = snapshot_download("Systran/faster-whisper-base", cache_dir=str(self.root),
+                                         revision=ASR_REVISION, allow_patterns=list(ASR_HASHES))
+            if self._damaged_asr_files():
+                raise RuntimeError("語音辨識模型驗證失敗，請重試修復。")
+            for name in damaged:
+                file = self.asr_snapshot() / name
+                file.with_suffix(file.suffix + ".corrupt").unlink(missing_ok=True)
+            WhisperModel(snapshot, device="cpu", compute_type="int8",
+                         download_root=str(self.root), cpu_threads=2, local_files_only=True)
             progress("語音辨識模型已就緒", 100)
         elif component == "diarization":
             from vlt.diarization.sherpa_backend import ensure_models
             progress("正在準備 Speaker 模型", 5)
             ensure_models(self.root / "diarization")
             progress("Speaker 模型已就緒", 100)
+        else:
+            raise ValueError(component)
+
+    def _damaged_asr_files(self) -> list[str]:
+        damaged = set()
+        for name, expected in ASR_HASHES.items():
+            file = self.asr_snapshot() / name
+            if not file.exists() and file.with_suffix(file.suffix + ".corrupt").exists():
+                damaged.add(name)
+            if file.is_file():
+                if len(expected) == 64:
+                    digest = sha256(file)
+                else:
+                    data = file.read_bytes()
+                    digest = hashlib.sha1(f"blob {len(data)}\0".encode() + data).hexdigest()
+                if digest != expected:
+                    damaged.add(file.name)
+        return sorted(damaged)
+
+    def asr_snapshot(self) -> Path:
+        return self.root / "models--Systran--faster-whisper-base" / "snapshots" / ASR_REVISION
+
+    def verify(self, component: str) -> None:
+        if component == "asr":
+            from faster_whisper import WhisperModel
+            if self._damaged_asr_files() or not all((self.asr_snapshot() / f).is_file() for f in ASR_HASHES):
+                raise RuntimeError("語音辨識模型驗證失敗，請按修復。")
+            WhisperModel(str(self.asr_snapshot()), device="cpu", compute_type="int8", cpu_threads=2,
+                         download_root=str(self.root), local_files_only=True)
+        elif component == "diarization":
+            from vlt.diarization.sherpa_backend import SEGMENTATION_MODEL_SHA256, EMBEDDING_SHA256
+            for name, digest in (("segmentation.onnx", SEGMENTATION_MODEL_SHA256),
+                                 ("embedding-campplus.onnx", EMBEDDING_SHA256)):
+                file = self.root / "diarization" / name
+                if not file.exists() or sha256(file) != digest:
+                    raise RuntimeError("Speaker 模型驗證失敗，請按修復。")
+        elif component == "translation":
+            self.ensure_server()
+            payload = json.dumps({"model": "qwen2.5:1.5b"}).encode()
+            request = urllib.request.Request("http://127.0.0.1:11434/api/show", payload,
+                                             {"Content-Type": "application/json"})
+            with urllib.request.urlopen(request, timeout=30) as response:
+                if "model_info" not in json.load(response):
+                    raise RuntimeError("翻譯模型驗證失敗，請按修復。")
         else:
             raise ValueError(component)
 
@@ -192,5 +266,35 @@ class ModelManager:
             raise ValueError(component)
 
     def close(self) -> None:
-        if self._ollama_process and self._ollama_process.poll() is None:
-            self._ollama_process.terminate()
+        process, self._ollama_process = self._ollama_process, None
+        if process is None or process.poll() is not None:
+            return
+        # Only a runtime launched by this manager is owned here. Snapshot its
+        # children before stopping the server: an orphaned runner otherwise loses
+        # the server's keep-alive timer and can retain model RAM indefinitely.
+        try:
+            children = psutil.Process(process.pid).children(recursive=True)
+        except psutil.Error:
+            children = []
+        try:
+            process.terminate()
+            try:
+                process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                process.kill()
+                process.wait(timeout=2)
+        except (OSError, subprocess.TimeoutExpired):
+            logging.warning("Owned translation runtime did not stop cleanly")
+        finally:
+            for child in children:
+                try:
+                    child.terminate()
+                except psutil.Error:
+                    pass
+            _, alive = psutil.wait_procs(children, timeout=2)
+            for child in alive:
+                try:
+                    child.kill()
+                except psutil.Error:
+                    pass
+            psutil.wait_procs(alive, timeout=1)

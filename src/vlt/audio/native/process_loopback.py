@@ -71,10 +71,11 @@ class ActivationHandler(COMObject):
     def __init__(self):
         super().__init__()
         self.event = threading.Event()
-        self.operation: POINTER(IActivateAudioInterfaceAsyncOperation) | None = None
 
     def ActivateCompleted(self, operation):
-        self.operation = operation
+        # The async operation itself retains this handler. Keeping operation here
+        # creates a COM reference cycle that Python GC cannot break (16 handles
+        # leaked per activation on Windows 11). The caller already owns operation.
         self.event.set()
         return 0
 
@@ -131,7 +132,7 @@ def activate_process_loopback(pid: int) -> POINTER(IAudioClient):
     _check_hr(hr, "ActivateAudioInterfaceAsync")
     if not handler.event.wait(8):
         raise TimeoutError("Windows did not complete process audio activation within 8 seconds")
-    result_hr, unknown = handler.operation.GetActivateResult()
+    result_hr, unknown = operation.GetActivateResult()
     _check_hr(result_hr, "Process audio activation")
     return unknown.QueryInterface(IAudioClient)
 

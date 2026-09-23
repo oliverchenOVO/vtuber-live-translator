@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import time
+import logging
 from collections.abc import Callable
 
 from vlt.asr.base import Recognition
@@ -18,6 +19,7 @@ class TranscriptCoordinator:
         self.session_id = session_id
         self.offset_ms = max(0, offset_ms)
         self.total_final_count = sessions.segment_count(session_id)
+        self._live_limit = initial_limit
         self._page_offset = 0
         if initial_limit is None:
             self.finals = sessions.list_segments(session_id)
@@ -25,7 +27,7 @@ class TranscriptCoordinator:
             self._page_offset = max(0, self.total_final_count - max(1, initial_limit))
             self.finals = sessions.list_segments_page(
                 session_id, self._page_offset, max(1, initial_limit))
-        self._seen = sessions.segment_ids(session_id)
+        self._seen = {item["id"] for item in self.finals[-512:]}
         self.live: dict | None = None
         self.partial_latency_ms: float | None = None
         self.final_latency_ms: float | None = None
@@ -82,7 +84,17 @@ class TranscriptCoordinator:
         self._page_offset = max(0, self.total_final_count - loaded)
         self.finals = self.sessions.list_segments_page(
             self.session_id, self._page_offset, loaded)
-        self._seen = self.sessions.segment_ids(self.session_id)
+        self._seen = {item["id"] for item in self.finals[-512:]}
+
+    def _already_final(self, segment_id: str) -> bool:
+        return segment_id in self._seen or bool(self.sessions.db.connection.execute(
+            "SELECT 1 FROM segments WHERE session_id=? AND segment_id=?",
+            (self.session_id, segment_id)).fetchone())
+
+    def _remember_final(self, segment_id: str) -> None:
+        if len(self._seen) >= 512:
+            self._seen.pop()
+        self._seen.add(segment_id)
 
     def apply_partial_translation(self, segment_id: str, original: str, translation: dict) -> bool:
         if not self.live or self.live["id"] != segment_id or self.live["original"] != original:
@@ -104,14 +116,17 @@ class TranscriptCoordinator:
         if result.is_final:
             raise ValueError("Expected partial recognition")
         segment = self._segment(result)
-        if segment["id"] in self._seen:
+        if self._already_final(segment["id"]):
             return False
         if self.live and self.live["id"] == segment["id"] and self.live["original"] == segment["original"]:
             segment["translation"] = self.live.get("translation")
         self.live = segment  # Replace the same LIVE entry, never append partials.
         if result.first_audio_at is not None and result.utterance_id not in self._partial_measured:
+            if len(self._partial_measured) >= 128:
+                self._partial_measured.clear()
             self._partial_measured.add(result.utterance_id)
             measured = max(0, (time.monotonic() - result.first_audio_at) * 1000)
+            logging.info("ASR latency: kind=first_partial ms=%.1f", measured)
             self.partial_latency_ms = measured if self.partial_latency_ms is None else (0.7 * self.partial_latency_ms + 0.3 * measured)
         return True
 
@@ -119,23 +134,29 @@ class TranscriptCoordinator:
         if not result.is_final:
             raise ValueError("Expected final recognition")
         segment = self._segment(result)
-        if segment["id"] in self._seen:
+        self._partial_measured.discard(result.utterance_id)
+        if self._already_final(segment["id"]):
             return False
         if not result.text.strip():
-            self._seen.add(segment["id"])
+            self._remember_final(segment["id"])
             if self.live and self.live["id"] == segment["id"]:
                 self.live = None
             return False
         inserted = self.sessions.append_final(self.session_id, segment)
-        self._seen.add(segment["id"])
+        self._remember_final(segment["id"])
         if self.live and self.live["id"] == segment["id"]:
             self.live = None
         if inserted:
             self.finals.append(segment)
             self.total_final_count += 1
             self.finals.sort(key=lambda item: (item["start_ms"], item["end_ms"], item["id"]))
+            if self._live_limit and len(self.finals) > self._live_limit:
+                removed = len(self.finals) - self._live_limit
+                self.finals = self.finals[removed:]
+                self._page_offset += removed
             if result.speech_end_at is not None:
                 measured = max(0, (time.monotonic() - result.speech_end_at) * 1000)
+                logging.info("ASR latency: kind=final ms=%.1f", measured)
                 self.final_latency_ms = measured if self.final_latency_ms is None else (0.7 * self.final_latency_ms + 0.3 * measured)
         return inserted
 
@@ -149,7 +170,7 @@ class TranscriptCoordinator:
         if not self.sessions.append_final(self.session_id, segment):
             self.live = None
             return None
-        self._seen.add(segment["id"])
+        self._remember_final(segment["id"])
         self.finals.append(segment)
         self.total_final_count += 1
         self.finals.sort(key=lambda item: (item["start_ms"], item["end_ms"], item["id"]))

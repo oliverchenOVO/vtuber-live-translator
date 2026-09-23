@@ -1,9 +1,21 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param(
     [switch]$SkipTests,
     [switch]$SkipInstaller
 )
 $ErrorActionPreference = 'Stop'
+function Sign-ReleaseFile([string]$File) {
+    if (-not $env:SIGNING_CERT) { return }
+    # SIGNING_CERT is a certificate thumbprint in the current user's Personal store.
+    # Private keys remain in the Windows certificate store, never in this repository.
+    $thumbprint = $env:SIGNING_CERT.Replace(' ', '')
+    if ($thumbprint -notmatch '^[0-9A-Fa-f]{40}$') { throw 'SIGNING_CERT 必須是憑證 thumbprint。' }
+    $cert = Get-Item -LiteralPath ("Cert:\CurrentUser\My\" + $thumbprint)
+    if (-not $cert.HasPrivateKey) { throw '簽章憑證沒有可用私鑰。' }
+    $result = Set-AuthenticodeSignature -FilePath $File -Certificate $cert -HashAlgorithm SHA256
+    if ($result.Status -ne 'Valid') { throw "簽章失敗：$($result.Status)" }
+    if ((Get-AuthenticodeSignature -FilePath $File).Status -ne 'Valid') { throw '簽章驗證失敗。' }
+}
 $ProjectRoot = Split-Path -Parent $PSScriptRoot
 $Python = Join-Path $ProjectRoot '.venv\Scripts\python.exe'
 $PyInstaller = Join-Path $ProjectRoot '.venv\Scripts\pyinstaller.exe'
@@ -44,6 +56,7 @@ VSVersionInfo(
 & $PyInstaller --noconfirm --clean (Join-Path $ProjectRoot 'packaging\VtuberLiveTranslator.spec')
 if ($LASTEXITCODE) { throw 'EXE 建置失敗。' }
 $AppExe = Join-Path $ProjectRoot 'dist\VtuberLiveTranslator\VtuberLiveTranslator.exe'
+Sign-ReleaseFile $AppExe
 Copy-Item -LiteralPath (Join-Path $ProjectRoot 'dist\VtuberLiveTranslator') -Destination (Join-Path $ProjectRoot 'release\VtuberLiveTranslator') -Recurse
 
 if (-not $SkipInstaller) {
@@ -51,12 +64,16 @@ if (-not $SkipInstaller) {
     if (-not (Test-Path -LiteralPath $Iscc)) { $Iscc = (Get-Command iscc.exe -ErrorAction Stop).Source }
     & $Iscc "/DMyAppVersion=$Version" (Join-Path $ProjectRoot 'installer\VtuberLiveTranslator.iss')
     if ($LASTEXITCODE) { throw 'Installer 建置失敗。' }
-    Copy-Item -LiteralPath (Join-Path $ProjectRoot 'installer\output\VtuberLiveTranslator-Setup.exe') -Destination (Join-Path $ProjectRoot 'release\VtuberLiveTranslator-Setup.exe')
+    $Installer = Join-Path $ProjectRoot 'installer\output\VtuberLiveTranslator-Setup.exe'
+    Sign-ReleaseFile $Installer
+    Copy-Item -LiteralPath $Installer -Destination (Join-Path $ProjectRoot "release\VtuberLiveTranslator-$Version-Setup.exe")
 }
+Copy-Item -LiteralPath (Join-Path $ProjectRoot "RELEASE_NOTES_$Version.md") -Destination (Join-Path $ProjectRoot 'release')
 $HashTargets = @(Get-ChildItem -LiteralPath (Join-Path $ProjectRoot 'release') -File)
 $HashTargets += Get-Item -LiteralPath (Join-Path $ProjectRoot 'release\VtuberLiveTranslator\VtuberLiveTranslator.exe')
 $HashTargets | ForEach-Object {
     $hash = Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256
-    "$($hash.Hash.ToLower())  $($_.Name)"
+    $relative = $_.FullName.Substring((Join-Path $ProjectRoot 'release').Length + 1).Replace('\', '/')
+    "$($hash.Hash.ToLower())  $relative"
 } | Set-Content -LiteralPath (Join-Path $ProjectRoot 'release\SHA256SUMS.txt') -Encoding ascii
 Write-Host "Vtuber Live Translator $Version release ready: $(Join-Path $ProjectRoot 'release')"

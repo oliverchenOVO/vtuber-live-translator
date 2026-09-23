@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import html
+import os
 import re
 import shutil
 import uuid
@@ -12,14 +14,15 @@ from vlt.version import __version__
 
 
 def _atomic_json(path: Path, data: object) -> None:
-    temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
-    temporary.replace(path)
+    _atomic_text(path, json.dumps(data, ensure_ascii=False, indent=2))
 
 
 def _atomic_text(path: Path, content: str) -> None:
     temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(content, encoding="utf-8")
+    with temporary.open("w", encoding="utf-8", newline="\n") as output:
+        output.write(content)
+        output.flush()
+        os.fsync(output.fileno())
     temporary.replace(path)
 
 
@@ -283,6 +286,29 @@ class SessionManager:
         self.render_exports(session_id)
         return True
 
+    def assign_unknown_range(self, session_id: str, start_ms: int, end_ms: int, speaker_id: str) -> int:
+        if start_ms < 0 or end_ms <= start_ms:
+            raise ValueError("結束時間必須晚於開始時間。")
+        if not self.db.connection.execute("SELECT 1 FROM speakers WHERE session_id=? AND speaker_id=?",
+                                          (session_id, speaker_id)).fetchone():
+            raise ValueError("請選擇此 Session 的 Speaker。")
+        rows = self.db.connection.execute(
+            "SELECT segment_id,payload_json FROM segments WHERE session_id=? AND type='speech' "
+            "AND (speaker_id IS NULL OR speaker_id='unknown') AND start_ms>=? AND start_ms<?",
+            (session_id, start_ms, end_ms)).fetchall()
+        with self.db.connection:
+            for row in rows:
+                payload = json.loads(row["payload_json"])
+                payload.update(speaker_id=speaker_id, speaker_confidence=1.0, speaker_assignment="manual")
+                self.db.connection.execute("UPDATE segments SET speaker_id=?,payload_json=? "
+                    "WHERE session_id=? AND segment_id=?",
+                    (speaker_id, json.dumps(payload, ensure_ascii=False), session_id, row["segment_id"]))
+            self._audit(session_id, "assign_unknown_range", {"start_ms": start_ms, "end_ms": end_ms,
+                                                           "speaker_id": speaker_id, "count": len(rows)})
+        self.reconcile_transcript(session_id)
+        self.render_exports(session_id)
+        return len(rows)
+
     def update_automatic_assignment(self, session_id: str, segment_id: str,
                                     speaker_id: str, confidence: float) -> bool:
         row = self.db.connection.execute(
@@ -390,7 +416,11 @@ class SessionManager:
         if session is None:
             raise KeyError(session_id)
         path = Path(session["folder_path"]) / "transcript.json"
-        existing = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+        try:
+            existing = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            # SQLite is authoritative, including after an interrupted legacy JSON write.
+            existing = {}
         segments = self.list_segments(session_id)
         speakers = [dict(row) for row in self.db.connection.execute(
             "SELECT speaker_id, display_name, joined_at_ms, left_at_ms, person_id "
@@ -465,7 +495,10 @@ class SessionManager:
                     chosen = "\n".join(part for part in (translated or "[翻譯待補]", original) if part)
                 chosen = chosen or "[翻譯待補]"
                 body = f"{name}: {chosen}"
-            subtitles.append((item["start_ms"], item["end_ms"], body))
+            # Blank cue lines terminate SRT/VTT cues, and raw angle brackets are
+            # interpreted as markup. Preserve visible text without breaking cues.
+            body = "\n".join(line for line in body.replace("\r", "").split("\n") if line.strip())
+            subtitles.append((item["start_ms"], item["end_ms"], html.escape(body, quote=False)))
             markdown.extend(["---", ""])
         exports = folder / "exports"
         exports.mkdir(exist_ok=True)
