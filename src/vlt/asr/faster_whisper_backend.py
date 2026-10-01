@@ -276,12 +276,13 @@ class FasterWhisperBackend:
                 if request is None:
                     return
                 self._inference_busy = True
-                text, language = await asyncio.to_thread(self._transcribe, request.pcm)
+                text, language, confidence = await asyncio.to_thread(self._transcribe, request.pcm)
                 if not text and not request.is_final:
                     continue
                 result = Recognition(request.utterance_id, text, language,
                                      request.start_ms, max(request.start_ms + 1, request.end_ms),
-                                     request.is_final, request.first_audio_at, request.speech_end_at)
+                                     request.is_final, request.first_audio_at, request.speech_end_at,
+                                     confidence)
                 if request.is_final:
                     self._on_final(result)
                 else:
@@ -294,7 +295,7 @@ class FasterWhisperBackend:
                 self._inference_busy = False
                 self._requests.task_done()
 
-    def _transcribe(self, pcm: bytes) -> tuple[str, str]:
+    def _transcribe(self, pcm: bytes) -> tuple[str, str, float | None]:
         samples = np.frombuffer(pcm, dtype="<i2").astype(np.float32) / 32768.0
         options = dict(language=None if self._language == "auto" else self._language,
                        task="transcribe", beam_size=1, best_of=1,
@@ -302,6 +303,7 @@ class FasterWhisperBackend:
                        without_timestamps=True)
         try:
             segments, info = self._model.transcribe(samples, **options)
+            segments = list(segments)
             text = " ".join(segment.text.strip() for segment in segments if segment.text.strip()).strip()
         except Exception:
             if self._active_device != "cuda":
@@ -313,5 +315,9 @@ class FasterWhisperBackend:
             self._model = self._model_factory(self.model_name, **kwargs)
             self._active_device = "cpu"
             segments, info = self._model.transcribe(samples, **options)
+            segments = list(segments)
             text = " ".join(segment.text.strip() for segment in segments if segment.text.strip()).strip()
-        return text, info.language or self._language
+        logprobs = [float(segment.avg_logprob) for segment in segments
+                    if getattr(segment, "avg_logprob", None) is not None]
+        confidence = float(np.exp(sum(logprobs) / len(logprobs))) if logprobs else None
+        return text, info.language or self._language, confidence

@@ -1,0 +1,3602 @@
+[
+  {
+    "id": "ja-000-base",
+    "language": "ja",
+    "category": "numbers",
+    "source": "昨日3時間しか寝てない",
+    "reference_zh_tw": "我昨天只睡了3個小時。",
+    "semantic_facts": "I only slept 3 hours yesterday",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-000-hesitation",
+    "language": "ja",
+    "category": "numbers",
+    "source": "えっと、昨日3時間しか寝てない",
+    "reference_zh_tw": "我昨天只睡了3個小時。",
+    "semantic_facts": "I only slept 3 hours yesterday",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-000-filler",
+    "language": "ja",
+    "category": "numbers",
+    "source": "あの、昨日3時間しか寝てない",
+    "reference_zh_tw": "我昨天只睡了3個小時。",
+    "semantic_facts": "I only slept 3 hours yesterday",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-000-soft_ending",
+    "language": "ja",
+    "category": "numbers",
+    "source": "昨日3時間しか寝てない、ね",
+    "reference_zh_tw": "我昨天只睡了3個小時。",
+    "semantic_facts": "I only slept 3 hours yesterday",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-000-pause",
+    "language": "ja",
+    "category": "numbers",
+    "source": "んー、昨日3時間しか寝てない",
+    "reference_zh_tw": "我昨天只睡了3個小時。",
+    "semantic_facts": "I only slept 3 hours yesterday",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-001-base",
+    "language": "ja",
+    "category": "numbers",
+    "source": "残り2人だよ",
+    "reference_zh_tw": "還剩2個人。",
+    "semantic_facts": "There are 2 people left",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-001-hesitation",
+    "language": "ja",
+    "category": "numbers",
+    "source": "えっと、残り2人だよ",
+    "reference_zh_tw": "還剩2個人。",
+    "semantic_facts": "There are 2 people left",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-001-filler",
+    "language": "ja",
+    "category": "numbers",
+    "source": "あの、残り2人だよ",
+    "reference_zh_tw": "還剩2個人。",
+    "semantic_facts": "There are 2 people left",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-001-soft_ending",
+    "language": "ja",
+    "category": "numbers",
+    "source": "残り2人だよ、ね",
+    "reference_zh_tw": "還剩2個人。",
+    "semantic_facts": "There are 2 people left",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-001-pause",
+    "language": "ja",
+    "category": "numbers",
+    "source": "んー、残り2人だよ",
+    "reference_zh_tw": "還剩2個人。",
+    "semantic_facts": "There are 2 people left",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-002-base",
+    "language": "ja",
+    "category": "numbers",
+    "source": "5回勝った",
+    "reference_zh_tw": "我贏了5次。",
+    "semantic_facts": "I won 5 times",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-002-hesitation",
+    "language": "ja",
+    "category": "numbers",
+    "source": "えっと、5回勝った",
+    "reference_zh_tw": "我贏了5次。",
+    "semantic_facts": "I won 5 times",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-002-filler",
+    "language": "ja",
+    "category": "numbers",
+    "source": "あの、5回勝った",
+    "reference_zh_tw": "我贏了5次。",
+    "semantic_facts": "I won 5 times",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-002-soft_ending",
+    "language": "ja",
+    "category": "numbers",
+    "source": "5回勝った、ね",
+    "reference_zh_tw": "我贏了5次。",
+    "semantic_facts": "I won 5 times",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-002-pause",
+    "language": "ja",
+    "category": "numbers",
+    "source": "んー、5回勝った",
+    "reference_zh_tw": "我贏了5次。",
+    "semantic_facts": "I won 5 times",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-003-base",
+    "language": "ja",
+    "category": "numbers",
+    "source": "あと7分です",
+    "reference_zh_tw": "還有7分鐘。",
+    "semantic_facts": "There are 7 minutes remaining",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-003-hesitation",
+    "language": "ja",
+    "category": "numbers",
+    "source": "えっと、あと7分です",
+    "reference_zh_tw": "還有7分鐘。",
+    "semantic_facts": "There are 7 minutes remaining",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-003-filler",
+    "language": "ja",
+    "category": "numbers",
+    "source": "あの、あと7分です",
+    "reference_zh_tw": "還有7分鐘。",
+    "semantic_facts": "There are 7 minutes remaining",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-003-soft_ending",
+    "language": "ja",
+    "category": "numbers",
+    "source": "あと7分です、ね",
+    "reference_zh_tw": "還有7分鐘。",
+    "semantic_facts": "There are 7 minutes remaining",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-003-pause",
+    "language": "ja",
+    "category": "numbers",
+    "source": "んー、あと7分です",
+    "reference_zh_tw": "還有7分鐘。",
+    "semantic_facts": "There are 7 minutes remaining",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-004-base",
+    "language": "ja",
+    "category": "numbers",
+    "source": "9個買った",
+    "reference_zh_tw": "我買了9個。",
+    "semantic_facts": "I bought 9 items",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-004-hesitation",
+    "language": "ja",
+    "category": "numbers",
+    "source": "えっと、9個買った",
+    "reference_zh_tw": "我買了9個。",
+    "semantic_facts": "I bought 9 items",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-004-filler",
+    "language": "ja",
+    "category": "numbers",
+    "source": "あの、9個買った",
+    "reference_zh_tw": "我買了9個。",
+    "semantic_facts": "I bought 9 items",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-004-soft_ending",
+    "language": "ja",
+    "category": "numbers",
+    "source": "9個買った、ね",
+    "reference_zh_tw": "我買了9個。",
+    "semantic_facts": "I bought 9 items",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-004-pause",
+    "language": "ja",
+    "category": "numbers",
+    "source": "んー、9個買った",
+    "reference_zh_tw": "我買了9個。",
+    "semantic_facts": "I bought 9 items",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-005-base",
+    "language": "ja",
+    "category": "dates",
+    "source": "配信は6月8日です",
+    "reference_zh_tw": "直播是6月8日。",
+    "semantic_facts": "The stream is on June 8",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-005-hesitation",
+    "language": "ja",
+    "category": "dates",
+    "source": "えっと、配信は6月8日です",
+    "reference_zh_tw": "直播是6月8日。",
+    "semantic_facts": "The stream is on June 8",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-005-filler",
+    "language": "ja",
+    "category": "dates",
+    "source": "あの、配信は6月8日です",
+    "reference_zh_tw": "直播是6月8日。",
+    "semantic_facts": "The stream is on June 8",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-005-soft_ending",
+    "language": "ja",
+    "category": "dates",
+    "source": "配信は6月8日です、ね",
+    "reference_zh_tw": "直播是6月8日。",
+    "semantic_facts": "The stream is on June 8",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-005-pause",
+    "language": "ja",
+    "category": "dates",
+    "source": "んー、配信は6月8日です",
+    "reference_zh_tw": "直播是6月8日。",
+    "semantic_facts": "The stream is on June 8",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-006-base",
+    "language": "ja",
+    "category": "dates",
+    "source": "4月2日に会おう",
+    "reference_zh_tw": "我們4月2日見。",
+    "semantic_facts": "Let's meet on April 2",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-006-hesitation",
+    "language": "ja",
+    "category": "dates",
+    "source": "えっと、4月2日に会おう",
+    "reference_zh_tw": "我們4月2日見。",
+    "semantic_facts": "Let's meet on April 2",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-006-filler",
+    "language": "ja",
+    "category": "dates",
+    "source": "あの、4月2日に会おう",
+    "reference_zh_tw": "我們4月2日見。",
+    "semantic_facts": "Let's meet on April 2",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-006-soft_ending",
+    "language": "ja",
+    "category": "dates",
+    "source": "4月2日に会おう、ね",
+    "reference_zh_tw": "我們4月2日見。",
+    "semantic_facts": "Let's meet on April 2",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-006-pause",
+    "language": "ja",
+    "category": "dates",
+    "source": "んー、4月2日に会おう",
+    "reference_zh_tw": "我們4月2日見。",
+    "semantic_facts": "Let's meet on April 2",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-007-base",
+    "language": "ja",
+    "category": "dates",
+    "source": "3月9日が誕生日",
+    "reference_zh_tw": "我的生日是3月9日。",
+    "semantic_facts": "My birthday is March 9",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-007-hesitation",
+    "language": "ja",
+    "category": "dates",
+    "source": "えっと、3月9日が誕生日",
+    "reference_zh_tw": "我的生日是3月9日。",
+    "semantic_facts": "My birthday is March 9",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-007-filler",
+    "language": "ja",
+    "category": "dates",
+    "source": "あの、3月9日が誕生日",
+    "reference_zh_tw": "我的生日是3月9日。",
+    "semantic_facts": "My birthday is March 9",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-007-soft_ending",
+    "language": "ja",
+    "category": "dates",
+    "source": "3月9日が誕生日、ね",
+    "reference_zh_tw": "我的生日是3月9日。",
+    "semantic_facts": "My birthday is March 9",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-007-pause",
+    "language": "ja",
+    "category": "dates",
+    "source": "んー、3月9日が誕生日",
+    "reference_zh_tw": "我的生日是3月9日。",
+    "semantic_facts": "My birthday is March 9",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-008-base",
+    "language": "ja",
+    "category": "negatives",
+    "source": "今日は行かない",
+    "reference_zh_tw": "我今天不去。",
+    "semantic_facts": "I will not go today",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-008-hesitation",
+    "language": "ja",
+    "category": "negatives",
+    "source": "えっと、今日は行かない",
+    "reference_zh_tw": "我今天不去。",
+    "semantic_facts": "I will not go today",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-008-filler",
+    "language": "ja",
+    "category": "negatives",
+    "source": "あの、今日は行かない",
+    "reference_zh_tw": "我今天不去。",
+    "semantic_facts": "I will not go today",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-008-soft_ending",
+    "language": "ja",
+    "category": "negatives",
+    "source": "今日は行かない、ね",
+    "reference_zh_tw": "我今天不去。",
+    "semantic_facts": "I will not go today",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-008-pause",
+    "language": "ja",
+    "category": "negatives",
+    "source": "んー、今日は行かない",
+    "reference_zh_tw": "我今天不去。",
+    "semantic_facts": "I will not go today",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-009-base",
+    "language": "ja",
+    "category": "negatives",
+    "source": "まだ終わってない",
+    "reference_zh_tw": "還沒結束。",
+    "semantic_facts": "It is not finished yet",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-009-hesitation",
+    "language": "ja",
+    "category": "negatives",
+    "source": "えっと、まだ終わってない",
+    "reference_zh_tw": "還沒結束。",
+    "semantic_facts": "It is not finished yet",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-009-filler",
+    "language": "ja",
+    "category": "negatives",
+    "source": "あの、まだ終わってない",
+    "reference_zh_tw": "還沒結束。",
+    "semantic_facts": "It is not finished yet",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-009-soft_ending",
+    "language": "ja",
+    "category": "negatives",
+    "source": "まだ終わってない、ね",
+    "reference_zh_tw": "還沒結束。",
+    "semantic_facts": "It is not finished yet",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-009-pause",
+    "language": "ja",
+    "category": "negatives",
+    "source": "んー、まだ終わってない",
+    "reference_zh_tw": "還沒結束。",
+    "semantic_facts": "It is not finished yet",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-010-base",
+    "language": "ja",
+    "category": "negatives",
+    "source": "これは私のじゃない",
+    "reference_zh_tw": "這不是我的。",
+    "semantic_facts": "This is not mine",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-010-hesitation",
+    "language": "ja",
+    "category": "negatives",
+    "source": "えっと、これは私のじゃない",
+    "reference_zh_tw": "這不是我的。",
+    "semantic_facts": "This is not mine",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-010-filler",
+    "language": "ja",
+    "category": "negatives",
+    "source": "あの、これは私のじゃない",
+    "reference_zh_tw": "這不是我的。",
+    "semantic_facts": "This is not mine",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-010-soft_ending",
+    "language": "ja",
+    "category": "negatives",
+    "source": "これは私のじゃない、ね",
+    "reference_zh_tw": "這不是我的。",
+    "semantic_facts": "This is not mine",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-010-pause",
+    "language": "ja",
+    "category": "negatives",
+    "source": "んー、これは私のじゃない",
+    "reference_zh_tw": "這不是我的。",
+    "semantic_facts": "This is not mine",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-011-base",
+    "language": "ja",
+    "category": "negatives",
+    "source": "見てません",
+    "reference_zh_tw": "我沒看到。",
+    "semantic_facts": "I did not see it",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-011-hesitation",
+    "language": "ja",
+    "category": "negatives",
+    "source": "えっと、見てません",
+    "reference_zh_tw": "我沒看到。",
+    "semantic_facts": "I did not see it",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-011-filler",
+    "language": "ja",
+    "category": "negatives",
+    "source": "あの、見てません",
+    "reference_zh_tw": "我沒看到。",
+    "semantic_facts": "I did not see it",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-011-soft_ending",
+    "language": "ja",
+    "category": "negatives",
+    "source": "見てません、ね",
+    "reference_zh_tw": "我沒看到。",
+    "semantic_facts": "I did not see it",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-011-pause",
+    "language": "ja",
+    "category": "negatives",
+    "source": "んー、見てません",
+    "reference_zh_tw": "我沒看到。",
+    "semantic_facts": "I did not see it",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-012-base",
+    "language": "ja",
+    "category": "negatives",
+    "source": "買わなかった",
+    "reference_zh_tw": "我沒買。",
+    "semantic_facts": "I did not buy it",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-012-hesitation",
+    "language": "ja",
+    "category": "negatives",
+    "source": "えっと、買わなかった",
+    "reference_zh_tw": "我沒買。",
+    "semantic_facts": "I did not buy it",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-012-filler",
+    "language": "ja",
+    "category": "negatives",
+    "source": "あの、買わなかった",
+    "reference_zh_tw": "我沒買。",
+    "semantic_facts": "I did not buy it",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-012-soft_ending",
+    "language": "ja",
+    "category": "negatives",
+    "source": "買わなかった、ね",
+    "reference_zh_tw": "我沒買。",
+    "semantic_facts": "I did not buy it",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-012-pause",
+    "language": "ja",
+    "category": "negatives",
+    "source": "んー、買わなかった",
+    "reference_zh_tw": "我沒買。",
+    "semantic_facts": "I did not buy it",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-013-base",
+    "language": "ja",
+    "category": "negatives",
+    "source": "絶対に忘れない",
+    "reference_zh_tw": "我絕對不會忘記。",
+    "semantic_facts": "I will never forget",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-013-hesitation",
+    "language": "ja",
+    "category": "negatives",
+    "source": "えっと、絶対に忘れない",
+    "reference_zh_tw": "我絕對不會忘記。",
+    "semantic_facts": "I will never forget",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-013-filler",
+    "language": "ja",
+    "category": "negatives",
+    "source": "あの、絶対に忘れない",
+    "reference_zh_tw": "我絕對不會忘記。",
+    "semantic_facts": "I will never forget",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-013-soft_ending",
+    "language": "ja",
+    "category": "negatives",
+    "source": "絶対に忘れない、ね",
+    "reference_zh_tw": "我絕對不會忘記。",
+    "semantic_facts": "I will never forget",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-013-pause",
+    "language": "ja",
+    "category": "negatives",
+    "source": "んー、絶対に忘れない",
+    "reference_zh_tw": "我絕對不會忘記。",
+    "semantic_facts": "I will never forget",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-014-base",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "たぶん明日行く",
+    "reference_zh_tw": "我明天可能會去。",
+    "semantic_facts": "Maybe I will go tomorrow",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-014-hesitation",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "えっと、たぶん明日行く",
+    "reference_zh_tw": "我明天可能會去。",
+    "semantic_facts": "Maybe I will go tomorrow",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-014-filler",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "あの、たぶん明日行く",
+    "reference_zh_tw": "我明天可能會去。",
+    "semantic_facts": "Maybe I will go tomorrow",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-014-soft_ending",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "たぶん明日行く、ね",
+    "reference_zh_tw": "我明天可能會去。",
+    "semantic_facts": "Maybe I will go tomorrow",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-014-pause",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "んー、たぶん明日行く",
+    "reference_zh_tw": "我明天可能會去。",
+    "semantic_facts": "Maybe I will go tomorrow",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-015-base",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "雨かもしれない",
+    "reference_zh_tw": "可能會下雨。",
+    "semantic_facts": "It might rain",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-015-hesitation",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "えっと、雨かもしれない",
+    "reference_zh_tw": "可能會下雨。",
+    "semantic_facts": "It might rain",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-015-filler",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "あの、雨かもしれない",
+    "reference_zh_tw": "可能會下雨。",
+    "semantic_facts": "It might rain",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-015-soft_ending",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "雨かもしれない、ね",
+    "reference_zh_tw": "可能會下雨。",
+    "semantic_facts": "It might rain",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-015-pause",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "んー、雨かもしれない",
+    "reference_zh_tw": "可能會下雨。",
+    "semantic_facts": "It might rain",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-016-base",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "楽しいと思う",
+    "reference_zh_tw": "我覺得會很好玩。",
+    "semantic_facts": "I think it will be fun",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-016-hesitation",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "えっと、楽しいと思う",
+    "reference_zh_tw": "我覺得會很好玩。",
+    "semantic_facts": "I think it will be fun",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-016-filler",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "あの、楽しいと思う",
+    "reference_zh_tw": "我覺得會很好玩。",
+    "semantic_facts": "I think it will be fun",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-016-soft_ending",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "楽しいと思う、ね",
+    "reference_zh_tw": "我覺得會很好玩。",
+    "semantic_facts": "I think it will be fun",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-016-pause",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "んー、楽しいと思う",
+    "reference_zh_tw": "我覺得會很好玩。",
+    "semantic_facts": "I think it will be fun",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-017-base",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "おそらく勝てる",
+    "reference_zh_tw": "我們大概能贏。",
+    "semantic_facts": "We can probably win",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-017-hesitation",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "えっと、おそらく勝てる",
+    "reference_zh_tw": "我們大概能贏。",
+    "semantic_facts": "We can probably win",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-017-filler",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "あの、おそらく勝てる",
+    "reference_zh_tw": "我們大概能贏。",
+    "semantic_facts": "We can probably win",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-017-soft_ending",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "おそらく勝てる、ね",
+    "reference_zh_tw": "我們大概能贏。",
+    "semantic_facts": "We can probably win",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-017-pause",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "んー、おそらく勝てる",
+    "reference_zh_tw": "我們大概能贏。",
+    "semantic_facts": "We can probably win",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-018-base",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "多分2人だと思う",
+    "reference_zh_tw": "我覺得大概有2個人。",
+    "semantic_facts": "I think there are probably 2 people",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-018-hesitation",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "えっと、多分2人だと思う",
+    "reference_zh_tw": "我覺得大概有2個人。",
+    "semantic_facts": "I think there are probably 2 people",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-018-filler",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "あの、多分2人だと思う",
+    "reference_zh_tw": "我覺得大概有2個人。",
+    "semantic_facts": "I think there are probably 2 people",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-018-soft_ending",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "多分2人だと思う、ね",
+    "reference_zh_tw": "我覺得大概有2個人。",
+    "semantic_facts": "I think there are probably 2 people",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-018-pause",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "んー、多分2人だと思う",
+    "reference_zh_tw": "我覺得大概有2個人。",
+    "semantic_facts": "I think there are probably 2 people",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-019-base",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "たぶん大丈夫",
+    "reference_zh_tw": "大概沒問題。",
+    "semantic_facts": "Perhaps it is okay",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-019-hesitation",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "えっと、たぶん大丈夫",
+    "reference_zh_tw": "大概沒問題。",
+    "semantic_facts": "Perhaps it is okay",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-019-filler",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "あの、たぶん大丈夫",
+    "reference_zh_tw": "大概沒問題。",
+    "semantic_facts": "Perhaps it is okay",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-019-soft_ending",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "たぶん大丈夫、ね",
+    "reference_zh_tw": "大概沒問題。",
+    "semantic_facts": "Perhaps it is okay",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-019-pause",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "んー、たぶん大丈夫",
+    "reference_zh_tw": "大概沒問題。",
+    "semantic_facts": "Perhaps it is okay",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-020-base",
+    "language": "ja",
+    "category": "casual",
+    "source": "おはよう、みんな",
+    "reference_zh_tw": "大家早安。",
+    "semantic_facts": "Morning, everyone",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-020-hesitation",
+    "language": "ja",
+    "category": "casual",
+    "source": "えっと、おはよう、みんな",
+    "reference_zh_tw": "大家早安。",
+    "semantic_facts": "Morning, everyone",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-020-filler",
+    "language": "ja",
+    "category": "casual",
+    "source": "あの、おはよう、みんな",
+    "reference_zh_tw": "大家早安。",
+    "semantic_facts": "Morning, everyone",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-020-soft_ending",
+    "language": "ja",
+    "category": "casual",
+    "source": "おはよう、みんな、ね",
+    "reference_zh_tw": "大家早安。",
+    "semantic_facts": "Morning, everyone",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-020-pause",
+    "language": "ja",
+    "category": "casual",
+    "source": "んー、おはよう、みんな",
+    "reference_zh_tw": "大家早安。",
+    "semantic_facts": "Morning, everyone",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-021-base",
+    "language": "ja",
+    "category": "casual",
+    "source": "今日めっちゃ暑い",
+    "reference_zh_tw": "今天超熱。",
+    "semantic_facts": "It is really hot today",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-021-hesitation",
+    "language": "ja",
+    "category": "casual",
+    "source": "えっと、今日めっちゃ暑い",
+    "reference_zh_tw": "今天超熱。",
+    "semantic_facts": "It is really hot today",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-021-filler",
+    "language": "ja",
+    "category": "casual",
+    "source": "あの、今日めっちゃ暑い",
+    "reference_zh_tw": "今天超熱。",
+    "semantic_facts": "It is really hot today",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-021-soft_ending",
+    "language": "ja",
+    "category": "casual",
+    "source": "今日めっちゃ暑い、ね",
+    "reference_zh_tw": "今天超熱。",
+    "semantic_facts": "It is really hot today",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-021-pause",
+    "language": "ja",
+    "category": "casual",
+    "source": "んー、今日めっちゃ暑い",
+    "reference_zh_tw": "今天超熱。",
+    "semantic_facts": "It is really hot today",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-022-base",
+    "language": "ja",
+    "category": "casual",
+    "source": "ちょっと待ってね",
+    "reference_zh_tw": "等我一下喔。",
+    "semantic_facts": "Hang on a second",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-022-hesitation",
+    "language": "ja",
+    "category": "casual",
+    "source": "えっと、ちょっと待ってね",
+    "reference_zh_tw": "等我一下喔。",
+    "semantic_facts": "Hang on a second",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-022-filler",
+    "language": "ja",
+    "category": "casual",
+    "source": "あの、ちょっと待ってね",
+    "reference_zh_tw": "等我一下喔。",
+    "semantic_facts": "Hang on a second",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-022-soft_ending",
+    "language": "ja",
+    "category": "casual",
+    "source": "ちょっと待ってね、ね",
+    "reference_zh_tw": "等我一下喔。",
+    "semantic_facts": "Hang on a second",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-022-pause",
+    "language": "ja",
+    "category": "casual",
+    "source": "んー、ちょっと待ってね",
+    "reference_zh_tw": "等我一下喔。",
+    "semantic_facts": "Hang on a second",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-023-base",
+    "language": "ja",
+    "category": "casual",
+    "source": "お腹すいた",
+    "reference_zh_tw": "我餓了。",
+    "semantic_facts": "I'm hungry",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-023-hesitation",
+    "language": "ja",
+    "category": "casual",
+    "source": "えっと、お腹すいた",
+    "reference_zh_tw": "我餓了。",
+    "semantic_facts": "I'm hungry",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-023-filler",
+    "language": "ja",
+    "category": "casual",
+    "source": "あの、お腹すいた",
+    "reference_zh_tw": "我餓了。",
+    "semantic_facts": "I'm hungry",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-023-soft_ending",
+    "language": "ja",
+    "category": "casual",
+    "source": "お腹すいた、ね",
+    "reference_zh_tw": "我餓了。",
+    "semantic_facts": "I'm hungry",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-023-pause",
+    "language": "ja",
+    "category": "casual",
+    "source": "んー、お腹すいた",
+    "reference_zh_tw": "我餓了。",
+    "semantic_facts": "I'm hungry",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-024-base",
+    "language": "ja",
+    "category": "casual",
+    "source": "水飲んでくる",
+    "reference_zh_tw": "我去喝點水。",
+    "semantic_facts": "I'm getting some water",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-024-hesitation",
+    "language": "ja",
+    "category": "casual",
+    "source": "えっと、水飲んでくる",
+    "reference_zh_tw": "我去喝點水。",
+    "semantic_facts": "I'm getting some water",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-024-filler",
+    "language": "ja",
+    "category": "casual",
+    "source": "あの、水飲んでくる",
+    "reference_zh_tw": "我去喝點水。",
+    "semantic_facts": "I'm getting some water",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-024-soft_ending",
+    "language": "ja",
+    "category": "casual",
+    "source": "水飲んでくる、ね",
+    "reference_zh_tw": "我去喝點水。",
+    "semantic_facts": "I'm getting some water",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-024-pause",
+    "language": "ja",
+    "category": "casual",
+    "source": "んー、水飲んでくる",
+    "reference_zh_tw": "我去喝點水。",
+    "semantic_facts": "I'm getting some water",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-025-base",
+    "language": "ja",
+    "category": "casual",
+    "source": "もうこんな時間",
+    "reference_zh_tw": "已經這麼晚了。",
+    "semantic_facts": "It is already this late",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-025-hesitation",
+    "language": "ja",
+    "category": "casual",
+    "source": "えっと、もうこんな時間",
+    "reference_zh_tw": "已經這麼晚了。",
+    "semantic_facts": "It is already this late",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-025-filler",
+    "language": "ja",
+    "category": "casual",
+    "source": "あの、もうこんな時間",
+    "reference_zh_tw": "已經這麼晚了。",
+    "semantic_facts": "It is already this late",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-025-soft_ending",
+    "language": "ja",
+    "category": "casual",
+    "source": "もうこんな時間、ね",
+    "reference_zh_tw": "已經這麼晚了。",
+    "semantic_facts": "It is already this late",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-025-pause",
+    "language": "ja",
+    "category": "casual",
+    "source": "んー、もうこんな時間",
+    "reference_zh_tw": "已經這麼晚了。",
+    "semantic_facts": "It is already this late",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-026-base",
+    "language": "ja",
+    "category": "casual",
+    "source": "ほんとにありがとう",
+    "reference_zh_tw": "真的很謝謝你。",
+    "semantic_facts": "Thank you so much",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-026-hesitation",
+    "language": "ja",
+    "category": "casual",
+    "source": "えっと、ほんとにありがとう",
+    "reference_zh_tw": "真的很謝謝你。",
+    "semantic_facts": "Thank you so much",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-026-filler",
+    "language": "ja",
+    "category": "casual",
+    "source": "あの、ほんとにありがとう",
+    "reference_zh_tw": "真的很謝謝你。",
+    "semantic_facts": "Thank you so much",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-026-soft_ending",
+    "language": "ja",
+    "category": "casual",
+    "source": "ほんとにありがとう、ね",
+    "reference_zh_tw": "真的很謝謝你。",
+    "semantic_facts": "Thank you so much",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-026-pause",
+    "language": "ja",
+    "category": "casual",
+    "source": "んー、ほんとにありがとう",
+    "reference_zh_tw": "真的很謝謝你。",
+    "semantic_facts": "Thank you so much",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-027-base",
+    "language": "ja",
+    "category": "gaming",
+    "source": "右から敵が来た",
+    "reference_zh_tw": "敵人從右邊過來了。",
+    "semantic_facts": "An enemy came from the right",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-027-hesitation",
+    "language": "ja",
+    "category": "gaming",
+    "source": "えっと、右から敵が来た",
+    "reference_zh_tw": "敵人從右邊過來了。",
+    "semantic_facts": "An enemy came from the right",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-027-filler",
+    "language": "ja",
+    "category": "gaming",
+    "source": "あの、右から敵が来た",
+    "reference_zh_tw": "敵人從右邊過來了。",
+    "semantic_facts": "An enemy came from the right",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-027-soft_ending",
+    "language": "ja",
+    "category": "gaming",
+    "source": "右から敵が来た、ね",
+    "reference_zh_tw": "敵人從右邊過來了。",
+    "semantic_facts": "An enemy came from the right",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-027-pause",
+    "language": "ja",
+    "category": "gaming",
+    "source": "んー、右から敵が来た",
+    "reference_zh_tw": "敵人從右邊過來了。",
+    "semantic_facts": "An enemy came from the right",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-028-base",
+    "language": "ja",
+    "category": "gaming",
+    "source": "回復してる",
+    "reference_zh_tw": "我正在補血。",
+    "semantic_facts": "I'm healing",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-028-hesitation",
+    "language": "ja",
+    "category": "gaming",
+    "source": "えっと、回復してる",
+    "reference_zh_tw": "我正在補血。",
+    "semantic_facts": "I'm healing",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-028-filler",
+    "language": "ja",
+    "category": "gaming",
+    "source": "あの、回復してる",
+    "reference_zh_tw": "我正在補血。",
+    "semantic_facts": "I'm healing",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-028-soft_ending",
+    "language": "ja",
+    "category": "gaming",
+    "source": "回復してる、ね",
+    "reference_zh_tw": "我正在補血。",
+    "semantic_facts": "I'm healing",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-028-pause",
+    "language": "ja",
+    "category": "gaming",
+    "source": "んー、回復してる",
+    "reference_zh_tw": "我正在補血。",
+    "semantic_facts": "I'm healing",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-029-base",
+    "language": "ja",
+    "category": "gaming",
+    "source": "弾がない",
+    "reference_zh_tw": "我沒子彈了。",
+    "semantic_facts": "I have no ammo",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-029-hesitation",
+    "language": "ja",
+    "category": "gaming",
+    "source": "えっと、弾がない",
+    "reference_zh_tw": "我沒子彈了。",
+    "semantic_facts": "I have no ammo",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-029-filler",
+    "language": "ja",
+    "category": "gaming",
+    "source": "あの、弾がない",
+    "reference_zh_tw": "我沒子彈了。",
+    "semantic_facts": "I have no ammo",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-029-soft_ending",
+    "language": "ja",
+    "category": "gaming",
+    "source": "弾がない、ね",
+    "reference_zh_tw": "我沒子彈了。",
+    "semantic_facts": "I have no ammo",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-029-pause",
+    "language": "ja",
+    "category": "gaming",
+    "source": "んー、弾がない",
+    "reference_zh_tw": "我沒子彈了。",
+    "semantic_facts": "I have no ammo",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-030-base",
+    "language": "ja",
+    "category": "multi_clause",
+    "source": "ナイス、勝った",
+    "reference_zh_tw": "漂亮，我們贏了。",
+    "semantic_facts": "Nice, we won",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-030-hesitation",
+    "language": "ja",
+    "category": "multi_clause",
+    "source": "えっと、ナイス、勝った",
+    "reference_zh_tw": "漂亮，我們贏了。",
+    "semantic_facts": "Nice, we won",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-030-filler",
+    "language": "ja",
+    "category": "multi_clause",
+    "source": "あの、ナイス、勝った",
+    "reference_zh_tw": "漂亮，我們贏了。",
+    "semantic_facts": "Nice, we won",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-030-soft_ending",
+    "language": "ja",
+    "category": "multi_clause",
+    "source": "ナイス、勝った、ね",
+    "reference_zh_tw": "漂亮，我們贏了。",
+    "semantic_facts": "Nice, we won",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-030-pause",
+    "language": "ja",
+    "category": "multi_clause",
+    "source": "んー、ナイス、勝った",
+    "reference_zh_tw": "漂亮，我們贏了。",
+    "semantic_facts": "Nice, we won",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-031-base",
+    "language": "ja",
+    "category": "gaming",
+    "source": "ここで待とう",
+    "reference_zh_tw": "我們在這裡等吧。",
+    "semantic_facts": "Let's wait here",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-031-hesitation",
+    "language": "ja",
+    "category": "gaming",
+    "source": "えっと、ここで待とう",
+    "reference_zh_tw": "我們在這裡等吧。",
+    "semantic_facts": "Let's wait here",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-031-filler",
+    "language": "ja",
+    "category": "gaming",
+    "source": "あの、ここで待とう",
+    "reference_zh_tw": "我們在這裡等吧。",
+    "semantic_facts": "Let's wait here",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-031-soft_ending",
+    "language": "ja",
+    "category": "gaming",
+    "source": "ここで待とう、ね",
+    "reference_zh_tw": "我們在這裡等吧。",
+    "semantic_facts": "Let's wait here",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-031-pause",
+    "language": "ja",
+    "category": "gaming",
+    "source": "んー、ここで待とう",
+    "reference_zh_tw": "我們在這裡等吧。",
+    "semantic_facts": "Let's wait here",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-032-base",
+    "language": "ja",
+    "category": "gaming",
+    "source": "リロード中です",
+    "reference_zh_tw": "我在換彈。",
+    "semantic_facts": "I'm reloading",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-032-hesitation",
+    "language": "ja",
+    "category": "gaming",
+    "source": "えっと、リロード中です",
+    "reference_zh_tw": "我在換彈。",
+    "semantic_facts": "I'm reloading",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-032-filler",
+    "language": "ja",
+    "category": "gaming",
+    "source": "あの、リロード中です",
+    "reference_zh_tw": "我在換彈。",
+    "semantic_facts": "I'm reloading",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-032-soft_ending",
+    "language": "ja",
+    "category": "gaming",
+    "source": "リロード中です、ね",
+    "reference_zh_tw": "我在換彈。",
+    "semantic_facts": "I'm reloading",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-032-pause",
+    "language": "ja",
+    "category": "gaming",
+    "source": "んー、リロード中です",
+    "reference_zh_tw": "我在換彈。",
+    "semantic_facts": "I'm reloading",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-033-base",
+    "language": "ja",
+    "category": "gaming",
+    "source": "あと1試合やろう",
+    "reference_zh_tw": "再玩1場吧。",
+    "semantic_facts": "Let's play 1 more match",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-033-hesitation",
+    "language": "ja",
+    "category": "gaming",
+    "source": "えっと、あと1試合やろう",
+    "reference_zh_tw": "再玩1場吧。",
+    "semantic_facts": "Let's play 1 more match",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-033-filler",
+    "language": "ja",
+    "category": "gaming",
+    "source": "あの、あと1試合やろう",
+    "reference_zh_tw": "再玩1場吧。",
+    "semantic_facts": "Let's play 1 more match",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-033-soft_ending",
+    "language": "ja",
+    "category": "gaming",
+    "source": "あと1試合やろう、ね",
+    "reference_zh_tw": "再玩1場吧。",
+    "semantic_facts": "Let's play 1 more match",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-033-pause",
+    "language": "ja",
+    "category": "gaming",
+    "source": "んー、あと1試合やろう",
+    "reference_zh_tw": "再玩1場吧。",
+    "semantic_facts": "Let's play 1 more match",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-034-base",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "初見さんいらっしゃい",
+    "reference_zh_tw": "歡迎第一次來看的觀眾。",
+    "semantic_facts": "Welcome, first-time viewers",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-034-hesitation",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "えっと、初見さんいらっしゃい",
+    "reference_zh_tw": "歡迎第一次來看的觀眾。",
+    "semantic_facts": "Welcome, first-time viewers",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-034-filler",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "あの、初見さんいらっしゃい",
+    "reference_zh_tw": "歡迎第一次來看的觀眾。",
+    "semantic_facts": "Welcome, first-time viewers",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-034-soft_ending",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "初見さんいらっしゃい、ね",
+    "reference_zh_tw": "歡迎第一次來看的觀眾。",
+    "semantic_facts": "Welcome, first-time viewers",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-034-pause",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "んー、初見さんいらっしゃい",
+    "reference_zh_tw": "歡迎第一次來看的觀眾。",
+    "semantic_facts": "Welcome, first-time viewers",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-035-base",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "スパチャありがとう",
+    "reference_zh_tw": "謝謝你的 Super Chat。",
+    "semantic_facts": "Thanks for the super chat",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-035-hesitation",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "えっと、スパチャありがとう",
+    "reference_zh_tw": "謝謝你的 Super Chat。",
+    "semantic_facts": "Thanks for the super chat",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-035-filler",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "あの、スパチャありがとう",
+    "reference_zh_tw": "謝謝你的 Super Chat。",
+    "semantic_facts": "Thanks for the super chat",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-035-soft_ending",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "スパチャありがとう、ね",
+    "reference_zh_tw": "謝謝你的 Super Chat。",
+    "semantic_facts": "Thanks for the super chat",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-035-pause",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "んー、スパチャありがとう",
+    "reference_zh_tw": "謝謝你的 Super Chat。",
+    "semantic_facts": "Thanks for the super chat",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-036-base",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "今日は雑談枠です",
+    "reference_zh_tw": "今天是雜談直播。",
+    "semantic_facts": "This is a chatting stream today",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-036-hesitation",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "えっと、今日は雑談枠です",
+    "reference_zh_tw": "今天是雜談直播。",
+    "semantic_facts": "This is a chatting stream today",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-036-filler",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "あの、今日は雑談枠です",
+    "reference_zh_tw": "今天是雜談直播。",
+    "semantic_facts": "This is a chatting stream today",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-036-soft_ending",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "今日は雑談枠です、ね",
+    "reference_zh_tw": "今天是雜談直播。",
+    "semantic_facts": "This is a chatting stream today",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-036-pause",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "んー、今日は雑談枠です",
+    "reference_zh_tw": "今天是雜談直播。",
+    "semantic_facts": "This is a chatting stream today",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-037-base",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "コメント見えてるよ",
+    "reference_zh_tw": "我看得到聊天室喔。",
+    "semantic_facts": "I can see the chat",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-037-hesitation",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "えっと、コメント見えてるよ",
+    "reference_zh_tw": "我看得到聊天室喔。",
+    "semantic_facts": "I can see the chat",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-037-filler",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "あの、コメント見えてるよ",
+    "reference_zh_tw": "我看得到聊天室喔。",
+    "semantic_facts": "I can see the chat",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-037-soft_ending",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "コメント見えてるよ、ね",
+    "reference_zh_tw": "我看得到聊天室喔。",
+    "semantic_facts": "I can see the chat",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-037-pause",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "んー、コメント見えてるよ",
+    "reference_zh_tw": "我看得到聊天室喔。",
+    "semantic_facts": "I can see the chat",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-038-base",
+    "language": "ja",
+    "category": "multi_clause",
+    "source": "おつかれさま、またね",
+    "reference_zh_tw": "辛苦了，下次見。",
+    "semantic_facts": "Thanks for hanging out, see you",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-038-hesitation",
+    "language": "ja",
+    "category": "multi_clause",
+    "source": "えっと、おつかれさま、またね",
+    "reference_zh_tw": "辛苦了，下次見。",
+    "semantic_facts": "Thanks for hanging out, see you",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-038-filler",
+    "language": "ja",
+    "category": "multi_clause",
+    "source": "あの、おつかれさま、またね",
+    "reference_zh_tw": "辛苦了，下次見。",
+    "semantic_facts": "Thanks for hanging out, see you",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-038-soft_ending",
+    "language": "ja",
+    "category": "multi_clause",
+    "source": "おつかれさま、またね、ね",
+    "reference_zh_tw": "辛苦了，下次見。",
+    "semantic_facts": "Thanks for hanging out, see you",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-038-pause",
+    "language": "ja",
+    "category": "multi_clause",
+    "source": "んー、おつかれさま、またね",
+    "reference_zh_tw": "辛苦了，下次見。",
+    "semantic_facts": "Thanks for hanging out, see you",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-039-base",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "配信始まってる",
+    "reference_zh_tw": "直播已經開始了。",
+    "semantic_facts": "The stream has started",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-039-hesitation",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "えっと、配信始まってる",
+    "reference_zh_tw": "直播已經開始了。",
+    "semantic_facts": "The stream has started",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-039-filler",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "あの、配信始まってる",
+    "reference_zh_tw": "直播已經開始了。",
+    "semantic_facts": "The stream has started",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-039-soft_ending",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "配信始まってる、ね",
+    "reference_zh_tw": "直播已經開始了。",
+    "semantic_facts": "The stream has started",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-039-pause",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "んー、配信始まってる",
+    "reference_zh_tw": "直播已經開始了。",
+    "semantic_facts": "The stream has started",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-040-base",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "今日はなんか…",
+    "reference_zh_tw": "今天感覺有點……",
+    "semantic_facts": "Today, I kind of…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-040-hesitation",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "えっと、今日はなんか…",
+    "reference_zh_tw": "今天感覺有點……",
+    "semantic_facts": "Today, I kind of…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-040-filler",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "あの、今日はなんか…",
+    "reference_zh_tw": "今天感覺有點……",
+    "semantic_facts": "Today, I kind of…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-040-soft_ending",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "今日はなんか…、ね",
+    "reference_zh_tw": "今天感覺有點……",
+    "semantic_facts": "Today, I kind of…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-040-pause",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "んー、今日はなんか…",
+    "reference_zh_tw": "今天感覺有點……",
+    "semantic_facts": "Today, I kind of…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-041-base",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "それは、えっと…",
+    "reference_zh_tw": "那個，呃……",
+    "semantic_facts": "That is, um…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-041-hesitation",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "えっと、それは、えっと…",
+    "reference_zh_tw": "那個，呃……",
+    "semantic_facts": "That is, um…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-041-filler",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "あの、それは、えっと…",
+    "reference_zh_tw": "那個，呃……",
+    "semantic_facts": "That is, um…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-041-soft_ending",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "それは、えっと…、ね",
+    "reference_zh_tw": "那個，呃……",
+    "semantic_facts": "That is, um…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-041-pause",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "んー、それは、えっと…",
+    "reference_zh_tw": "那個，呃……",
+    "semantic_facts": "That is, um…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-042-base",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "みんなと一緒に…",
+    "reference_zh_tw": "要和大家一起……",
+    "semantic_facts": "Together with everyone…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-042-hesitation",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "えっと、みんなと一緒に…",
+    "reference_zh_tw": "要和大家一起……",
+    "semantic_facts": "Together with everyone…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-042-filler",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "あの、みんなと一緒に…",
+    "reference_zh_tw": "要和大家一起……",
+    "semantic_facts": "Together with everyone…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-042-soft_ending",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "みんなと一緒に…、ね",
+    "reference_zh_tw": "要和大家一起……",
+    "semantic_facts": "Together with everyone…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-042-pause",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "んー、みんなと一緒に…",
+    "reference_zh_tw": "要和大家一起……",
+    "semantic_facts": "Together with everyone…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-043-base",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "次のゲームは…",
+    "reference_zh_tw": "下一款遊戲是……",
+    "semantic_facts": "The next game is…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-043-hesitation",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "えっと、次のゲームは…",
+    "reference_zh_tw": "下一款遊戲是……",
+    "semantic_facts": "The next game is…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-043-filler",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "あの、次のゲームは…",
+    "reference_zh_tw": "下一款遊戲是……",
+    "semantic_facts": "The next game is…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-043-soft_ending",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "次のゲームは…、ね",
+    "reference_zh_tw": "下一款遊戲是……",
+    "semantic_facts": "The next game is…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-043-pause",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "んー、次のゲームは…",
+    "reference_zh_tw": "下一款遊戲是……",
+    "semantic_facts": "The next game is…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-044-base",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "さっき言ったのは…",
+    "reference_zh_tw": "我剛才說的是……",
+    "semantic_facts": "What I said earlier was…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-044-hesitation",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "えっと、さっき言ったのは…",
+    "reference_zh_tw": "我剛才說的是……",
+    "semantic_facts": "What I said earlier was…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-044-filler",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "あの、さっき言ったのは…",
+    "reference_zh_tw": "我剛才說的是……",
+    "semantic_facts": "What I said earlier was…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-044-soft_ending",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "さっき言ったのは…、ね",
+    "reference_zh_tw": "我剛才說的是……",
+    "semantic_facts": "What I said earlier was…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-044-pause",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "んー、さっき言ったのは…",
+    "reference_zh_tw": "我剛才說的是……",
+    "semantic_facts": "What I said earlier was…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-045-base",
+    "language": "ja",
+    "category": "names",
+    "source": "兎田ぺこらが来た",
+    "reference_zh_tw": "佩克拉來了。",
+    "semantic_facts": "Pekora is here",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-045-hesitation",
+    "language": "ja",
+    "category": "names",
+    "source": "えっと、兎田ぺこらが来た",
+    "reference_zh_tw": "佩克拉來了。",
+    "semantic_facts": "Pekora is here",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-045-filler",
+    "language": "ja",
+    "category": "names",
+    "source": "あの、兎田ぺこらが来た",
+    "reference_zh_tw": "佩克拉來了。",
+    "semantic_facts": "Pekora is here",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-045-soft_ending",
+    "language": "ja",
+    "category": "names",
+    "source": "兎田ぺこらが来た、ね",
+    "reference_zh_tw": "佩克拉來了。",
+    "semantic_facts": "Pekora is here",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-045-pause",
+    "language": "ja",
+    "category": "names",
+    "source": "んー、兎田ぺこらが来た",
+    "reference_zh_tw": "佩克拉來了。",
+    "semantic_facts": "Pekora is here",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-046-base",
+    "language": "ja",
+    "category": "names",
+    "source": "橘ひなのと話した",
+    "reference_zh_tw": "我和橘雛乃聊過了。",
+    "semantic_facts": "Hinano and I talked",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-046-hesitation",
+    "language": "ja",
+    "category": "names",
+    "source": "えっと、橘ひなのと話した",
+    "reference_zh_tw": "我和橘雛乃聊過了。",
+    "semantic_facts": "Hinano and I talked",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-046-filler",
+    "language": "ja",
+    "category": "names",
+    "source": "あの、橘ひなのと話した",
+    "reference_zh_tw": "我和橘雛乃聊過了。",
+    "semantic_facts": "Hinano and I talked",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-046-soft_ending",
+    "language": "ja",
+    "category": "names",
+    "source": "橘ひなのと話した、ね",
+    "reference_zh_tw": "我和橘雛乃聊過了。",
+    "semantic_facts": "Hinano and I talked",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-046-pause",
+    "language": "ja",
+    "category": "names",
+    "source": "んー、橘ひなのと話した",
+    "reference_zh_tw": "我和橘雛乃聊過了。",
+    "semantic_facts": "Hinano and I talked",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-047-base",
+    "language": "ja",
+    "category": "names",
+    "source": "胡桃のあを応援する",
+    "reference_zh_tw": "我要幫胡桃諾婭加油。",
+    "semantic_facts": "I'm cheering for Noa",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-047-hesitation",
+    "language": "ja",
+    "category": "names",
+    "source": "えっと、胡桃のあを応援する",
+    "reference_zh_tw": "我要幫胡桃諾婭加油。",
+    "semantic_facts": "I'm cheering for Noa",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-047-filler",
+    "language": "ja",
+    "category": "names",
+    "source": "あの、胡桃のあを応援する",
+    "reference_zh_tw": "我要幫胡桃諾婭加油。",
+    "semantic_facts": "I'm cheering for Noa",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-047-soft_ending",
+    "language": "ja",
+    "category": "names",
+    "source": "胡桃のあを応援する、ね",
+    "reference_zh_tw": "我要幫胡桃諾婭加油。",
+    "semantic_facts": "I'm cheering for Noa",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-047-pause",
+    "language": "ja",
+    "category": "names",
+    "source": "んー、胡桃のあを応援する",
+    "reference_zh_tw": "我要幫胡桃諾婭加油。",
+    "semantic_facts": "I'm cheering for Noa",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-048-base",
+    "language": "ja",
+    "category": "names",
+    "source": "ぺこらの配信を見た",
+    "reference_zh_tw": "我看了佩克拉的直播。",
+    "semantic_facts": "I watched Pekora's stream",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-048-hesitation",
+    "language": "ja",
+    "category": "names",
+    "source": "えっと、ぺこらの配信を見た",
+    "reference_zh_tw": "我看了佩克拉的直播。",
+    "semantic_facts": "I watched Pekora's stream",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-048-filler",
+    "language": "ja",
+    "category": "names",
+    "source": "あの、ぺこらの配信を見た",
+    "reference_zh_tw": "我看了佩克拉的直播。",
+    "semantic_facts": "I watched Pekora's stream",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-048-soft_ending",
+    "language": "ja",
+    "category": "names",
+    "source": "ぺこらの配信を見た、ね",
+    "reference_zh_tw": "我看了佩克拉的直播。",
+    "semantic_facts": "I watched Pekora's stream",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-048-pause",
+    "language": "ja",
+    "category": "names",
+    "source": "んー、ぺこらの配信を見た",
+    "reference_zh_tw": "我看了佩克拉的直播。",
+    "semantic_facts": "I watched Pekora's stream",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-049-base",
+    "language": "ja",
+    "category": "names",
+    "source": "APEXを遊ぶ",
+    "reference_zh_tw": "我們要玩 APEX。",
+    "semantic_facts": "We're playing APEX",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-049-hesitation",
+    "language": "ja",
+    "category": "names",
+    "source": "えっと、APEXを遊ぶ",
+    "reference_zh_tw": "我們要玩 APEX。",
+    "semantic_facts": "We're playing APEX",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-049-filler",
+    "language": "ja",
+    "category": "names",
+    "source": "あの、APEXを遊ぶ",
+    "reference_zh_tw": "我們要玩 APEX。",
+    "semantic_facts": "We're playing APEX",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-049-soft_ending",
+    "language": "ja",
+    "category": "names",
+    "source": "APEXを遊ぶ、ね",
+    "reference_zh_tw": "我們要玩 APEX。",
+    "semantic_facts": "We're playing APEX",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-049-pause",
+    "language": "ja",
+    "category": "names",
+    "source": "んー、APEXを遊ぶ",
+    "reference_zh_tw": "我們要玩 APEX。",
+    "semantic_facts": "We're playing APEX",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-050-base",
+    "language": "ja",
+    "category": "numbers",
+    "source": "音量は50です",
+    "reference_zh_tw": "音量是50。",
+    "semantic_facts": "The volume is 50",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-050-hesitation",
+    "language": "ja",
+    "category": "numbers",
+    "source": "えっと、音量は50です",
+    "reference_zh_tw": "音量是50。",
+    "semantic_facts": "The volume is 50",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-050-filler",
+    "language": "ja",
+    "category": "numbers",
+    "source": "あの、音量は50です",
+    "reference_zh_tw": "音量是50。",
+    "semantic_facts": "The volume is 50",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-050-soft_ending",
+    "language": "ja",
+    "category": "numbers",
+    "source": "音量は50です、ね",
+    "reference_zh_tw": "音量是50。",
+    "semantic_facts": "The volume is 50",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-050-pause",
+    "language": "ja",
+    "category": "numbers",
+    "source": "んー、音量は50です",
+    "reference_zh_tw": "音量是50。",
+    "semantic_facts": "The volume is 50",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-051-base",
+    "language": "ja",
+    "category": "numbers",
+    "source": "残り100ポイント",
+    "reference_zh_tw": "還剩100分。",
+    "semantic_facts": "100 points remaining",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-051-hesitation",
+    "language": "ja",
+    "category": "numbers",
+    "source": "えっと、残り100ポイント",
+    "reference_zh_tw": "還剩100分。",
+    "semantic_facts": "100 points remaining",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-051-filler",
+    "language": "ja",
+    "category": "numbers",
+    "source": "あの、残り100ポイント",
+    "reference_zh_tw": "還剩100分。",
+    "semantic_facts": "100 points remaining",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-051-soft_ending",
+    "language": "ja",
+    "category": "numbers",
+    "source": "残り100ポイント、ね",
+    "reference_zh_tw": "還剩100分。",
+    "semantic_facts": "100 points remaining",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-051-pause",
+    "language": "ja",
+    "category": "numbers",
+    "source": "んー、残り100ポイント",
+    "reference_zh_tw": "還剩100分。",
+    "semantic_facts": "100 points remaining",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-052-base",
+    "language": "ja",
+    "category": "dates",
+    "source": "2026年の大会です",
+    "reference_zh_tw": "這是2026年的比賽。",
+    "semantic_facts": "It is the 2026 tournament",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-052-hesitation",
+    "language": "ja",
+    "category": "dates",
+    "source": "えっと、2026年の大会です",
+    "reference_zh_tw": "這是2026年的比賽。",
+    "semantic_facts": "It is the 2026 tournament",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-052-filler",
+    "language": "ja",
+    "category": "dates",
+    "source": "あの、2026年の大会です",
+    "reference_zh_tw": "這是2026年的比賽。",
+    "semantic_facts": "It is the 2026 tournament",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-052-soft_ending",
+    "language": "ja",
+    "category": "dates",
+    "source": "2026年の大会です、ね",
+    "reference_zh_tw": "這是2026年的比賽。",
+    "semantic_facts": "It is the 2026 tournament",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-052-pause",
+    "language": "ja",
+    "category": "dates",
+    "source": "んー、2026年の大会です",
+    "reference_zh_tw": "這是2026年的比賽。",
+    "semantic_facts": "It is the 2026 tournament",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-053-base",
+    "language": "ja",
+    "category": "negatives",
+    "source": "まだログインしてない",
+    "reference_zh_tw": "我還沒登入。",
+    "semantic_facts": "I haven't logged in yet",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-053-hesitation",
+    "language": "ja",
+    "category": "negatives",
+    "source": "えっと、まだログインしてない",
+    "reference_zh_tw": "我還沒登入。",
+    "semantic_facts": "I haven't logged in yet",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-053-filler",
+    "language": "ja",
+    "category": "negatives",
+    "source": "あの、まだログインしてない",
+    "reference_zh_tw": "我還沒登入。",
+    "semantic_facts": "I haven't logged in yet",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-053-soft_ending",
+    "language": "ja",
+    "category": "negatives",
+    "source": "まだログインしてない、ね",
+    "reference_zh_tw": "我還沒登入。",
+    "semantic_facts": "I haven't logged in yet",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-053-pause",
+    "language": "ja",
+    "category": "negatives",
+    "source": "んー、まだログインしてない",
+    "reference_zh_tw": "我還沒登入。",
+    "semantic_facts": "I haven't logged in yet",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-054-base",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "多分明日も配信する",
+    "reference_zh_tw": "我明天大概也會直播。",
+    "semantic_facts": "I'll probably stream tomorrow too",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-054-hesitation",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "えっと、多分明日も配信する",
+    "reference_zh_tw": "我明天大概也會直播。",
+    "semantic_facts": "I'll probably stream tomorrow too",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-054-filler",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "あの、多分明日も配信する",
+    "reference_zh_tw": "我明天大概也會直播。",
+    "semantic_facts": "I'll probably stream tomorrow too",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-054-soft_ending",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "多分明日も配信する、ね",
+    "reference_zh_tw": "我明天大概也會直播。",
+    "semantic_facts": "I'll probably stream tomorrow too",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-054-pause",
+    "language": "ja",
+    "category": "uncertainty",
+    "source": "んー、多分明日も配信する",
+    "reference_zh_tw": "我明天大概也會直播。",
+    "semantic_facts": "I'll probably stream tomorrow too",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-055-base",
+    "language": "ja",
+    "category": "casual",
+    "source": "声聞こえる？",
+    "reference_zh_tw": "聽得到我的聲音嗎？",
+    "semantic_facts": "Can you hear me?",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-055-hesitation",
+    "language": "ja",
+    "category": "casual",
+    "source": "えっと、声聞こえる？",
+    "reference_zh_tw": "聽得到我的聲音嗎？",
+    "semantic_facts": "Can you hear me?",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-055-filler",
+    "language": "ja",
+    "category": "casual",
+    "source": "あの、声聞こえる？",
+    "reference_zh_tw": "聽得到我的聲音嗎？",
+    "semantic_facts": "Can you hear me?",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-055-soft_ending",
+    "language": "ja",
+    "category": "casual",
+    "source": "声聞こえる？、ね",
+    "reference_zh_tw": "聽得到我的聲音嗎？",
+    "semantic_facts": "Can you hear me?",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-055-pause",
+    "language": "ja",
+    "category": "casual",
+    "source": "んー、声聞こえる？",
+    "reference_zh_tw": "聽得到我的聲音嗎？",
+    "semantic_facts": "Can you hear me?",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-056-base",
+    "language": "ja",
+    "category": "gaming",
+    "source": "回線が重い",
+    "reference_zh_tw": "網路有點卡。",
+    "semantic_facts": "The connection is lagging",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-056-hesitation",
+    "language": "ja",
+    "category": "gaming",
+    "source": "えっと、回線が重い",
+    "reference_zh_tw": "網路有點卡。",
+    "semantic_facts": "The connection is lagging",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-056-filler",
+    "language": "ja",
+    "category": "gaming",
+    "source": "あの、回線が重い",
+    "reference_zh_tw": "網路有點卡。",
+    "semantic_facts": "The connection is lagging",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-056-soft_ending",
+    "language": "ja",
+    "category": "gaming",
+    "source": "回線が重い、ね",
+    "reference_zh_tw": "網路有點卡。",
+    "semantic_facts": "The connection is lagging",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-056-pause",
+    "language": "ja",
+    "category": "gaming",
+    "source": "んー、回線が重い",
+    "reference_zh_tw": "網路有點卡。",
+    "semantic_facts": "The connection is lagging",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-057-base",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "メンバーシップありがとう",
+    "reference_zh_tw": "謝謝你加入會員。",
+    "semantic_facts": "Thanks for becoming a member",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-057-hesitation",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "えっと、メンバーシップありがとう",
+    "reference_zh_tw": "謝謝你加入會員。",
+    "semantic_facts": "Thanks for becoming a member",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-057-filler",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "あの、メンバーシップありがとう",
+    "reference_zh_tw": "謝謝你加入會員。",
+    "semantic_facts": "Thanks for becoming a member",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-057-soft_ending",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "メンバーシップありがとう、ね",
+    "reference_zh_tw": "謝謝你加入會員。",
+    "semantic_facts": "Thanks for becoming a member",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-057-pause",
+    "language": "ja",
+    "category": "vtuber_slang",
+    "source": "んー、メンバーシップありがとう",
+    "reference_zh_tw": "謝謝你加入會員。",
+    "semantic_facts": "Thanks for becoming a member",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-058-base",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "もし明日…",
+    "reference_zh_tw": "如果明天……",
+    "semantic_facts": "If tomorrow…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-058-hesitation",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "えっと、もし明日…",
+    "reference_zh_tw": "如果明天……",
+    "semantic_facts": "If tomorrow…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-058-filler",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "あの、もし明日…",
+    "reference_zh_tw": "如果明天……",
+    "semantic_facts": "If tomorrow…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-058-soft_ending",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "もし明日…、ね",
+    "reference_zh_tw": "如果明天……",
+    "semantic_facts": "If tomorrow…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-058-pause",
+    "language": "ja",
+    "category": "incomplete",
+    "source": "んー、もし明日…",
+    "reference_zh_tw": "如果明天……",
+    "semantic_facts": "If tomorrow…",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-059-base",
+    "language": "ja",
+    "category": "casual",
+    "source": "今日はここまで",
+    "reference_zh_tw": "今天就到這裡。",
+    "semantic_facts": "That's all for today",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-059-hesitation",
+    "language": "ja",
+    "category": "casual",
+    "source": "えっと、今日はここまで",
+    "reference_zh_tw": "今天就到這裡。",
+    "semantic_facts": "That's all for today",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-059-filler",
+    "language": "ja",
+    "category": "casual",
+    "source": "あの、今日はここまで",
+    "reference_zh_tw": "今天就到這裡。",
+    "semantic_facts": "That's all for today",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-059-soft_ending",
+    "language": "ja",
+    "category": "casual",
+    "source": "今日はここまで、ね",
+    "reference_zh_tw": "今天就到這裡。",
+    "semantic_facts": "That's all for today",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "ja-059-pause",
+    "language": "ja",
+    "category": "casual",
+    "source": "んー、今日はここまで",
+    "reference_zh_tw": "今天就到這裡。",
+    "semantic_facts": "That's all for today",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-000-base",
+    "language": "en",
+    "category": "numbers",
+    "source": "I only slept 3 hours yesterday",
+    "reference_zh_tw": "我昨天只睡了3個小時。",
+    "semantic_facts": "I only slept 3 hours yesterday",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-001-base",
+    "language": "en",
+    "category": "numbers",
+    "source": "There are 2 people left",
+    "reference_zh_tw": "還剩2個人。",
+    "semantic_facts": "There are 2 people left",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-002-base",
+    "language": "en",
+    "category": "numbers",
+    "source": "I won 5 times",
+    "reference_zh_tw": "我贏了5次。",
+    "semantic_facts": "I won 5 times",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-003-base",
+    "language": "en",
+    "category": "numbers",
+    "source": "There are 7 minutes remaining",
+    "reference_zh_tw": "還有7分鐘。",
+    "semantic_facts": "There are 7 minutes remaining",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-004-base",
+    "language": "en",
+    "category": "numbers",
+    "source": "I bought 9 items",
+    "reference_zh_tw": "我買了9個。",
+    "semantic_facts": "I bought 9 items",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-005-base",
+    "language": "en",
+    "category": "dates",
+    "source": "The stream is on June 8",
+    "reference_zh_tw": "直播是6月8日。",
+    "semantic_facts": "The stream is on June 8",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-006-base",
+    "language": "en",
+    "category": "dates",
+    "source": "Let's meet on April 2",
+    "reference_zh_tw": "我們4月2日見。",
+    "semantic_facts": "Let's meet on April 2",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-007-base",
+    "language": "en",
+    "category": "dates",
+    "source": "My birthday is March 9",
+    "reference_zh_tw": "我的生日是3月9日。",
+    "semantic_facts": "My birthday is March 9",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-008-base",
+    "language": "en",
+    "category": "negatives",
+    "source": "I will not go today",
+    "reference_zh_tw": "我今天不去。",
+    "semantic_facts": "I will not go today",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-009-base",
+    "language": "en",
+    "category": "negatives",
+    "source": "It is not finished yet",
+    "reference_zh_tw": "還沒結束。",
+    "semantic_facts": "It is not finished yet",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-010-base",
+    "language": "en",
+    "category": "negatives",
+    "source": "This is not mine",
+    "reference_zh_tw": "這不是我的。",
+    "semantic_facts": "This is not mine",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-011-base",
+    "language": "en",
+    "category": "negatives",
+    "source": "I did not see it",
+    "reference_zh_tw": "我沒看到。",
+    "semantic_facts": "I did not see it",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-012-base",
+    "language": "en",
+    "category": "negatives",
+    "source": "I did not buy it",
+    "reference_zh_tw": "我沒買。",
+    "semantic_facts": "I did not buy it",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-013-base",
+    "language": "en",
+    "category": "negatives",
+    "source": "I will never forget",
+    "reference_zh_tw": "我絕對不會忘記。",
+    "semantic_facts": "I will never forget",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-014-base",
+    "language": "en",
+    "category": "uncertainty",
+    "source": "Maybe I will go tomorrow",
+    "reference_zh_tw": "我明天可能會去。",
+    "semantic_facts": "Maybe I will go tomorrow",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-015-base",
+    "language": "en",
+    "category": "uncertainty",
+    "source": "It might rain",
+    "reference_zh_tw": "可能會下雨。",
+    "semantic_facts": "It might rain",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-016-base",
+    "language": "en",
+    "category": "uncertainty",
+    "source": "I think it will be fun",
+    "reference_zh_tw": "我覺得會很好玩。",
+    "semantic_facts": "I think it will be fun",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-017-base",
+    "language": "en",
+    "category": "uncertainty",
+    "source": "We can probably win",
+    "reference_zh_tw": "我們大概能贏。",
+    "semantic_facts": "We can probably win",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-018-base",
+    "language": "en",
+    "category": "uncertainty",
+    "source": "I think there are probably 2 people",
+    "reference_zh_tw": "我覺得大概有2個人。",
+    "semantic_facts": "I think there are probably 2 people",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-019-base",
+    "language": "en",
+    "category": "uncertainty",
+    "source": "Perhaps it is okay",
+    "reference_zh_tw": "大概沒問題。",
+    "semantic_facts": "Perhaps it is okay",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-020-base",
+    "language": "en",
+    "category": "casual",
+    "source": "Morning, everyone",
+    "reference_zh_tw": "大家早安。",
+    "semantic_facts": "Morning, everyone",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-021-base",
+    "language": "en",
+    "category": "casual",
+    "source": "It is really hot today",
+    "reference_zh_tw": "今天超熱。",
+    "semantic_facts": "It is really hot today",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-022-base",
+    "language": "en",
+    "category": "casual",
+    "source": "Hang on a second",
+    "reference_zh_tw": "等我一下喔。",
+    "semantic_facts": "Hang on a second",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-023-base",
+    "language": "en",
+    "category": "casual",
+    "source": "I'm hungry",
+    "reference_zh_tw": "我餓了。",
+    "semantic_facts": "I'm hungry",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-024-base",
+    "language": "en",
+    "category": "casual",
+    "source": "I'm getting some water",
+    "reference_zh_tw": "我去喝點水。",
+    "semantic_facts": "I'm getting some water",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-025-base",
+    "language": "en",
+    "category": "casual",
+    "source": "It is already this late",
+    "reference_zh_tw": "已經這麼晚了。",
+    "semantic_facts": "It is already this late",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-026-base",
+    "language": "en",
+    "category": "casual",
+    "source": "Thank you so much",
+    "reference_zh_tw": "真的很謝謝你。",
+    "semantic_facts": "Thank you so much",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-027-base",
+    "language": "en",
+    "category": "gaming",
+    "source": "An enemy came from the right",
+    "reference_zh_tw": "敵人從右邊過來了。",
+    "semantic_facts": "An enemy came from the right",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-028-base",
+    "language": "en",
+    "category": "gaming",
+    "source": "I'm healing",
+    "reference_zh_tw": "我正在補血。",
+    "semantic_facts": "I'm healing",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-029-base",
+    "language": "en",
+    "category": "gaming",
+    "source": "I have no ammo",
+    "reference_zh_tw": "我沒子彈了。",
+    "semantic_facts": "I have no ammo",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-030-base",
+    "language": "en",
+    "category": "gaming",
+    "source": "Nice, we won",
+    "reference_zh_tw": "漂亮，我們贏了。",
+    "semantic_facts": "Nice, we won",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-031-base",
+    "language": "en",
+    "category": "gaming",
+    "source": "Let's wait here",
+    "reference_zh_tw": "我們在這裡等吧。",
+    "semantic_facts": "Let's wait here",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-032-base",
+    "language": "en",
+    "category": "gaming",
+    "source": "I'm reloading",
+    "reference_zh_tw": "我在換彈。",
+    "semantic_facts": "I'm reloading",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-033-base",
+    "language": "en",
+    "category": "gaming",
+    "source": "Let's play 1 more match",
+    "reference_zh_tw": "再玩1場吧。",
+    "semantic_facts": "Let's play 1 more match",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-034-base",
+    "language": "en",
+    "category": "vtuber_slang",
+    "source": "Welcome, first-time viewers",
+    "reference_zh_tw": "歡迎第一次來看的觀眾。",
+    "semantic_facts": "Welcome, first-time viewers",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-035-base",
+    "language": "en",
+    "category": "vtuber_slang",
+    "source": "Thanks for the super chat",
+    "reference_zh_tw": "謝謝你的 Super Chat。",
+    "semantic_facts": "Thanks for the super chat",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-036-base",
+    "language": "en",
+    "category": "vtuber_slang",
+    "source": "This is a chatting stream today",
+    "reference_zh_tw": "今天是雜談直播。",
+    "semantic_facts": "This is a chatting stream today",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-037-base",
+    "language": "en",
+    "category": "vtuber_slang",
+    "source": "I can see the chat",
+    "reference_zh_tw": "我看得到聊天室喔。",
+    "semantic_facts": "I can see the chat",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-038-base",
+    "language": "en",
+    "category": "multi_clause",
+    "source": "Thanks for hanging out, see you",
+    "reference_zh_tw": "辛苦了，下次見。",
+    "semantic_facts": "Thanks for hanging out, see you",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-039-base",
+    "language": "en",
+    "category": "vtuber_slang",
+    "source": "The stream has started",
+    "reference_zh_tw": "直播已經開始了。",
+    "semantic_facts": "The stream has started",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-040-base",
+    "language": "en",
+    "category": "incomplete",
+    "source": "Today, I kind of…",
+    "reference_zh_tw": "今天感覺有點……",
+    "semantic_facts": "Today, I kind of…",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-041-base",
+    "language": "en",
+    "category": "incomplete",
+    "source": "That is, um…",
+    "reference_zh_tw": "那個，呃……",
+    "semantic_facts": "That is, um…",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-042-base",
+    "language": "en",
+    "category": "incomplete",
+    "source": "Together with everyone…",
+    "reference_zh_tw": "要和大家一起……",
+    "semantic_facts": "Together with everyone…",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-043-base",
+    "language": "en",
+    "category": "incomplete",
+    "source": "The next game is…",
+    "reference_zh_tw": "下一款遊戲是……",
+    "semantic_facts": "The next game is…",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-044-base",
+    "language": "en",
+    "category": "incomplete",
+    "source": "What I said earlier was…",
+    "reference_zh_tw": "我剛才說的是……",
+    "semantic_facts": "What I said earlier was…",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-045-base",
+    "language": "en",
+    "category": "names",
+    "source": "Pekora is here",
+    "reference_zh_tw": "佩克拉來了。",
+    "semantic_facts": "Pekora is here",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-046-base",
+    "language": "en",
+    "category": "names",
+    "source": "Hinano and I talked",
+    "reference_zh_tw": "我和橘雛乃聊過了。",
+    "semantic_facts": "Hinano and I talked",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-047-base",
+    "language": "en",
+    "category": "names",
+    "source": "I'm cheering for Noa",
+    "reference_zh_tw": "我要幫胡桃諾婭加油。",
+    "semantic_facts": "I'm cheering for Noa",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-048-base",
+    "language": "en",
+    "category": "names",
+    "source": "I watched Pekora's stream",
+    "reference_zh_tw": "我看了佩克拉的直播。",
+    "semantic_facts": "I watched Pekora's stream",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-049-base",
+    "language": "en",
+    "category": "names",
+    "source": "We're playing APEX",
+    "reference_zh_tw": "我們要玩 APEX。",
+    "semantic_facts": "We're playing APEX",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-050-base",
+    "language": "en",
+    "category": "numbers",
+    "source": "The volume is 50",
+    "reference_zh_tw": "音量是50。",
+    "semantic_facts": "The volume is 50",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-051-base",
+    "language": "en",
+    "category": "numbers",
+    "source": "100 points remaining",
+    "reference_zh_tw": "還剩100分。",
+    "semantic_facts": "100 points remaining",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-052-base",
+    "language": "en",
+    "category": "dates",
+    "source": "It is the 2026 tournament",
+    "reference_zh_tw": "這是2026年的比賽。",
+    "semantic_facts": "It is the 2026 tournament",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-053-base",
+    "language": "en",
+    "category": "negatives",
+    "source": "I haven't logged in yet",
+    "reference_zh_tw": "我還沒登入。",
+    "semantic_facts": "I haven't logged in yet",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-054-base",
+    "language": "en",
+    "category": "uncertainty",
+    "source": "I'll probably stream tomorrow too",
+    "reference_zh_tw": "我明天大概也會直播。",
+    "semantic_facts": "I'll probably stream tomorrow too",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-055-base",
+    "language": "en",
+    "category": "casual",
+    "source": "Can you hear me?",
+    "reference_zh_tw": "聽得到我的聲音嗎？",
+    "semantic_facts": "Can you hear me?",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-056-base",
+    "language": "en",
+    "category": "gaming",
+    "source": "The connection is lagging",
+    "reference_zh_tw": "網路有點卡。",
+    "semantic_facts": "The connection is lagging",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-057-base",
+    "language": "en",
+    "category": "vtuber_slang",
+    "source": "Thanks for becoming a member",
+    "reference_zh_tw": "謝謝你加入會員。",
+    "semantic_facts": "Thanks for becoming a member",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-058-base",
+    "language": "en",
+    "category": "incomplete",
+    "source": "If tomorrow…",
+    "reference_zh_tw": "如果明天……",
+    "semantic_facts": "If tomorrow…",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-059-base",
+    "language": "en",
+    "category": "casual",
+    "source": "That's all for today",
+    "reference_zh_tw": "今天就到這裡。",
+    "semantic_facts": "That's all for today",
+    "provenance": "authored_base"
+  },
+  {
+    "id": "en-000-filler",
+    "language": "en",
+    "category": "numbers",
+    "source": "Well, I only slept 3 hours yesterday",
+    "reference_zh_tw": "我昨天只睡了3個小時。",
+    "semantic_facts": "I only slept 3 hours yesterday",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-001-filler",
+    "language": "en",
+    "category": "numbers",
+    "source": "Well, There are 2 people left",
+    "reference_zh_tw": "還剩2個人。",
+    "semantic_facts": "There are 2 people left",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-002-filler",
+    "language": "en",
+    "category": "numbers",
+    "source": "Well, I won 5 times",
+    "reference_zh_tw": "我贏了5次。",
+    "semantic_facts": "I won 5 times",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-003-filler",
+    "language": "en",
+    "category": "numbers",
+    "source": "Well, There are 7 minutes remaining",
+    "reference_zh_tw": "還有7分鐘。",
+    "semantic_facts": "There are 7 minutes remaining",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-004-filler",
+    "language": "en",
+    "category": "numbers",
+    "source": "Well, I bought 9 items",
+    "reference_zh_tw": "我買了9個。",
+    "semantic_facts": "I bought 9 items",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-005-filler",
+    "language": "en",
+    "category": "dates",
+    "source": "Well, The stream is on June 8",
+    "reference_zh_tw": "直播是6月8日。",
+    "semantic_facts": "The stream is on June 8",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-006-filler",
+    "language": "en",
+    "category": "dates",
+    "source": "Well, Let's meet on April 2",
+    "reference_zh_tw": "我們4月2日見。",
+    "semantic_facts": "Let's meet on April 2",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-007-filler",
+    "language": "en",
+    "category": "dates",
+    "source": "Well, My birthday is March 9",
+    "reference_zh_tw": "我的生日是3月9日。",
+    "semantic_facts": "My birthday is March 9",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-008-filler",
+    "language": "en",
+    "category": "negatives",
+    "source": "Well, I will not go today",
+    "reference_zh_tw": "我今天不去。",
+    "semantic_facts": "I will not go today",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-009-filler",
+    "language": "en",
+    "category": "negatives",
+    "source": "Well, It is not finished yet",
+    "reference_zh_tw": "還沒結束。",
+    "semantic_facts": "It is not finished yet",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-010-filler",
+    "language": "en",
+    "category": "negatives",
+    "source": "Well, This is not mine",
+    "reference_zh_tw": "這不是我的。",
+    "semantic_facts": "This is not mine",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-011-filler",
+    "language": "en",
+    "category": "negatives",
+    "source": "Well, I did not see it",
+    "reference_zh_tw": "我沒看到。",
+    "semantic_facts": "I did not see it",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-012-filler",
+    "language": "en",
+    "category": "negatives",
+    "source": "Well, I did not buy it",
+    "reference_zh_tw": "我沒買。",
+    "semantic_facts": "I did not buy it",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-013-filler",
+    "language": "en",
+    "category": "negatives",
+    "source": "Well, I will never forget",
+    "reference_zh_tw": "我絕對不會忘記。",
+    "semantic_facts": "I will never forget",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-014-filler",
+    "language": "en",
+    "category": "uncertainty",
+    "source": "Well, Maybe I will go tomorrow",
+    "reference_zh_tw": "我明天可能會去。",
+    "semantic_facts": "Maybe I will go tomorrow",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-015-filler",
+    "language": "en",
+    "category": "uncertainty",
+    "source": "Well, It might rain",
+    "reference_zh_tw": "可能會下雨。",
+    "semantic_facts": "It might rain",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-016-filler",
+    "language": "en",
+    "category": "uncertainty",
+    "source": "Well, I think it will be fun",
+    "reference_zh_tw": "我覺得會很好玩。",
+    "semantic_facts": "I think it will be fun",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-017-filler",
+    "language": "en",
+    "category": "uncertainty",
+    "source": "Well, We can probably win",
+    "reference_zh_tw": "我們大概能贏。",
+    "semantic_facts": "We can probably win",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-018-filler",
+    "language": "en",
+    "category": "uncertainty",
+    "source": "Well, I think there are probably 2 people",
+    "reference_zh_tw": "我覺得大概有2個人。",
+    "semantic_facts": "I think there are probably 2 people",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-019-filler",
+    "language": "en",
+    "category": "uncertainty",
+    "source": "Well, Perhaps it is okay",
+    "reference_zh_tw": "大概沒問題。",
+    "semantic_facts": "Perhaps it is okay",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-020-filler",
+    "language": "en",
+    "category": "casual",
+    "source": "Well, Morning, everyone",
+    "reference_zh_tw": "大家早安。",
+    "semantic_facts": "Morning, everyone",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-021-filler",
+    "language": "en",
+    "category": "casual",
+    "source": "Well, It is really hot today",
+    "reference_zh_tw": "今天超熱。",
+    "semantic_facts": "It is really hot today",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-022-filler",
+    "language": "en",
+    "category": "casual",
+    "source": "Well, Hang on a second",
+    "reference_zh_tw": "等我一下喔。",
+    "semantic_facts": "Hang on a second",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-023-filler",
+    "language": "en",
+    "category": "casual",
+    "source": "Well, I'm hungry",
+    "reference_zh_tw": "我餓了。",
+    "semantic_facts": "I'm hungry",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-024-filler",
+    "language": "en",
+    "category": "casual",
+    "source": "Well, I'm getting some water",
+    "reference_zh_tw": "我去喝點水。",
+    "semantic_facts": "I'm getting some water",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-025-filler",
+    "language": "en",
+    "category": "casual",
+    "source": "Well, It is already this late",
+    "reference_zh_tw": "已經這麼晚了。",
+    "semantic_facts": "It is already this late",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-026-filler",
+    "language": "en",
+    "category": "casual",
+    "source": "Well, Thank you so much",
+    "reference_zh_tw": "真的很謝謝你。",
+    "semantic_facts": "Thank you so much",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-027-filler",
+    "language": "en",
+    "category": "gaming",
+    "source": "Well, An enemy came from the right",
+    "reference_zh_tw": "敵人從右邊過來了。",
+    "semantic_facts": "An enemy came from the right",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-028-filler",
+    "language": "en",
+    "category": "gaming",
+    "source": "Well, I'm healing",
+    "reference_zh_tw": "我正在補血。",
+    "semantic_facts": "I'm healing",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-029-filler",
+    "language": "en",
+    "category": "gaming",
+    "source": "Well, I have no ammo",
+    "reference_zh_tw": "我沒子彈了。",
+    "semantic_facts": "I have no ammo",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-030-filler",
+    "language": "en",
+    "category": "gaming",
+    "source": "Well, Nice, we won",
+    "reference_zh_tw": "漂亮，我們贏了。",
+    "semantic_facts": "Nice, we won",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-031-filler",
+    "language": "en",
+    "category": "gaming",
+    "source": "Well, Let's wait here",
+    "reference_zh_tw": "我們在這裡等吧。",
+    "semantic_facts": "Let's wait here",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-032-filler",
+    "language": "en",
+    "category": "gaming",
+    "source": "Well, I'm reloading",
+    "reference_zh_tw": "我在換彈。",
+    "semantic_facts": "I'm reloading",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-033-filler",
+    "language": "en",
+    "category": "gaming",
+    "source": "Well, Let's play 1 more match",
+    "reference_zh_tw": "再玩1場吧。",
+    "semantic_facts": "Let's play 1 more match",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-034-filler",
+    "language": "en",
+    "category": "vtuber_slang",
+    "source": "Well, Welcome, first-time viewers",
+    "reference_zh_tw": "歡迎第一次來看的觀眾。",
+    "semantic_facts": "Welcome, first-time viewers",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-035-filler",
+    "language": "en",
+    "category": "vtuber_slang",
+    "source": "Well, Thanks for the super chat",
+    "reference_zh_tw": "謝謝你的 Super Chat。",
+    "semantic_facts": "Thanks for the super chat",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-036-filler",
+    "language": "en",
+    "category": "vtuber_slang",
+    "source": "Well, This is a chatting stream today",
+    "reference_zh_tw": "今天是雜談直播。",
+    "semantic_facts": "This is a chatting stream today",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-037-filler",
+    "language": "en",
+    "category": "vtuber_slang",
+    "source": "Well, I can see the chat",
+    "reference_zh_tw": "我看得到聊天室喔。",
+    "semantic_facts": "I can see the chat",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-038-filler",
+    "language": "en",
+    "category": "multi_clause",
+    "source": "Well, Thanks for hanging out, see you",
+    "reference_zh_tw": "辛苦了，下次見。",
+    "semantic_facts": "Thanks for hanging out, see you",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  },
+  {
+    "id": "en-039-filler",
+    "language": "en",
+    "category": "vtuber_slang",
+    "source": "Well, The stream has started",
+    "reference_zh_tw": "直播已經開始了。",
+    "semantic_facts": "The stream has started",
+    "provenance": "authored_base_with_semantics_preserving_variant"
+  }
+]

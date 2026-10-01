@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import math
 import os
 import shutil
 import sys
@@ -36,6 +37,14 @@ from vlt.product.updates import UpdateChecker
 from vlt.version import __version__
 
 
+def _translation_retry_delay(error: str, attempts: int) -> float:
+    # Network/runtime outages can clear quickly. Re-running the same semantic
+    # failure every few seconds only saturates the bounded Final queue.
+    if "暫時不可用" in error or "timeout" in error.casefold():
+        return min(900, 30 * 2 ** max(0, attempts - 1))
+    return math.inf
+
+
 class StudioController(QObject):
     changed = Signal()
     audioChanged = Signal()
@@ -47,6 +56,7 @@ class StudioController(QObject):
     asrAudioAnchor = Signal(object)
     transcriptChanged = Signal()
     translationReady = Signal(object, object, float, str)
+    translationStage = Signal(object, str)
     diarizationNew = Signal(str, int)
     diarizationUpdated = Signal(int)
     diarizationOverlap = Signal(object, int)
@@ -119,9 +129,11 @@ class StudioController(QObject):
         self._translation_backend_factory = translation_backend_factory or OllamaTranslationBackend
         self._translation_pipeline = TranslationPipeline(
             self._translation_backend_factory,
-            lambda request, result, latency, error: self.translationReady.emit(request, result, latency, error))
+            lambda request, result, latency, error: self.translationReady.emit(request, result, latency, error),
+            stage_callback=lambda request, state: self.translationStage.emit(request, state))
         self._translation_pipeline.start()
         self.translationReady.connect(self._on_translation_ready)
+        self.translationStage.connect(self._on_translation_stage)
         self.diarizationNew.connect(self._on_diarization_new)
         self.diarizationUpdated.connect(self._on_diarization_updated)
         self.diarizationOverlap.connect(self._on_diarization_overlap)
@@ -1098,6 +1110,8 @@ class StudioController(QObject):
     def _submit_translation(self, segment: dict, final: bool) -> bool:
         if not segment or not self._transcript:
             return False
+        if final and segment.get("translation_state") == "uncertain_source":
+            return False
         recent = [item["original"] for item in self._transcript.finals
                   if item.get("type") == "speech" and item.get("original") and
                   item["id"] != segment["id"] and
@@ -1114,20 +1128,52 @@ class StudioController(QObject):
             self.transcriptChanged.emit()
         return submitted
 
+    @Slot(object, str)
+    def _on_translation_stage(self, request: TranslationRequest, state: str) -> None:
+        if not request.final or state not in ("verifying", "repair_pending", "rejected"):
+            return
+        try:
+            if not self.sessions.set_translation_state(request.session_id, request.segment_id, state):
+                return
+            if self._transcript and self._transcript.session_id == request.session_id:
+                for item in self._transcript.finals:
+                    if item["id"] == request.segment_id:
+                        item["translation_state"] = state
+                        item["translation_status"] = state
+                        break
+            self._translation_status = "正在校對…" if state != "rejected" else "翻譯待補，原文已保存。"
+            self.transcriptChanged.emit()
+        except Exception:
+            logging.exception("Translation state could not be saved")
+
     @Slot(object, object, float, str)
     def _on_translation_ready(self, request: TranslationRequest, result: str | None,
                               latency: float, error: str) -> None:
         if error:
             self._translation_ready = False
-            self._translation_status = "原文辨識正常 · 翻譯暫時不可用：" + error
             if request.final:
+                current = next((item for item in (self._transcript.finals if self._transcript else [])
+                                if item["id"] == request.segment_id), None)
+                state = "rejected" if current and current.get("translation_state") == "rejected" else "pending"
+                try:
+                    self.sessions.set_translation_state(request.session_id, request.segment_id, state)
+                except Exception:
+                    logging.exception("Translation failure state could not be saved")
+                if current:
+                    current["translation_state"] = state
+                    current["translation_status"] = state
+                self._translation_status = ("原文辨識正常 · 翻譯待補（校對未通過）" if state == "rejected"
+                                            else "原文辨識正常 · 翻譯暫時不可用")
                 attempts = min(6, self._translation_retry_counts.get(request.segment_id, 0) + 1)
                 self._translation_retry_counts[request.segment_id] = attempts
-                self._translation_retry_after[request.segment_id] = time.monotonic() + min(900, 30 * 2 ** (attempts - 1))
-                if len(self._translation_retry_after) > 256:
+                self._translation_retry_after[request.segment_id] = (
+                    time.monotonic() + _translation_retry_delay(error, attempts))
+                if len(self._translation_retry_after) > 2048:
                     expired = next(iter(self._translation_retry_after))
                     self._translation_retry_after.pop(expired)
                     self._translation_retry_counts.pop(expired, None)
+            else:
+                self._translation_status = "正在等待更多語音…" if "片段太短" in error else "原文辨識正常 · 翻譯暫時不可用"
         elif result:
             self._translation_ready = True
             logging.info("Translation latency: kind=%s ms=%.1f", "final" if request.final else "partial", latency)
@@ -1165,12 +1211,21 @@ class StudioController(QObject):
                                                time.monotonic() - self._last_audible_at > 30)
             if quiet and time.monotonic() < self._idle_translation_retry_at:
                 return
-            for segment in self.sessions.pending_translations(self._transcript.session_id):
-                if time.monotonic() >= self._translation_retry_after.get(segment["id"], 0):
-                    submitted = self._submit_translation(segment, True)
-                    if quiet and submitted:
-                        self._idle_translation_retry_at = time.monotonic() + 30
-                        break
+            offset = 0
+            while len(self._translation_pipeline.queue) < self._translation_pipeline.queue.capacity:
+                page = self.sessions.pending_translations(
+                    self._transcript.session_id, offset=offset, newest_first=not quiet)
+                if not page:
+                    break
+                for segment in page:
+                    if time.monotonic() >= self._translation_retry_after.get(segment["id"], 0):
+                        submitted = self._submit_translation(segment, True)
+                        if quiet and submitted:
+                            self._idle_translation_retry_at = time.monotonic() + 30
+                            return
+                        if len(self._translation_pipeline.queue) >= self._translation_pipeline.queue.capacity:
+                            return
+                offset += len(page)
         except Exception:
             logging.exception("Pending translation scan failed")
 
@@ -1290,6 +1345,8 @@ class StudioController(QObject):
                                        target_language=values["target_language"],
                                        translation_style=values["translation_style"])
         self._selected_id = session["session_id"]
+        self._translation_retry_after.clear()
+        self._translation_retry_counts.clear()
         self._speaker_new_until.clear()
         self._transcript = TranscriptCoordinator(
             self.sessions, self._selected_id, initial_limit=120)
@@ -1306,6 +1363,8 @@ class StudioController(QObject):
             return
         if self.sessions.get(session_id):
             self._selected_id = session_id
+            self._translation_retry_after.clear()
+            self._translation_retry_counts.clear()
             self._search_results = []
             self._focused_segment = {}
             self._speaker_new_until.clear()
@@ -1380,6 +1439,8 @@ class StudioController(QObject):
         if key in ("target_language", "translation_style") and self._selected_id:
             self.sessions.set_translation_preferences(self._selected_id, key, str(value))
         if key in ("target_language", "translation_style"):
+            self._translation_retry_after.clear()
+            self._translation_retry_counts.clear()
             self._enqueue_pending_translations()
         self.changed.emit()
 

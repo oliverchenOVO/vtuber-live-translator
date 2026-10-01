@@ -69,10 +69,12 @@ class BoundedTranslationQueue:
 class TranslationPipeline:
     def __init__(self, backend_factory: Callable[[], TranslationBackend],
                  callback: Callable[[TranslationRequest, str | None, float, str], None],
-                 *, capacity: int = 12, partial_interval: float = 1.2):
+                 *, capacity: int = 12, partial_interval: float = 1.2,
+                 stage_callback: Callable[[TranslationRequest, str], None] | None = None):
         self.queue = BoundedTranslationQueue(capacity)
         self.backend_factory = backend_factory
         self.callback = callback
+        self.stage_callback = stage_callback
         self.partial_interval = partial_interval
         self._last_partial: dict[str, tuple[float, str]] = {}
         self._deferred_partial: TranslationRequest | None = None
@@ -148,6 +150,12 @@ class TranslationPipeline:
             try:
                 if backend is None:
                     backend = self.backend_factory()
+                if request.final and self.stage_callback:
+                    setter = getattr(backend, "set_stage_callback", None)
+                    if callable(setter):
+                        setter(lambda state: self.stage_callback(request, state))
+                    else:
+                        self.stage_callback(request, "verifying")
                 result = backend.translate_final(request) if request.final else backend.translate_partial(request)
                 if self._running:
                     self.callback(request, result, (time.monotonic() - started) * 1000, "")

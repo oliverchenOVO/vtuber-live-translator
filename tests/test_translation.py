@@ -100,6 +100,9 @@ def test_locales_and_glossary_override_without_network(monkeypatch, target, pref
     glossary = ({"source": "ぺこら", "preferred_zh_tw": "佩克拉",
                  "preferred_zh_cn": "佩克拉", "aliases": ["Pekora"]},)
     backend = OllamaTranslationBackend()
+    from vlt.translation.verification import AlignmentReview
+    monkeypatch.setattr(backend, "_verify_alignment", lambda *_: AlignmentReview("PASS"))
+    monkeypatch.setattr(backend, "_verify_roundtrip", lambda *_: None)
     text = backend.translate_final(TranslationRequest("id", "Pekora arrived", "en", target, "natural", glossary=glossary))
     assert preferred in text
     assert ("Traditional Chinese" if target == "zh-TW" else "Simplified Chinese") in calls[0]["prompt"]
@@ -114,6 +117,9 @@ def test_styles_change_prompt_not_facts(monkeypatch):
         return BytesIO(b'{"response":"I translated this."}')
     monkeypatch.setattr("urllib.request.urlopen", urlopen)
     backend = OllamaTranslationBackend()
+    from vlt.translation.verification import AlignmentReview
+    monkeypatch.setattr(backend, "_verify_alignment", lambda *_: AlignmentReview("PASS"))
+    monkeypatch.setattr(backend, "_verify_roundtrip", lambda *_: None)
     for style in ("natural", "faithful", "minimal"):
         backend.translate_final(TranslationRequest("id", "Hello", "en", "zh-TW", style))
     assert len(set(prompts)) == 3

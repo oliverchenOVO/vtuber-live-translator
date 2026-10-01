@@ -16,6 +16,7 @@ class Recognition:
     is_final: bool
     first_audio_at: float | None = None
     speech_end_at: float | None = None
+    asr_confidence: float | None = None
 
 
 RecognitionCallback = Callable[[Recognition], None]
@@ -30,4 +31,3 @@ class ASRBackend(Protocol):
     def set_callbacks(self, on_partial: RecognitionCallback,
                       on_final: RecognitionCallback, on_status: StatusCallback) -> None: ...
     def get_status(self) -> str: ...
-

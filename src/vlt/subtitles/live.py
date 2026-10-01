@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import time
 import logging
+import re
 from collections.abc import Callable
 
 from vlt.asr.base import Recognition
@@ -47,6 +48,8 @@ class TranscriptCoordinator:
             "original": result.text,
             "asr_state": "final" if result.is_final else "partial",
         }
+        if result.asr_confidence is not None:
+            segment["asr_confidence"] = round(result.asr_confidence, 3)
         if self.speaker_for_interval:
             try:
                 decision = self.speaker_for_interval(result.start_ms, result.end_ms)
@@ -59,8 +62,13 @@ class TranscriptCoordinator:
         else:
             segment["speaker_id"] = "speaker_001"
         if result.is_final:
-            segment["translation_state"] = "pending"
-            segment["translation_status"] = "pending"
+            # A repeated filler is not lexical speech, even if the recognizer's
+            # average token probability is moderately high.
+            repeated_filler = bool(re.fullmatch(r"([ぁ-ん])\1{3,}[!！。…]*", result.text.strip()))
+            state = "uncertain_source" if (result.asr_confidence is not None
+                                           and result.asr_confidence < 0.35) or repeated_filler else "pending"
+            segment["translation_state"] = state
+            segment["translation_status"] = state
         return segment
 
     @property

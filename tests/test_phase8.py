@@ -119,6 +119,9 @@ def test_translation_regression_corpus(row, language, locale, monkeypatch):
     backend = OllamaTranslationBackend(allow_fallback=False)
     expected = row["tw" if locale == "zh-TW" else "cn"]
     monkeypatch.setattr(backend, "_generate", lambda *_: expected)
+    from vlt.translation.verification import AlignmentReview
+    monkeypatch.setattr(backend, "_verify_alignment", lambda *_: AlignmentReview("PASS"))
+    monkeypatch.setattr(backend, "_verify_roundtrip", lambda *_: None)
     glossary = ()
     if "term" in row:
         glossary = ({"source": row["term"], "aliases": [row["alias"]],

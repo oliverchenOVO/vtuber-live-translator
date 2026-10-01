@@ -434,7 +434,7 @@ ApplicationWindow {
                                             }
                                             Text { visible: modelData.type === "multi_speaker_event"; text: (modelData.event_type === "unknown_overlap" ? "【重疊】" : "【多人】") + (modelData.description ? modelData.description.zh_tw : "偵測到重疊聲音，無法可靠區分。"); color: window.ink; font.pixelSize: 14; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                                             Text { visible: modelData.type !== "multi_speaker_event" && !!modelData.translation; Layout.fillWidth: true; text: modelData.translation ? modelData.translation.text : ""; wrapMode: Text.WordWrap; color: window.ink; font.pixelSize: 17; font.bold: true }
-                                            Text { visible: modelData.type !== "multi_speaker_event" && !modelData.translation; text: "翻譯等待中…"; color: window.muted; font.pixelSize: 11 }
+                                            Text { visible: modelData.type !== "multi_speaker_event" && !modelData.translation; text: modelData.translation_state === "uncertain_source" ? "原文可能辨識不完整" : modelData.translation_state === "verifying" ? "正在校對…" : "翻譯待補"; color: window.muted; font.pixelSize: 11 }
                                             Text { visible: modelData.type !== "multi_speaker_event"; Layout.fillWidth: true; text: modelData.original || ""; wrapMode: Text.WordWrap; color: "#b0bdca"; font.pixelSize: 14 }
                                             RowLayout {
                                                 visible: modelData.type === "speech"

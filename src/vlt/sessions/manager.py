@@ -481,19 +481,21 @@ class SessionManager:
                 original = item.get("original", "")
                 translated = (item.get("translation") or {}).get("text", "")
                 label = ""
+            placeholder = ("[原文可能辨識不完整]" if item.get("translation_state") == "uncertain_source"
+                           else "[翻譯待補]")
             markdown.extend([f"### {_subtitle_time(item['start_ms'], '.')} — {name}", ""])
             if item.get("type") == "multi_speaker_event":
                 markdown.extend([f"{label} {translated}", ""])
             else:
-                markdown.extend(["**翻譯**", "", translated or "[翻譯待補]", "",
+                markdown.extend(["**翻譯**", "", translated or placeholder, "",
                                  "**原文**", "", original or "[無原文]", ""])
             if item.get("type") == "multi_speaker_event":
                 body = f"{label} {translated}"
             else:
-                chosen = original if subtitle_mode == "original" else translated
+                chosen = original if subtitle_mode == "original" or not translated else translated
                 if subtitle_mode == "both":
-                    chosen = "\n".join(part for part in (translated or "[翻譯待補]", original) if part)
-                chosen = chosen or "[翻譯待補]"
+                    chosen = "\n".join(part for part in (translated, original) if part)
+                chosen = chosen or original
                 body = f"{name}: {chosen}"
             # Blank cue lines terminate SRT/VTT cues, and raw angle brackets are
             # interpreted as markup. Preserve visible text without breaking cues.
@@ -615,10 +617,36 @@ class SessionManager:
         self.reconcile_transcript(session_id)
         return True
 
-    def pending_translations(self, session_id: str) -> list[dict]:
+    def set_translation_state(self, session_id: str, segment_id: str, state: str) -> bool:
+        """Persist an in-progress or failed state without storing unverified candidate text."""
+        if state not in ("verifying", "repair_pending", "pending", "rejected", "uncertain_source"):
+            raise ValueError(state)
+        row = self.db.connection.execute(
+            "SELECT payload_json FROM segments WHERE session_id=? AND segment_id=?",
+            (session_id, segment_id)).fetchone()
+        if row is None:
+            return False
+        payload = json.loads(row["payload_json"])
+        if payload.get("translation_state") == "final":
+            return False
+        payload.pop("translation", None)
+        payload["translation_state"] = state
+        payload["translation_status"] = state
+        with self.db.connection:
+            self.db.connection.execute(
+                "UPDATE segments SET translation=NULL,payload_json=? WHERE session_id=? AND segment_id=?",
+                (json.dumps(payload, ensure_ascii=False), session_id, segment_id))
+        self.reconcile_transcript(session_id)
+        return True
+
+    def pending_translations(self, session_id: str, *, limit: int = 64, offset: int = 0,
+                             newest_first: bool = False) -> list[dict]:
+        order = "DESC" if newest_first else "ASC"
         rows = self.db.connection.execute(
             "SELECT payload_json FROM segments WHERE session_id=? AND type='speech' AND translation IS NULL "
-            "ORDER BY start_ms LIMIT 64", (session_id,)).fetchall()
+            "AND COALESCE(json_extract(payload_json, '$.translation_state'),'pending') != 'uncertain_source' "
+            f"ORDER BY start_ms {order}, segment_id {order} LIMIT ? OFFSET ?",
+            (session_id, max(1, min(64, int(limit))), max(0, int(offset)))).fetchall()
         return [json.loads(row["payload_json"]) for row in rows]
 
     def set_source_language(self, session_id: str, language: str) -> None:
