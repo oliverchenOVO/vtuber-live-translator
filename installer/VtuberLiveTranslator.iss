@@ -32,7 +32,7 @@ VersionInfoVersion={#MyAppVersion}
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Tasks]
-Name: "desktopicon"; Description: "建立桌面捷徑"; GroupDescription: "其他選項："; Flags: unchecked
+Name: "desktopicon"; Description: "建立桌面捷徑"; GroupDescription: "其他選項："
 
 [Files]
 Source: "..\dist\VtuberLiveTranslator\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
