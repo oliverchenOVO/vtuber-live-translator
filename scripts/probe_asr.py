@@ -55,7 +55,8 @@ async def probe(args):
         print("STATUS", state, message, flush=True)
 
     pipeline = ASRPipeline(audio, lambda: FasterWhisperBackend(
-        model_dir=Path("data/models")), args.language, partial, final, status)
+        model_name=args.model_path or "base", model_dir=Path("data/models"),
+        device=args.device), args.language, partial, final, status)
     task = asyncio.create_task(pipeline.run())
     start = time.monotonic()
     while time.monotonic() - start < args.seconds:
@@ -89,4 +90,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--language", choices=["auto", "ja", "en"], default="auto")
     parser.add_argument("--seconds", type=int, default=35)
+    parser.add_argument("--model-path", help="Existing local faster-whisper snapshot; avoids a download")
+    parser.add_argument("--device", choices=["auto", "cpu"], default="auto")
     asyncio.run(probe(parser.parse_args()))

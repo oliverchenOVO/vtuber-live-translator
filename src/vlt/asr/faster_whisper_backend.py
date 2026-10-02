@@ -276,7 +276,8 @@ class FasterWhisperBackend:
                 if request is None:
                     return
                 self._inference_busy = True
-                text, language, confidence = await asyncio.to_thread(self._transcribe, request.pcm)
+                text, language, confidence = await asyncio.to_thread(
+                    self._transcribe, request.pcm, request.is_final)
                 if not text and not request.is_final:
                     continue
                 result = Recognition(request.utterance_id, text, language,
@@ -295,10 +296,13 @@ class FasterWhisperBackend:
                 self._inference_busy = False
                 self._requests.task_done()
 
-    def _transcribe(self, pcm: bytes) -> tuple[str, str, float | None]:
+    def _transcribe(self, pcm: bytes, final: bool = True) -> tuple[str, str, float | None]:
         samples = np.frombuffer(pcm, dtype="<i2").astype(np.float32) / 32768.0
+        # A small beam measurably improved Japanese CER and English WER on the
+        # fixed FLEURS probe. Keep speculative LIVE partials on greedy decoding.
+        beam = 3 if final else 1
         options = dict(language=None if self._language == "auto" else self._language,
-                       task="transcribe", beam_size=1, best_of=1,
+                       task="transcribe", beam_size=beam, best_of=beam,
                        condition_on_previous_text=False, vad_filter=False,
                        without_timestamps=True)
         try:

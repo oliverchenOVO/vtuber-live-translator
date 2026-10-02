@@ -917,7 +917,7 @@ ApplicationWindow {
                     Text { text: "選擇效能模式"; color: window.ink; font.pixelSize: 28; font.bold: true }
                     Text { text: "已偵測 " + studio.hardwareProfile.logical_cores + " 執行緒 · " + studio.hardwareProfile.ram_gb + " GB RAM\n" + studio.hardwareProfile.gpu; color: window.muted; font.pixelSize: 14; lineHeight: 1.45 }
                     Repeater {
-                        model: [{id:"gaming", title:"Gaming", body:"優先保留遊戲效能；2 CPU threads、base ASR、1.5B 翻譯。"}, {id:"balanced", title:"Balanced", body:"日常直播建議；4 CPU threads、自動選擇裝置、1.5B 翻譯。"}, {id:"quality", title:"High Quality", body:"small ASR（首次監聽另下載約 460 MB）。7B 修正預設關閉；於設定選用額外約需 5 GB RAM。"}]
+                        model: [{id:"gaming", title:"Gaming", body:"優先保留遊戲效能；2 CPU threads、base ASR、1.5B 翻譯。"}, {id:"balanced", title:"Balanced", body:"日常直播建議；4 CPU threads、自動選擇裝置、1.5B 翻譯。"}, {id:"quality", title:"High Quality", body:"small ASR 在日英測試語料較準；首次監聽另下載約 460 MB，無 GPU 時可能較慢。7B 修正預設關閉；於設定選用額外約需 5 GB RAM。"}]
                         delegate: Rectangle {
                             required property var modelData; Layout.fillWidth: true; height: Math.max(78, presetText.implicitHeight + 28); radius: 12
                             activeFocusOnTab: true
