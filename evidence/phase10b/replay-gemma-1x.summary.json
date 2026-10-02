@@ -1,0 +1,3596 @@
+{
+  "backend": "gemma",
+  "speed": 1.0,
+  "source_rows": 193,
+  "duration_s": 1790.5,
+  "translated": 193,
+  "pending": 0,
+  "average_output_segments_per_minute": 6.47,
+  "peak_recent_output_segments_per_minute": 16,
+  "queue_max_depth": 1,
+  "queue_oldest_age_max_ms": 0,
+  "latency_p50_ms": 859,
+  "latency_p95_ms": 1578,
+  "snapshots": [
+    {
+      "at_s": 0.0,
+      "queue_depth": 1,
+      "queued_finals": 1,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 0,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 5.0,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 0,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 10.01,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 1,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 15.01,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 1,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 20.03,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 1,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 25.03,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 1,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 30.0,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 2,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 35.0,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 2,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 40.01,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 2,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 45.01,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 2,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 50.08,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 3,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 55.19,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 60.05,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 65.06,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 70.06,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 75.08,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 80.08,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 85.17,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 90.19,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 95.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 100.2,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 9,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 105.2,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 10,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 110.22,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 9,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 115.22,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 120.23,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 125.23,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 130.22,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 135.22,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 140.23,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 145.23,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 150.0,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 155.0,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 3,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 160.0,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 2,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 165.2,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 2,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 170.14,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 3,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 175.14,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 180.19,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 185.19,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 190.2,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 195.06,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 200.08,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 205.08,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 210.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 215.16,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 220.16,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 225.06,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 230.08,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 235.08,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 240.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 245.11,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 250.12,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 255.12,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 260.2,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 265.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 270.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 275.06,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 280.06,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 285.12,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 290.12,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 295.14,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 300.08,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 305.08,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 310.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 315.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 320.11,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 325.12,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 330.12,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 335.12,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 340.12,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 345.14,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 350.14,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 3,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 355.12,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 360.12,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 3,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 365.12,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 3,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 370.14,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 3,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 375.06,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 3,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 380.12,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 385.2,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 390.22,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 395.23,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 400.19,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 405.19,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 410.2,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 415.2,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 420.23,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 425.19,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 430.22,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 9,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 435.22,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 9,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 440.23,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 445.23,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 450.11,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 455.11,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 460.12,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 465.12,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 470.12,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 475.14,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 480.14,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 485.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 3,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 490.16,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 3,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 495.16,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 500.22,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 505.23,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 510.23,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 515.23,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 520.0,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 525.17,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 530.17,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 535.19,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 540.22,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 545.16,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 550.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 9,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 555.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 560.11,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 565.11,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 570.12,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 575.01,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 580.16,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 585.16,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 590.17,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 595.0,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 600.01,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 9,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 605.16,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 610.16,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 615.08,
+      "queue_depth": 1,
+      "queued_finals": 1,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 620.08,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 625.08,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 630.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 635.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 640.11,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 645.11,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 650.05,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 655.0,
+      "queue_depth": 1,
+      "queued_finals": 1,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 660.17,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 665.0,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 670.22,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 675.23,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 680.08,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 685.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 690.22,
+      "queue_depth": 1,
+      "queued_finals": 1,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 695.23,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 9,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 700.03,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 10,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 705.03,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 10,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 710.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 10,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 715.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 10,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 720.11,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 725.11,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 730.12,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 735.0,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 740.01,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 745.01,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 750.03,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 755.22,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 760.23,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 765.23,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 770.0,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 3,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 775.0,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 3,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 780.01,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 3,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 785.01,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 790.01,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 795.03,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 3,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 800.23,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 805.05,
+      "queue_depth": 1,
+      "queued_finals": 1,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 810.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 815.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 820.16,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 825.17,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 830.17,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 835.17,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 840.22,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 845.22,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 850.23,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 855.23,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 860.0,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 865.0,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 870.01,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 3,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 875.01,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 2,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 880.03,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 1,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 885.16,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 2,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 890.2,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 3,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 895.23,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 900.23,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 905.0,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 910.0,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 915.01,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 920.01,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 925.01,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 930.0,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 935.01,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 940.01,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 945.22,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 950.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 955.12,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 960.12,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 965.16,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 970.06,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 975.08,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 980.03,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 10,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 985.22,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 11,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 990.22,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 11,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 995.2,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 11,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1000.16,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 13,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1005.06,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 14,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1010.12,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 13,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1015.17,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 14,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1020.16,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 15,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1025.22,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 14,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1030.23,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 15,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1035.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 15,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1040.11,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 14,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1045.2,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 14,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1050.22,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 15,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1055.22,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 15,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1060.05,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 16,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1065.05,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 14,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1070.11,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 14,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1075.08,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 13,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1080.14,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 12,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1085.05,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 13,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1090.2,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 12,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1095.08,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 13,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1100.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 12,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1105.19,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 11,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1110.12,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 12,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1115.11,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 13,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1120.01,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 11,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1125.03,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 12,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1130.03,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 11,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1135.05,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 10,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1140.05,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 10,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1145.08,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 9,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1150.19,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 10,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1155.2,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1160.2,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1165.16,
+      "queue_depth": 1,
+      "queued_finals": 1,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1170.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1175.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1180.11,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1185.06,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1190.16,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1195.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 9,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1200.17,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 10,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1205.16,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 11,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1210.16,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 10,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1215.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 11,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1220.06,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 12,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1225.08,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 11,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1230.17,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 10,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1235.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 12,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1240.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 12,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1245.11,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 11,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1250.11,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 10,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1255.12,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1260.0,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1265.0,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1270.01,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1275.03,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1280.03,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1285.05,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1290.05,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 3,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1295.06,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 1,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1300.06,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 1,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1305.17,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 2,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1310.17,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 2,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1315.19,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 2,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1320.19,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 1,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1325.2,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 1,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1330.2,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 1,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1335.2,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 1,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1340.06,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 2,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1345.06,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 3,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1350.08,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 3,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1355.08,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 3,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1360.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 3,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1365.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 2,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1370.11,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 2,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1375.11,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 2,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1380.11,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 2,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1385.12,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 2,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1390.12,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 2,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1395.14,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 2,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1400.14,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 1,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1405.16,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 0,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1410.16,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 1,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1415.14,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 2,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1420.03,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 3,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1425.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 3,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1430.05,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1435.05,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1440.06,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1445.08,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1450.08,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1455.2,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1460.2,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1465.22,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1470.05,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1475.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1480.06,
+      "queue_depth": 1,
+      "queued_finals": 1,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1485.05,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 9,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1490.05,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1495.03,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1500.03,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 10,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1505.17,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 11,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1510.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 11,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1515.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 12,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1520.03,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 13,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1525.03,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 13,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1530.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 14,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1535.09,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 12,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1540.23,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 12,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1545.23,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 10,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1550.0,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 10,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1555.0,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 9,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1560.0,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1565.01,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1570.05,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1575.05,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1580.11,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1585.22,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 9,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1590.22,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1595.22,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1600.23,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1605.2,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1610.22,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1615.22,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1620.22,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1625.11,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1630.11,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1635.12,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1640.16,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1645.0,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1650.0,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 4,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1655.12,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1660.0,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1665.08,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1670.14,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1675.05,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 9,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1680.01,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 10,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1685.01,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 9,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1690.01,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 9,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1695.03,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 9,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1700.05,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 8,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1705.05,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1710.06,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 7,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1715.06,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 6,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1720.06,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1725.0,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 5,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1730.0,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 3,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1735.01,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 2,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1740.01,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 1,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1745.03,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 1,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1750.03,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 1,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1755.05,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 1,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1760.05,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 1,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1765.06,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 1,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1770.06,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 1,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1775.12,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 2,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1780.16,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 2,
+      "inflight_finals": 1,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    },
+    {
+      "at_s": 1785.16,
+      "queue_depth": 0,
+      "queued_finals": 0,
+      "oldest_age_ms": 0,
+      "throughput_finals_per_minute": 2,
+      "inflight_finals": 0,
+      "deferred_stale_finals": 0,
+      "dropped_partials": 0
+    }
+  ]
+}

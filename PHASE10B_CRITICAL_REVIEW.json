@@ -1,0 +1,552 @@
+{
+  "reviewer": "Codex text-only; not independent human review",
+  "source_audio_available": false,
+  "confirmed_asr_source_errors": 0,
+  "rows": [
+    {
+      "id": "phase9-002",
+      "backend": "madlad",
+      "source": "うまつレモンジャクルミスとちょっとありがとう",
+      "translation": "檸檬菊花和一點點的感謝。",
+      "judgment": "WRONG",
+      "source_audio_status": "suspected_asr_error_audio_unavailable"
+    },
+    {
+      "id": "phase9-006",
+      "backend": "madlad",
+      "source": "よいしょー",
+      "translation": "好吧，好吧，好吧。",
+      "judgment": "WRONG",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-007",
+      "backend": "madlad",
+      "source": "最初は、ユネタマゴの生タマゴにも",
+      "translation": "起初，尤內塔芒果的生芒果中也含有這種物質。",
+      "judgment": "HALLUCINATED",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-011",
+      "backend": "madlad",
+      "source": "将来 もうすでにしたいことがあるよって人は",
+      "translation": "未來 那些已經有了想要做的事情的人。",
+      "judgment": "ACCEPTABLE",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-012",
+      "backend": "madlad",
+      "source": "怪しいんだけれども",
+      "translation": "雖然有點可疑，但這樣做是有道理的。",
+      "judgment": "HALLUCINATED",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-015",
+      "backend": "madlad",
+      "source": "色んなデザイナーがいるよねロゴを作る",
+      "translation": "有很多不同的設計師來設計徽標。",
+      "judgment": "ACCEPTABLE",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-020",
+      "backend": "madlad",
+      "source": "をかけて、そこして決まりましたから",
+      "translation": "我們在那裡做了決定，因為我們在那裡做了決定。",
+      "judgment": "HALLUCINATED",
+      "source_audio_status": "suspected_asr_error_audio_unavailable"
+    },
+    {
+      "id": "phase9-027",
+      "backend": "madlad",
+      "source": "なるといいな",
+      "translation": "好吧，好吧，好吧，好吧，好吧。",
+      "judgment": "WRONG",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-033",
+      "backend": "madlad",
+      "source": "なんちゃえ!おぉ!気がするそれ!",
+      "translation": "何以如此？ 何以如此？ 何以如此？ 何以如此？ 何以如此？",
+      "judgment": "WRONG",
+      "source_audio_status": "suspected_asr_error_audio_unavailable"
+    },
+    {
+      "id": "phase9-049",
+      "backend": "madlad",
+      "source": "カウントからまずいじゃないですか。",
+      "translation": "從計數來看，這是個不好的數字。",
+      "judgment": "WRONG",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-057",
+      "backend": "madlad",
+      "source": "カポカバメ",
+      "translation": "南美角頭鯨",
+      "judgment": "HALLUCINATED",
+      "source_audio_status": "suspected_asr_error_audio_unavailable"
+    },
+    {
+      "id": "phase9-064",
+      "backend": "madlad",
+      "source": "スマスマーケットにデート行くっても、そうと…",
+      "translation": "即使是去智慧市場約會，也不要…",
+      "judgment": "WRONG",
+      "source_audio_status": "suspected_asr_error_audio_unavailable"
+    },
+    {
+      "id": "phase9-070",
+      "backend": "madlad",
+      "source": "おかよな!おかよな!おかよな!おかよな!",
+      "translation": "別鬧了!別鬧了!別鬧了!別鬧了!",
+      "judgment": "WRONG",
+      "source_audio_status": "suspected_asr_error_audio_unavailable"
+    },
+    {
+      "id": "phase9-072",
+      "backend": "madlad",
+      "source": "おだちもほだしだし",
+      "translation": "你們也應該這樣做，因為你們的孩子也應該如此。",
+      "judgment": "HALLUCINATED",
+      "source_audio_status": "suspected_asr_error_audio_unavailable"
+    },
+    {
+      "id": "phase9-081",
+      "backend": "madlad",
+      "source": "変わりよくことに対して変わらないものを見つけるんだ",
+      "translation": "對於奇怪的東西，找到不變的東西。",
+      "judgment": "WRONG",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-082",
+      "backend": "madlad",
+      "source": "朝起きてとかでもなんでもいいけど",
+      "translation": "早上起床或任何時候都可以，但不要忘記，這是你最重要的一天。",
+      "judgment": "HALLUCINATED",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-093",
+      "backend": "madlad",
+      "source": "テレビが特集して…え?ないないさ",
+      "translation": "電視上特別報道了…是嗎? 不是,不是。",
+      "judgment": "ACCEPTABLE",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-095",
+      "backend": "madlad",
+      "source": "おしにすっぱちゃを投げようとしたところをバンされてる",
+      "translation": "被禁止試圖把垃圾扔到垃圾桶裡的行為。",
+      "judgment": "HALLUCINATED",
+      "source_audio_status": "suspected_asr_error_audio_unavailable"
+    },
+    {
+      "id": "phase9-109",
+      "backend": "madlad",
+      "source": "Honestly, some days are harder than others, but I",
+      "translation": "說實話，有些日子比其他日子更難，但我做到了。",
+      "judgment": "HALLUCINATED",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-110",
+      "backend": "madlad",
+      "source": "I'm looking and running. But tell me more, where are you from originally?",
+      "translation": "我在尋找，我在奔跑。 但請告訴我更多，你原來是從哪裡來的？",
+      "judgment": "ACCEPTABLE",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-113",
+      "backend": "madlad",
+      "source": "sure you'll make it happen when the time is right. So what's something you're working toward right now? Any big goals? I've been thinking about getting my master's degree in education. I want to specialize in T",
+      "translation": "我相信你會在適當的時候做到這一點。 那麼，你現在正在努力實現什麼呢？ 有沒有什麼大目標？ 我一直在想要獲得教育碩士學位，我想專攻英語。",
+      "judgment": "HALLUCINATED",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-125",
+      "backend": "madlad",
+      "source": "Start with an easy question. Can you tell me a little about yourself?",
+      "translation": "從一個簡單的問題開始,你能告訴我一些關於你的事情嗎? 關於你自己。",
+      "judgment": "ACCEPTABLE",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-002",
+      "backend": "gemma",
+      "source": "うまつレモンジャクルミスとちょっとありがとう",
+      "translation": "非常感謝你們的“檸檬夾克”建議，雖然有些地方需要改進。",
+      "judgment": "HALLUCINATED",
+      "source_audio_status": "suspected_asr_error_audio_unavailable"
+    },
+    {
+      "id": "phase9-006",
+      "backend": "gemma",
+      "source": "よいしょー",
+      "translation": "好了",
+      "judgment": "ACCEPTABLE",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-007",
+      "backend": "gemma",
+      "source": "最初は、ユネタマゴの生タマゴにも",
+      "translation": "最初，我們也嘗試在尤尼瑪戈的母雞蛋中",
+      "judgment": "HALLUCINATED",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-011",
+      "backend": "gemma",
+      "source": "将来 もうすでにしたいことがあるよって人は",
+      "translation": "“如果有人已經有明確的未來目標，請告訴我。”",
+      "judgment": "HALLUCINATED",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-012",
+      "backend": "gemma",
+      "source": "怪しいんだけれども",
+      "translation": "雖然有點可疑，",
+      "judgment": "CORRECT",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-015",
+      "backend": "gemma",
+      "source": "色んなデザイナーがいるよねロゴを作る",
+      "translation": "現在有很多設計師，他們都擅長設計標誌。",
+      "judgment": "ACCEPTABLE",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-020",
+      "backend": "gemma",
+      "source": "をかけて、そこして決まりましたから",
+      "translation": "經過討論，我們最終達成一致。",
+      "judgment": "HALLUCINATED",
+      "source_audio_status": "suspected_asr_error_audio_unavailable"
+    },
+    {
+      "id": "phase9-027",
+      "backend": "gemma",
+      "source": "なるといいな",
+      "translation": "真希望這樣就好了",
+      "judgment": "CORRECT",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-033",
+      "backend": "gemma",
+      "source": "なんちゃえ!おぉ!気がするそれ!",
+      "translation": "天哪！啊！我感覺到了！",
+      "judgment": "ACCEPTABLE",
+      "source_audio_status": "suspected_asr_error_audio_unavailable"
+    },
+    {
+      "id": "phase9-049",
+      "backend": "gemma",
+      "source": "カウントからまずいじゃないですか。",
+      "translation": "從開始計數，一開始就出現了問題。",
+      "judgment": "WRONG",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-057",
+      "backend": "gemma",
+      "source": "カポカバメ",
+      "translation": "可愛的小貓",
+      "judgment": "HALLUCINATED",
+      "source_audio_status": "suspected_asr_error_audio_unavailable"
+    },
+    {
+      "id": "phase9-064",
+      "backend": "gemma",
+      "source": "スマスマーケットにデート行くっても、そうと…",
+      "translation": "即使去スマスマーケット約會，也...",
+      "judgment": "ACCEPTABLE",
+      "source_audio_status": "suspected_asr_error_audio_unavailable"
+    },
+    {
+      "id": "phase9-070",
+      "backend": "gemma",
+      "source": "おかよな!おかよな!おかよな!おかよな!",
+      "translation": "太好了！太好了！太好了！太好了！",
+      "judgment": "WRONG",
+      "source_audio_status": "suspected_asr_error_audio_unavailable"
+    },
+    {
+      "id": "phase9-072",
+      "backend": "gemma",
+      "source": "おだちもほだしだし",
+      "translation": "哦達也，也請您注意",
+      "judgment": "HALLUCINATED",
+      "source_audio_status": "suspected_asr_error_audio_unavailable"
+    },
+    {
+      "id": "phase9-081",
+      "backend": "gemma",
+      "source": "変わりよくことに対して変わらないものを見つけるんだ",
+      "translation": "找到在快速變化的環境中，能夠保持穩定和不變的事物。",
+      "judgment": "ACCEPTABLE",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-082",
+      "backend": "gemma",
+      "source": "朝起きてとかでもなんでもいいけど",
+      "translation": "無論早上幾點起床，都可以。",
+      "judgment": "WRONG",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-093",
+      "backend": "gemma",
+      "source": "テレビが特集して…え?ないないさ",
+      "translation": "電視臺並沒有播出… 怎麼可能呢？",
+      "judgment": "WRONG",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-095",
+      "backend": "gemma",
+      "source": "おしにすっぱちゃを投げようとしたところをバンされてる",
+      "translation": "我試圖把酸味的飲料潑向對方，結果被對方阻止了。",
+      "judgment": "HALLUCINATED",
+      "source_audio_status": "suspected_asr_error_audio_unavailable"
+    },
+    {
+      "id": "phase9-109",
+      "backend": "gemma",
+      "source": "Honestly, some days are harder than others, but I",
+      "translation": "說實話，有些日子比其他日子更難，但我…",
+      "judgment": "CORRECT",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-110",
+      "backend": "gemma",
+      "source": "I'm looking and running. But tell me more, where are you from originally?",
+      "translation": "我正在尋找和探索。不過，請告訴我，您原本來自哪裡？",
+      "judgment": "ACCEPTABLE",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-113",
+      "backend": "gemma",
+      "source": "sure you'll make it happen when the time is right. So what's something you're working toward right now? Any big goals? I've been thinking about getting my master's degree in education. I want to specialize in T",
+      "translation": "我相信你會在合適的時機實現目標。那麼，你現在正在努力實現什麼呢？有什麼重要的目標嗎？我一直在考慮攻讀教育方面的碩士學位。我希望能夠專注於T領域的專業知識。",
+      "judgment": "ACCEPTABLE",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-125",
+      "backend": "gemma",
+      "source": "Start with an easy question. Can you tell me a little about yourself?",
+      "translation": "先從一個簡單的問題開始。你能簡單地介紹一下你自己嗎？",
+      "judgment": "CORRECT",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-002",
+      "backend": "qwen",
+      "source": "うまつレモンジャクルミスとちょっとありがとう",
+      "translation": "",
+      "judgment": "NO_OUTPUT",
+      "source_audio_status": "suspected_asr_error_audio_unavailable"
+    },
+    {
+      "id": "phase9-006",
+      "backend": "qwen",
+      "source": "よいしょー",
+      "translation": "",
+      "judgment": "NO_OUTPUT",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-007",
+      "backend": "qwen",
+      "source": "最初は、ユネタマゴの生タマゴにも",
+      "translation": "",
+      "judgment": "NO_OUTPUT",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-011",
+      "backend": "qwen",
+      "source": "将来 もうすでにしたいことがあるよって人は",
+      "translation": "",
+      "judgment": "NO_OUTPUT",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-012",
+      "backend": "qwen",
+      "source": "怪しいんだけれども",
+      "translation": "",
+      "judgment": "NO_OUTPUT",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-015",
+      "backend": "qwen",
+      "source": "色んなデザイナーがいるよねロゴを作る",
+      "translation": "有很多設計師在製作LOGO。",
+      "judgment": "ACCEPTABLE",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-020",
+      "backend": "qwen",
+      "source": "をかけて、そこして決まりましたから",
+      "translation": "",
+      "judgment": "NO_OUTPUT",
+      "source_audio_status": "suspected_asr_error_audio_unavailable"
+    },
+    {
+      "id": "phase9-027",
+      "backend": "qwen",
+      "source": "なるといいな",
+      "translation": "",
+      "judgment": "NO_OUTPUT",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-033",
+      "backend": "qwen",
+      "source": "なんちゃえ!おぉ!気がするそれ!",
+      "translation": "",
+      "judgment": "NO_OUTPUT",
+      "source_audio_status": "suspected_asr_error_audio_unavailable"
+    },
+    {
+      "id": "phase9-049",
+      "backend": "qwen",
+      "source": "カウントからまずいじゃないですか。",
+      "translation": "",
+      "judgment": "NO_OUTPUT",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-057",
+      "backend": "qwen",
+      "source": "カポカバメ",
+      "translation": "",
+      "judgment": "NO_OUTPUT",
+      "source_audio_status": "suspected_asr_error_audio_unavailable"
+    },
+    {
+      "id": "phase9-064",
+      "backend": "qwen",
+      "source": "スマスマーケットにデート行くっても、そうと…",
+      "translation": "",
+      "judgment": "NO_OUTPUT",
+      "source_audio_status": "suspected_asr_error_audio_unavailable"
+    },
+    {
+      "id": "phase9-070",
+      "backend": "qwen",
+      "source": "おかよな!おかよな!おかよな!おかよな!",
+      "translation": "",
+      "judgment": "NO_OUTPUT",
+      "source_audio_status": "suspected_asr_error_audio_unavailable"
+    },
+    {
+      "id": "phase9-072",
+      "backend": "qwen",
+      "source": "おだちもほだしだし",
+      "translation": "",
+      "judgment": "NO_OUTPUT",
+      "source_audio_status": "suspected_asr_error_audio_unavailable"
+    },
+    {
+      "id": "phase9-081",
+      "backend": "qwen",
+      "source": "変わりよくことに対して変わらないものを見つけるんだ",
+      "translation": "",
+      "judgment": "NO_OUTPUT",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-082",
+      "backend": "qwen",
+      "source": "朝起きてとかでもなんでもいいけど",
+      "translation": "",
+      "judgment": "NO_OUTPUT",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-093",
+      "backend": "qwen",
+      "source": "テレビが特集して…え?ないないさ",
+      "translation": "",
+      "judgment": "NO_OUTPUT",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-095",
+      "backend": "qwen",
+      "source": "おしにすっぱちゃを投げようとしたところをバンされてる",
+      "translation": "",
+      "judgment": "NO_OUTPUT",
+      "source_audio_status": "suspected_asr_error_audio_unavailable"
+    },
+    {
+      "id": "phase9-109",
+      "backend": "qwen",
+      "source": "Honestly, some days are harder than others, but I",
+      "translation": "",
+      "judgment": "NO_OUTPUT",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-110",
+      "backend": "qwen",
+      "source": "I'm looking and running. But tell me more, where are you from originally?",
+      "translation": "",
+      "judgment": "NO_OUTPUT",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-113",
+      "backend": "qwen",
+      "source": "sure you'll make it happen when the time is right. So what's something you're working toward right now? Any big goals? I've been thinking about getting my master's degree in education. I want to specialize in T",
+      "translation": "",
+      "judgment": "NO_OUTPUT",
+      "source_audio_status": "unverified_text_only"
+    },
+    {
+      "id": "phase9-125",
+      "backend": "qwen",
+      "source": "Start with an easy question. Can you tell me a little about yourself?",
+      "translation": "開始一個簡單的問題。你能告訴我關於你的一些事情嗎？",
+      "judgment": "ACCEPTABLE",
+      "source_audio_status": "unverified_text_only"
+    }
+  ],
+  "counts": {
+    "madlad": {
+      "WRONG": 8,
+      "HALLUCINATED": 9,
+      "ACCEPTABLE": 5
+    },
+    "gemma": {
+      "HALLUCINATED": 7,
+      "ACCEPTABLE": 7,
+      "CORRECT": 4,
+      "WRONG": 4
+    },
+    "qwen": {
+      "NO_OUTPUT": 20,
+      "ACCEPTABLE": 2
+    }
+  }
+}

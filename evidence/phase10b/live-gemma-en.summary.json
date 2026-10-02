@@ -1,0 +1,28 @@
+{
+  "backend": "gemma",
+  "language": "en",
+  "requested_minutes": 15,
+  "actual_capture_seconds": 906.6,
+  "finals": 186,
+  "translated": 140,
+  "pending": 46,
+  "translation_state_counts": {
+    "final": 140,
+    "uncertain_source": 46
+  },
+  "eligible_finals": 140,
+  "eligible_translated": 140,
+  "eligible_pending": 0,
+  "final_latency_p50_ms": 2093.9999999973224,
+  "final_latency_p95_ms": 5389.999999999418,
+  "queue_max_depth": 3,
+  "queue_max_age_ms": 7688,
+  "peak_recent_output_segments_per_minute": 19,
+  "errors": [],
+  "session_id": "c6c170bc-d90b-40aa-b703-cd2a35b774f7",
+  "app_rss_peak_mib": 978.2,
+  "ollama_rss_peak_mib": 4399.8,
+  "gpu_used_baseline_mib_system_wide": 3531,
+  "gpu_used_peak_mib_system_wide": 4149,
+  "app_cpu_mean_percent_one_core": 84.2
+}

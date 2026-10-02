@@ -1,0 +1,32 @@
+{
+  "backend": "madlad",
+  "set": "corpus",
+  "target": "zh-TW",
+  "corpus_sha256": "ba1abac75a9ddd45d389cb9e0c8d241f368fb16eddec052ce48bf5605d054adf",
+  "hardware": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "cpu": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+    "ram_gib": 47.7
+  },
+  "runtime": "CPU, 4 threads",
+  "model_bytes": 2950208329,
+  "summary": {
+    "rows": 650,
+    "output_count": 650,
+    "operational_output_rate_not_safe_coverage": 1.0,
+    "latency_ms": {
+      "mean": 1156,
+      "p50": 953,
+      "p95": 2219,
+      "max": 9422
+    },
+    "peak_process_rss_mib": 3062,
+    "peak_gpu_used_mib": 3720,
+    "automated_flag_counts": {
+      "digit_mismatch_review": 32,
+      "length_expansion_review": 8,
+      "untranslated_japanese_review": 1
+    },
+    "human_semantic_review": "NOT_PERFORMED"
+  }
+}

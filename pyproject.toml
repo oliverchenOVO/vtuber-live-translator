@@ -23,6 +23,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8"]
+bakeoff = ["sentencepiece>=0.2,<1"]
 
 [project.scripts]
 vtuber-live-translator = "vlt.app:run_guarded"

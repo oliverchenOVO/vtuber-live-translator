@@ -1,0 +1,36 @@
+{
+  "backend": "qwen",
+  "set": "corpus",
+  "target": "zh-TW",
+  "expected_rows": 650,
+  "complete": true,
+  "corpus_sha256_canonical": "1e54f1a66b56f9c7fcc1302a8d6795ba7d2bc5193799814d168078e81a326b67",
+  "hardware": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "cpu": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+    "ram_gib": 47.7
+  },
+  "runtime": "CPU, 4 threads",
+  "model_bytes": 986061892,
+  "gpu_used_baseline_mib_system_wide": 3428,
+  "summary": {
+    "rows": 650,
+    "output_count": 143,
+    "operational_output_rate_not_safe_coverage": 0.22,
+    "latency_ms": {
+      "mean": 9927,
+      "p50": 11562,
+      "p95": 15609,
+      "max": 20468
+    },
+    "peak_process_rss_mib": 1539,
+    "peak_gpu_used_mib": 3442,
+    "mean_backend_cpu_percent_one_core": 376.8,
+    "peak_backend_cpu_percent_one_core": 654,
+    "automated_flag_counts": {
+      "digit_mismatch_review": 10,
+      "empty": 507
+    },
+    "human_semantic_review": "NOT_PERFORMED"
+  }
+}

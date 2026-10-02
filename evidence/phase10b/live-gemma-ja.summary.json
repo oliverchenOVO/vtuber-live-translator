@@ -1,0 +1,21 @@
+{
+  "backend": "gemma",
+  "language": "ja",
+  "requested_minutes": 30,
+  "actual_capture_seconds": 1810.6,
+  "finals": 465,
+  "translated": 235,
+  "pending": 230,
+  "final_latency_p50_ms": 2235.000000000582,
+  "final_latency_p95_ms": 5062.999999994645,
+  "queue_max_depth": 3,
+  "queue_max_age_ms": 25500,
+  "peak_recent_output_segments_per_minute": 21,
+  "errors": [],
+  "session_id": "d09a4696-fb2d-495c-8cf6-b31be03c4bc8",
+  "app_rss_peak_mib": 973.4,
+  "ollama_rss_peak_mib": 4422.3,
+  "gpu_used_baseline_mib_system_wide": 3554,
+  "gpu_used_peak_mib_system_wide": 4119,
+  "app_cpu_mean_percent_one_core": 97.3
+}

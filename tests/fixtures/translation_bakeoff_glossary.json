@@ -1,0 +1,59 @@
+[
+  {
+    "id": "gloss-ja-1",
+    "language": "ja",
+    "category": "glossary",
+    "source": "兎田ぺこらが来た",
+    "reference_zh_tw": "佩克拉來了。",
+    "reference_zh_cn": "佩克拉来了。",
+    "glossary": [{"source": "兎田ぺこら", "aliases": ["ぺこら", "Pekora"], "preferred_zh_tw": "佩克拉", "preferred_zh_cn": "佩克拉"}]
+  },
+  {
+    "id": "gloss-ja-2",
+    "language": "ja",
+    "category": "glossary",
+    "source": "ぺこらの配信を見た",
+    "reference_zh_tw": "我看了佩克拉的直播。",
+    "reference_zh_cn": "我看了佩克拉的直播。",
+    "glossary": [{"source": "兎田ぺこら", "aliases": ["ぺこら", "Pekora"], "preferred_zh_tw": "佩克拉", "preferred_zh_cn": "佩克拉"}]
+  },
+  {
+    "id": "gloss-ja-3",
+    "language": "ja",
+    "category": "glossary",
+    "source": "胡桃のあと一緒に遊ぶ",
+    "reference_zh_tw": "和胡桃諾婭一起玩。",
+    "reference_zh_cn": "和胡桃诺娅一起玩。",
+    "glossary": [{"source": "胡桃のあ", "aliases": ["Noa"], "preferred_zh_tw": "胡桃諾婭", "preferred_zh_cn": "胡桃诺娅"}]
+  },
+  {
+    "id": "gloss-en-1",
+    "language": "en",
+    "category": "glossary",
+    "source": "Pekora is here",
+    "reference_zh_tw": "佩克拉來了。",
+    "reference_zh_cn": "佩克拉来了。",
+    "glossary": [{"source": "兎田ぺこら", "aliases": ["ぺこら", "Pekora"], "preferred_zh_tw": "佩克拉", "preferred_zh_cn": "佩克拉"}]
+  },
+  {
+    "id": "gloss-en-2",
+    "language": "en",
+    "category": "glossary",
+    "source": "I watched Pekora's stream",
+    "reference_zh_tw": "我看了佩克拉的直播。",
+    "reference_zh_cn": "我看了佩克拉的直播。",
+    "glossary": [{"source": "兎田ぺこら", "aliases": ["ぺこら", "Pekora"], "preferred_zh_tw": "佩克拉", "preferred_zh_cn": "佩克拉"}]
+  },
+  {
+    "id": "gloss-en-3",
+    "language": "en",
+    "category": "glossary",
+    "source": "Noa and Pekora will play together",
+    "reference_zh_tw": "胡桃諾婭和佩克拉會一起玩。",
+    "reference_zh_cn": "胡桃诺娅和佩克拉会一起玩。",
+    "glossary": [
+      {"source": "胡桃のあ", "aliases": ["Noa"], "preferred_zh_tw": "胡桃諾婭", "preferred_zh_cn": "胡桃诺娅"},
+      {"source": "兎田ぺこら", "aliases": ["ぺこら", "Pekora"], "preferred_zh_tw": "佩克拉", "preferred_zh_cn": "佩克拉"}
+    ]
+  }
+]

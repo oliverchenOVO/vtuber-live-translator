@@ -1,0 +1,200 @@
+[
+  {
+    "sample_id": "phase9-002",
+    "language": "ja",
+    "source": "うまつレモンジャクルミスとちょっとありがとう",
+    "bad_translation": "以前，關於全部都是有關於今天的事情。這個鼻子好像結束了，這有點兒難聞吧？我也不知道為什麼這麼難聞。",
+    "issue": "UNSUPPORTED_EXPANSION",
+    "annotation": "unrelated context story",
+    "expected": "pending"
+  },
+  {
+    "sample_id": "phase9-006",
+    "language": "ja",
+    "source": "よいしょー",
+    "bad_translation": "早就好了，現在沒事了。大家都是白色的。慢慢來吧。我好怕了。",
+    "issue": "UNSUPPORTED_EXPANSION",
+    "annotation": "multiple invented events",
+    "expected": "pending"
+  },
+  {
+    "sample_id": "phase9-007",
+    "language": "ja",
+    "source": "最初は、ユネタマゴの生タマゴにも",
+    "bad_translation": "起初，我只吃烏冬麵的生雞蛋。",
+    "issue": "UNSUPPORTED_EXPANSION",
+    "annotation": "wrong food and extra action",
+    "expected": "pending"
+  },
+  {
+    "sample_id": "phase9-011",
+    "language": "ja",
+    "source": "将来 もうすでにしたいことがあるよって人は",
+    "bad_translation": "那些將來已經想好要做的事情的人，現在已經開始期待未來了。",
+    "issue": "UNSUPPORTED_EXPANSION",
+    "annotation": "added future expectation",
+    "expected": "pending"
+  },
+  {
+    "sample_id": "phase9-012",
+    "language": "ja",
+    "source": "怪しいんだけれども",
+    "bad_translation": "我有點可疑，不過如果你有其他想要的，請告訴我。",
+    "issue": "UNSUPPORTED_EXPANSION",
+    "annotation": "added request",
+    "expected": "pending"
+  },
+  {
+    "sample_id": "phase9-015",
+    "language": "ja",
+    "source": "色んなデザイナーがいるよねロゴを作る",
+    "bad_translation": "有不同的設計師在製作LOGO。我喜歡那個。用味噌做。",
+    "issue": "UNSUPPORTED_EXPANSION",
+    "annotation": "added likes and miso",
+    "expected": "pending"
+  },
+  {
+    "sample_id": "phase9-020",
+    "language": "ja",
+    "source": "をかけて、そこして決まりましたから",
+    "bad_translation": "名字先生，不用客氣了。從現在開始，我一定要更努力地去學習。\n我會一直把你的目光放在那裡。",
+    "issue": "UNSUPPORTED_EXPANSION",
+    "annotation": "entirely unrelated story",
+    "expected": "pending"
+  },
+  {
+    "sample_id": "phase9-027",
+    "language": "ja",
+    "source": "なるといいな",
+    "bad_translation": "我覺得應該會存在。因為這是世界的範圍，所以我自己要能夠分辨清楚。有時候有人會對某個人產生興趣。",
+    "issue": "UNSUPPORTED_EXPANSION",
+    "annotation": "invented world narrative",
+    "expected": "pending"
+  },
+  {
+    "sample_id": "phase9-033",
+    "language": "ja",
+    "source": "なんちゃえ!おぉ!気がするそれ!",
+    "bad_translation": "啊哈啊哈。你是誰？是我的事嗎？\n有點糾結呢！不，是感染了！\n嗯嗯嗯。抱歉。\n對不起。我剛剛加了一杯進來試試看。",
+    "issue": "UNSUPPORTED_EXPANSION",
+    "annotation": "several invented sentences",
+    "expected": "pending"
+  },
+  {
+    "sample_id": "phase9-049",
+    "language": "ja",
+    "source": "カウントからまずいじゃないですか。",
+    "bad_translation": "你真的好嗎？那不是？\nえ、ほんけんかっ！\n那3分鐘，真的是小學生啊！\n哎呀...\n我... 我在攻擊呢。是的，首先可以增加攻擊力。",
+    "issue": "UNSUPPORTED_EXPANSION",
+    "annotation": "several invented game events",
+    "expected": "pending"
+  },
+  {
+    "sample_id": "phase9-057",
+    "language": "ja",
+    "source": "カポカバメ",
+    "bad_translation": "こんにちは！ブルハさんに聞きやすいように、私はPiro Piro Piro Piro Piro Piro Piro Piro Piroです。大體ねっ！ツーは勝っているよ。さっきで暑くなるから、短い興味ね？うん、7と1分です。",
+    "issue": "UNSUPPORTED_EXPANSION",
+    "annotation": "invented names and episode",
+    "expected": "pending"
+  },
+  {
+    "sample_id": "phase9-064",
+    "language": "ja",
+    "source": "スマスマーケットにデート行くっても、そうと…",
+    "bad_translation": "我打算去馬沙市場參加派對，但我不確定應該穿什麼衣服。我會穿100%棉質的羅珊絲嗎？如果這樣的話，大概就是這樣了。這兩個人很緊湊，我們要進行6次接吻。",
+    "issue": "UNSUPPORTED_EXPANSION",
+    "annotation": "party, clothes, kisses invented",
+    "expected": "pending"
+  },
+  {
+    "sample_id": "phase9-070",
+    "language": "ja",
+    "source": "おかよな!おかよな!おかよな!おかよな!",
+    "bad_translation": "哇！哇！哇！哇！！\n我不能相信！我不能相信！2千的STRENLY！STREN的名字！\n等等！等等！我不想要這張照片！你！\n是嗎？是嗎？！\n對不起，對不起！我想再試試！太好了！\n\nTranslation:",
+    "issue": "UNSUPPORTED_EXPANSION",
+    "annotation": "photo and other invented events",
+    "expected": "pending"
+  },
+  {
+    "sample_id": "phase9-072",
+    "language": "ja",
+    "source": "おだちもほだしだし",
+    "bad_translation": "這個人氣很高，到底怎麼回事？他們說那樣子好像沒有什麼問題。",
+    "issue": "UNSUPPORTED_EXPANSION",
+    "annotation": "invented explanation",
+    "expected": "pending"
+  },
+  {
+    "sample_id": "phase9-081",
+    "language": "ja",
+    "source": "変わりよくことに対して変わらないものを見つけるんだ",
+    "bad_translation": "我會去尋找那樣的東西，對待它的方式也變得不同。真是太奇怪了！太神奇了！",
+    "issue": "UNSUPPORTED_EXPANSION",
+    "annotation": "extra opinion and reaction",
+    "expected": "pending"
+  },
+  {
+    "sample_id": "phase9-082",
+    "language": "ja",
+    "source": "朝起きてとかでもなんでもいいけど",
+    "bad_translation": "早上起床也好，反正不會有什麼問題！改變一下態度就好了。改變一下想法就好了。",
+    "issue": "UNSUPPORTED_EXPANSION",
+    "annotation": "extra attitude advice",
+    "expected": "pending"
+  },
+  {
+    "sample_id": "phase9-093",
+    "language": "ja",
+    "source": "テレビが特集して…え?ないないさ",
+    "bad_translation": "以前，我聽過你動作的感覺啊。以前，我看過電視節目，因為那是我第一次看到這樣子的人。\n\n電視有專門的主題...？！不！錯了！\n重點是日常生活中的點滴，因為我從來沒有學過，所以我不會做那些事情。\n因為我是馬吉康（MachiCon）的，所以這類的事情都是我應該做的。",
+    "issue": "UNSUPPORTED_EXPANSION",
+    "annotation": "unrelated biography",
+    "expected": "pending"
+  },
+  {
+    "sample_id": "phase9-095",
+    "language": "ja",
+    "source": "おしにすっぱちゃを投げようとしたところをバンされてる",
+    "bad_translation": "我正準備扔掉我的手槍時，突然被擊中了。",
+    "issue": "UNSUPPORTED_EXPANSION",
+    "annotation": "gun substituted for chat item",
+    "expected": "pending"
+  },
+  {
+    "sample_id": "phase9-109",
+    "language": "en",
+    "source": "Honestly, some days are harder than others, but I",
+    "bad_translation": "真的，有些日子比其他日子更難，但我不確定我是否有自律。",
+    "issue": "UNSUPPORTED_EXPANSION",
+    "annotation": "invented self-discipline",
+    "expected": "pending"
+  },
+  {
+    "sample_id": "phase9-110",
+    "language": "en",
+    "source": "I'm looking and running. But tell me more, where are you from originally?",
+    "bad_translation": "我正在看，但我不確定我是否有自律。老實說，有些日子比其他日子更難，但經過20分鐘之後會變得容易一些。我可以看到這一點。\n你有一些非常酷的興趣愛好。",
+    "issue": "UNSUPPORTED_EXPANSION",
+    "annotation": "prior unrelated conversation inserted",
+    "expected": "pending"
+  },
+  {
+    "sample_id": "phase9-113",
+    "language": "en",
+    "source": "sure you'll make it happen when the time is right. So what's something you're working toward right now? Any big goals? I've been thinking about getting my master's degree in education. I want to specialize in T",
+    "bad_translation": "你確定你會在時機成熟時讓它實現嗎？ 現在你正在努力實現什麼？ 有大目標嗎？ 我一直在考慮獲得教育學碩士學位。 我想要專注於T領域的專業。你有沒有想過創業？我一直都在思考這個問題，但感覺好像太大了。好吧，當我準備好時我會開始的。現在，我正在構建我的行業。這是一個聰明的策略。聽起來像是在T領域進行專業化。",
+    "issue": "UNSUPPORTED_EXPANSION",
+    "annotation": "multiple unrelated sentences",
+    "expected": "pending"
+  },
+  {
+    "sample_id": "phase9-125",
+    "language": "en",
+    "source": "Start with an easy question. Can you tell me a little about yourself?",
+    "bad_translation": "好的，好的，是8:25。我們可能會遲到。哦，你鎖門了嗎？",
+    "issue": "UNSUPPORTED_EXPANSION",
+    "annotation": "entirely different question",
+    "expected": "pending"
+  }
+]
