@@ -1,9 +1,11 @@
-Copyright (c) 2026 Vtuber Live Translator contributors.
+Copyright (c) 2026 CHEN, KUEI-HENG. All rights reserved.
 
-Licensed under the MIT License. Permission is hereby granted, free of charge, to any person
-obtaining a copy of this software and associated documentation files to deal in the Software
-without restriction, including without limitation the rights to use, copy, modify, merge,
-publish, distribute, sublicense, and/or sell copies of the Software, subject to inclusion of
-this copyright and permission notice. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
-ANY KIND, EXPRESS OR IMPLIED.
+The original source code, documentation, artwork, and other original project
+materials in Vtuber Live Translator are proprietary. No permission is granted
+to copy, modify, distribute, sublicense, sell, or republish them without the
+copyright holder's prior written permission.
 
+This notice does not change the licenses of third-party libraries, models,
+fonts, or other third-party materials used by the project. Their respective
+licenses and notices continue to apply; see THIRD_PARTY_NOTICES.txt and the
+upstream distributions.
