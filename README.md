@@ -2,6 +2,14 @@
 
 Windows 即時翻譯桌面程式 **1.0.0 Release Candidate**。指定一個正在播放聲音的 Windows 程式後，本機完成音訊擷取、串流辨識、中文翻譯、Speaker 分離、Overlay 與可恢復的逐字稿。正式安裝版不需要 Python、Git、終端機或預先安裝 Ollama。
 
+## 介面與紀錄
+
+下圖是日文公開直播測試 Session 的實際 Studio 畫面，顯示原文、中文譯文、Session 時間與未確認的 Speaker。此截圖攝於候選版測試，不代表譯文已經人工校對或通過 GA 驗收。
+
+<img src="assets/screenshots/studio-japanese.png" alt="日文測試 Session 的 Transcript Studio" width="760">
+
+另見[日文／英文逐字稿、Overlay、History、Speaker 截圖與本機紀錄方式](docs/interface-and-records.md)。
+
 ## 安裝版
 
 在 Windows 11 或 Windows Server 2022 build **20348 以上**執行 `VtuberLiveTranslator-1.0.0-Setup.exe`。安裝程式採每位使用者安裝，不要求系統管理員權限；可建立桌面與開始功能表捷徑。首次啟動會引導選擇繁體／簡體中文、推薦效能模式、下載模型並測試指定程式音訊。
