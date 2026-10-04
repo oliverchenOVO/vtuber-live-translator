@@ -52,4 +52,4 @@ History 可重新開啟既有 Session、改名、找到資料夾及重新匯出�
 
 `transcript.md`、SRT、VTT 是可從已保存紀錄重建的匯出檔；Session 完成、Speaker 編輯或手動匯出時可重新產生。SRT/VTT 可選原文、譯文或雙語。原始音訊預設**不寫入硬碟**。此 repository 沒有上列檔案的實際內容，也不包含 API Key 或 voice embedding。
 
-已知限制與量測範圍見 [Phase 9 驗證報告](../PHASE9_REPORT.md)與 [Phase 10B 翻譯測試報告](../PHASE10B_REPORT.md)。
+已知限制與量測範圍見[Phase 9 驗證報告（中文）](zh-TW/phase9-ga.md)與[Phase 10B 翻譯測試報告（中文）](zh-TW/phase10b-bakeoff.md)。

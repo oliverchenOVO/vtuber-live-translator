@@ -61,12 +61,12 @@ flowchart TD
 
 ## 驗證結果與限制
 
-- 截至 **2026-10-03**，完整自動化測試 **463 項通過**；實際測試範圍與條件見[報告](ASR_ACCURACY_REPORT.md)。
+- 截至 **2026-10-03**，完整自動化測試 **463 項通過**；實際測試範圍與條件見[中文 ASR 報告](docs/zh-TW/asr-accuracy.md)。
 - FLEURS 每語言 80 段乾淨朗讀語音：base ASR Final 改用 beam 3 後，日文 CER **26.58% → 23.31%**，英文 WER **11.79% → 10.15%**。這些數字**不是直播準確率**。
 - Windows 開發機已完成打包 EXE 啟動測試；獨立乾淨 Windows 安裝、長時間遊戲及 Overlay 實體操作仍待驗收。
 - 中文翻譯可能漏譯或加入原文沒有的事實，重要內容請核對原文。多人重疊、短句與音效也可能讓 Speaker 顯示 Unknown。
 
-因此此專案仍是 **Release Candidate，GA READY: NO**。詳見 [Phase 9 GA gate](PHASE9_REPORT.md)、[Phase 10 翻譯可靠性](PHASE10_REPORT.md)與 [Phase 10B 模型比較](PHASE10B_REPORT.md)。
+因此此專案仍是 **Release Candidate，GA READY: NO**。詳見[Phase 9 GA 驗證](docs/zh-TW/phase9-ga.md)、[Phase 10 翻譯可靠性](docs/zh-TW/phase10-translation.md)與[Phase 10B 模型比較](docs/zh-TW/phase10b-bakeoff.md)。
 
 ## 開發啟動
 
@@ -87,8 +87,9 @@ ollama pull qwen2.5:1.5b
 | --- | --- |
 | 截圖版本、History、Speaker 與本機紀錄格式 | [介面與紀錄](docs/interface-and-records.md) |
 | 安裝、設定、音訊／ASR／翻譯／Speaker 實作與建置 | [技術說明](docs/technical-guide.md) |
-| 辨識量測方法與誤差範圍 | [ASR 準確度報告](ASR_ACCURACY_REPORT.md) |
-| Release Candidate 與 GA 缺口 | [Release Notes](RELEASE_NOTES_1.0.0.md) · [Phase 9 報告](PHASE9_REPORT.md) |
+| 辨識量測方法與誤差範圍 | [ASR 準確度報告（中文）](docs/zh-TW/asr-accuracy.md) |
+| Release Candidate 與 GA 缺口 | [候選版說明（中文）](docs/zh-TW/release-notes-1.0.0-rc.md) · [Phase 9 報告（中文）](docs/zh-TW/phase9-ga.md) |
+| 翻譯安全性與模型比較 | [Phase 10 報告（中文）](docs/zh-TW/phase10-translation.md) · [Phase 10B 報告（中文）](docs/zh-TW/phase10b-bakeoff.md) |
 
 ## 授權與致謝
 

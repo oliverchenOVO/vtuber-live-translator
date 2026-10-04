@@ -16,7 +16,7 @@ Windows 即時翻譯桌面程式 **1.0.0 Release Candidate**。指定一個正�
 
 在 Windows 11 或 Windows Server 2022 build **20348 以上**執行 `VtuberLiveTranslator-1.0.0-Setup.exe`。安裝程式採每位使用者安裝，不要求系統管理員權限；可建立桌面與開始功能表捷徑。首次啟動會引導選擇繁體／簡體中文、推薦效能模式、下載模型並測試指定程式音訊。
 
-目前為候選版本。完整驗證範圍與限制見 [Release Notes](../RELEASE_NOTES_1.0.0.md) 和 [Phase 8 驗證報告](../PHASE8_REPORT.md)。未提供簽章憑證的版本為 unsigned，Windows 可能顯示 **Unknown publisher / SmartScreen**；不需要也不建議關閉 Windows Defender。
+目前為候選版本。完整驗證範圍與限制見[候選版說明（中文）](zh-TW/release-notes-1.0.0-rc.md)和[Phase 8 驗證報告](../PHASE8_REPORT.md)。未提供簽章憑證的版本為 unsigned，Windows 可能顯示 **Unknown publisher / SmartScreen**；不需要也不建議關閉 Windows Defender。
 
 應用資料預設位於 `%LOCALAPPDATA%\VtuberLiveTranslator`：
 
@@ -36,7 +36,7 @@ Session 的原文、譯文、Speaker 設定及匯出檔只保存在本機；原�
 
 ## 已知限制
 
-較舊的 Windows build 無法使用 Process Loopback。多人同時說話、短句和音效可能讓 Speaker 顯示 Unknown 或辨識錯誤；翻譯可能延遲、遺漏或產生錯誤事實，重要內容請核對原文。首次下載約 2.45 GB，請保留至少 7 GB 磁碟空間。未簽章的安裝檔可能觸發 Windows Unknown publisher／SmartScreen。正式 GA 尚需獨立乾淨 Windows 和實際遊戲／Overlay 操作驗證；詳見 [Phase 9 驗證報告](../PHASE9_REPORT.md)。
+較舊的 Windows build 無法使用 Process Loopback。多人同時說話、短句和音效可能讓 Speaker 顯示 Unknown 或辨識錯誤；翻譯可能延遲、遺漏或產生錯誤事實，重要內容請核對原文。首次下載約 2.45 GB，請保留至少 7 GB 磁碟空間。未簽章的安裝檔可能觸發 Windows Unknown publisher／SmartScreen。正式 GA 尚需獨立乾淨 Windows 和實際遊戲／Overlay 操作驗證；詳見[Phase 9 驗證報告（中文）](zh-TW/phase9-ga.md)。
 
 程式採單一執行個體；再次啟動會喚回既有 Studio。系統匣可開啟 Studio、切換 Overlay、開始／停止 Session、進入設定或完整結束。診斷 log 每檔最多 5 MB、保留五個備份；未處理的 UI 錯誤另覆寫 `Logs\crash.log`，下次啟動會把未完成 Session 標記為可恢復。Cache 預設上限 2 GB，啟動時自動清理最舊檔案。
 
